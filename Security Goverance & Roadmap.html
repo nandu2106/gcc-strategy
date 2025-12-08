@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Director Strategic Playbook - Security, Compliance, Risk & AI Governance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --dark-gray: #374151;
+            --light-gray: #f9fafb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: #ffffff;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--light-gray), #ffffff);
+            border-left: 5px solid var(--accent-gold);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .framework-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .framework-card:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .compliance-badge {
+            display: inline-block;
+            background: var(--success-green);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 3px;
+            font-weight: 500;
+        }
+
+        .risk-level-high { background-color: var(--danger-red); }
+        .risk-level-medium { background-color: var(--accent-gold); }
+        .risk-level-low { background-color: var(--success-green); }
+
+        .kpi-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--secondary-blue);
+        }
+
+        .kpi-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--secondary-blue);
+        }
+
+        .expandable-section {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .expandable-header {
+            background: var(--light-gray);
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .expandable-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .expandable-content.show {
+            display: block;
+        }
+
+        .audit-checklist {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .ai-governance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .executive-summary {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-left: 6px solid var(--secondary-blue);
+        }
+
+        .navigation-sidebar {
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+
+        .nav-item {
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--light-gray);
+            color: var(--secondary-blue);
+        }
+
+        .nav-item.active {
+            background: var(--secondary-blue);
+            color: white;
+        }
+
+        .implementation-timeline {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-marker {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        @media print {
+            .navbar-custom, .navigation-sidebar {
+                display: none !important;
+            }
+            
+            .framework-card, .kpi-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            body {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+        }
+
+        .table-responsive {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+
+        .table th {
+            background: var(--light-gray);
+            border-color: #d1d5db;
+            font-weight: 600;
+        }
+
+        .progress-custom {
+            height: 25px;
+            border-radius: 15px;
+            background: #f3f4f6;
+        }
+
+        .progress-bar-custom {
+            border-radius: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#top">
+                <i class="fas fa-shield-alt me-2"></i>IT Director Strategic Playbook
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#security">Security</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#compliance">Compliance</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#risk">Risk Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#audit">Audit</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#ai-security">AI Security</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#executive">Executive Leadership</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="top" class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">IT Director Strategic Playbook</h1>
+            <p class="lead mb-4">Comprehensive Security, Compliance, Risk Management & AI Governance Framework</p>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <p class="fs-5">Executive-ready strategic guidance for cloud infrastructure, network engineering, and digital workplace leadership in the AI era</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container-fluid mt-5 pt-5">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-2 d-none d-lg-block">
+                <div class="navigation-sidebar">
+                    <h6 class="fw-bold mb-3">Quick Navigation</h6>
+                    <div class="nav-item" onclick="scrollToSection('dashboard')">
+                        <i class="fas fa-tachometer-alt me-2"></i>Executive Dashboard
+                    </div>
+                    <div class="nav-item" onclick="scrollToSection('security')">
+                        <i class="fas fa-shield-alt me-2"></i>Security Framework
+                    </div>
+                    <div class="nav-item" onclick="scrollToSection('compliance')">
+                        <i class="fas fa-clipboard-check me-2"></i>Compliance
+                    </div>
+                    <div class="nav-item" onclick="scrollToSection('risk')">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Risk Management
+                    </div>
+                    <div class="nav-item" onclick="scrollToSection('audit')">
+                        <i class="fas fa-search me-2"></i>Audit Readiness
+                    </div>
+                    <div class="nav-item" onclick="scrollToSection('ai-security')">
+                        <i class="fas fa-robot me-2"></i>AI Security
+                    </div>
+                    <div class="nav-item" onclick="scrollToSection('executive')">
+                        <i class="fas fa-users-cog me-2"></i>Executive Leadership
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-10">
+                <!-- Executive Dashboard -->
+                <section id="dashboard" class="mb-5">
+                    <div class="section-header">
+                        <h2><i class="fas fa-tachometer-alt text-primary me-3"></i>Executive Dashboard</h2>
+                        <p class="mb-0">Real-time strategic overview of IT security posture and compliance status</p>
+                    </div>
+
+                    <div class="executive-summary">
+                        <h4 class="text-primary mb-3">Strategic Executive Summary</h4>
+                        <p><strong>Mission:</strong> Deliver secure, compliant, and resilient IT infrastructure that enables business growth while managing emerging AI-era risks and maintaining audit readiness across global regulatory frameworks.</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-target text-success me-2"></i>Strategic Objectives</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Zero Trust Architecture Implementation</li>
+                                    <li>• 99.9% Compliance Adherence</li>
+                                    <li>• AI Governance Framework</li>
+                                    <li>• Risk-Driven Modernization</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-chart-line text-warning me-2"></i>Key Performance Areas</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Security Incident Reduction: 85%</li>
+                                    <li>• Audit Pass Rate: 100%</li>
+                                    <li>• Risk Mitigation: 90%</li>
+                                    <li>• AI Policy Compliance: 95%</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-calendar text-info me-2"></i>Strategic Timeline</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Q1: Zero Trust Foundation</li>
+                                    <li>• Q2: AI Governance Rollout</li>
+                                    <li>• Q3: Compliance Automation</li>
+                                    <li>• Q4: Risk Optimization</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="kpi-card">
+                                <div class="kpi-number">98.7%</div>
+                                <h6 class="text-muted">Security Score</h6>
+                                <div class="progress progress-custom mt-2">
+                                    <div class="progress-bar progress-bar-custom bg-success" style="width: 98.7%">98.7%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="kpi-card">
+                                <div class="kpi-number">100%</div>
+                                <h6 class="text-muted">Compliance Rate</h6>
+                                <div class="progress progress-custom mt-2">
+                                    <div class="progress-bar progress-bar-custom bg-primary" style="width: 100%">100%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="kpi-card">
+                                <div class="kpi-number">15</div>
+                                <h6 class="text-muted">Active Risks</h6>
+                                <small class="text-muted">12 Low, 3 Medium</small>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="kpi-card">
+                                <div class="kpi-number">45</div>
+                                <h6 class="text-muted">Days to Next Audit</h6>
+                                <small class="text-success">Fully Prepared</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Framework -->
+                <section id="security" class="mb-5">
+                    <div class="section-header">
+                        <h2><i class="fas fa-shield-alt text-primary me-3"></i>Security Framework</h2>
+                        <p class="mb-0">Comprehensive security architecture covering technical controls and governance</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-key text-warning me-2"></i>Identity & Access Management (IAM)</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Zero Trust Identity Strategy</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Core Principles:</h6>
+                                        <ul>
+                                            <li><strong>Never Trust, Always Verify:</strong> Every access request authenticated and authorized</li>
+                                            <li><strong>Least Privilege Access:</strong> Minimum necessary permissions</li>
+                                            <li><strong>Just-in-Time Access:</strong> Time-bound privilege elevation</li>
+                                        </ul>
+                                        
+                                        <h6>Implementation Framework:</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Component</th>
+                                                        <th>Technology</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Multi-Factor Authentication</td>
+                                                        <td>Azure AD, Okta</td>
+                                                        <td><span class="badge bg-success">Deployed</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Single Sign-On</td>
+                                                        <td>SAML 2.0, OAuth 2.0</td>
+                                                        <td><span class="badge bg-success">Deployed</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Privileged Access Management</td>
+                                                        <td>CyberArk, Azure PIM</td>
+                                                        <td><span class="badge bg-warning">In Progress</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Identity Governance Programs</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <ul>
+                                            <li><strong>Access Reviews:</strong> Quarterly manager attestations</li>
+                                            <li><strong>Role Mining:</strong> AI-driven role optimization</li>
+                                            <li><strong>Segregation of Duties:</strong> Automated SoD conflict detection</li>
+                                            <li><strong>Identity Analytics:</strong> Behavioral anomaly detection</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-network-wired text-info me-2"></i>Network Security</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Zero Trust Network Architecture</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Micro-Segmentation Strategy:</h6>
+                                        <ul>
+                                            <li><strong>Application Segmentation:</strong> Workload isolation by function</li>
+                                            <li><strong>User Segmentation:</strong> Dynamic VLAN assignment</li>
+                                            <li><strong>Device Segmentation:</strong> IoT and endpoint isolation</li>
+                                        </ul>
+                                        
+                                        <h6>Security Controls:</h6>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <ul>
+                                                    <li>Next-Gen Firewalls (NGFW)</li>
+                                                    <li>Intrusion Detection/Prevention</li>
+                                                    <li>DNS Security</li>
+                                                    <li>DDoS Protection</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <ul>
+                                                    <li>Network Access Control (NAC)</li>
+                                                    <li>SD-WAN Security</li>
+                                                    <li>VPN Zero Trust</li>
+                                                    <li>Network Detection & Response</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-laptop text-success me-2"></i>Endpoint & Cloud Security</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Endpoint Protection Platform</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Modern Endpoint Strategy:</h6>
+                                        <ul>
+                                            <li><strong>EDR/XDR:</strong> Advanced threat detection and response</li>
+                                            <li><strong>Mobile Device Management:</strong> BYOD security controls</li>
+                                            <li><strong>Application Control:</strong> Whitelist-based execution</li>
+                                            <li><strong>Device Compliance:</strong> Policy-driven access</li>
+                                        </ul>
+
+                                        <h6>Cloud Security Posture:</h6>
+                                        <ul>
+                                            <li><strong>CSPM:</strong> Cloud Security Posture Management</li>
+                                            <li><strong>CWPP:</strong> Cloud Workload Protection Platform</li>
+                                            <li><strong>CASB:</strong> Cloud Access Security Broker</li>
+                                            <li><strong>Multi-Cloud:</strong> AWS, Azure, GCP unified security</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-code text-danger me-2"></i>Application & API Security</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Secure Development Lifecycle</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>DevSecOps Integration:</h6>
+                                        <ul>
+                                            <li><strong>SAST:</strong> Static Application Security Testing</li>
+                                            <li><strong>DAST:</strong> Dynamic Application Security Testing</li>
+                                            <li><strong>IAST:</strong> Interactive Application Security Testing</li>
+                                            <li><strong>SCA:</strong> Software Composition Analysis</li>
+                                        </ul>
+
+                                        <h6>API Security Framework:</h6>
+                                        <ul>
+                                            <li><strong>OAuth 2.0/OpenID Connect:</strong> Standard authentication</li>
+                                            <li><strong>Rate Limiting:</strong> DDoS and abuse protection</li>
+                                            <li><strong>API Gateway:</strong> Centralized security enforcement</li>
+                                            <li><strong>Threat Detection:</strong> AI-powered anomaly detection</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="framework-card">
+                        <h5><i class="fas fa-database text-primary me-2"></i>Data Security & Privacy</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Data Classification Framework:</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Classification</th>
+                                                <th>Examples</th>
+                                                <th>Controls</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><span class="badge bg-danger">Restricted</span></td>
+                                                <td>PII, PHI, Financial</td>
+                                                <td>Encryption, DLP, Access Controls</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="badge bg-warning">Confidential</span></td>
+                                                <td>Business Plans, IP</td>
+                                                <td>Encryption, Access Controls</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="badge bg-info">Internal</span></td>
+                                                <td>Policies, Procedures</td>
+                                                <td>Access Controls</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="badge bg-success">Public</span></td>
+                                                <td>Marketing Materials</td>
+                                                <td>Integrity Controls</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Privacy-by-Design Principles:</h6>
+                                <ul>
+                                    <li><strong>Data Minimization:</strong> Collect only necessary data</li>
+                                    <li><strong>Purpose Limitation:</strong> Use data only for stated purposes</li>
+                                    <li><strong>Storage Limitation:</strong> Retain data only as long as necessary</li>
+                                    <li><strong>Transparency:</strong> Clear privacy notices and consent</li>
+                                    <li><strong>Rights Management:</strong> Subject access, portability, erasure</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Compliance Framework -->
+                <section id="compliance" class="mb-5">
+                    <div class="section-header">
+                        <h2><i class="fas fa-clipboard-check text-primary me-3"></i>Global Compliance Framework</h2>
+                        <p class="mb-0">Comprehensive regulatory compliance across global, financial, and regional requirements</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="framework-card">
+                                <h5>Regulatory Compliance Matrix</h5>
+                                <div class="mb-3">
+                                    <span class="compliance-badge">ISO 27001</span>
+                                    <span class="compliance-badge">SOC 2 Type II</span>
+                                    <span class="compliance-badge">NIST CSF</span>
+                                    <span class="compliance-badge">COBIT 2019</span>
+                                    <span class="compliance-badge">PCI-DSS</span>
+                                    <span class="compliance-badge">SOX</span>
+                                    <span class="compliance-badge">FFIEC</span>
+                                    <span class="compliance-badge">GLBA</span>
+                                    <span class="compliance-badge">GDPR</span>
+                                    <span class="compliance-badge">RBI Guidelines</span>
+                                    <span class="compliance-badge">MAS TRM</span>
+                                    <span class="compliance-badge">CCPA</span>
+                                    <span class="compliance-badge">HIPAA</span>
+                                    <span class="compliance-badge">DPDP Act</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="framework-card">
+                                <h6><i class="fas fa-globe text-primary me-2"></i>Global Standards</h6>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>ISO 27001:2022</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>ISMS Implementation:</h6>
+                                        <ul>
+                                            <li><strong>Clause 4:</strong> Context & Scope Definition</li>
+                                            <li><strong>Clause 5:</strong> Leadership & Policy Framework</li>
+                                            <li><strong>Clause 6:</strong> Risk Assessment & Treatment</li>
+                                            <li><strong>Clause 7:</strong> Resource & Competence Management</li>
+                                            <li><strong>Clause 8:</strong> Operational Security Controls</li>
+                                            <li><strong>Clause 9:</strong> Performance Monitoring</li>
+                                            <li><strong>Clause 10:</strong> Continuous Improvement</li>
+                                        </ul>
+                                        
+                                        <h6>Annex A Controls (93 total):</h6>
+                                        <div class="progress progress-custom mb-2">
+                                            <div class="progress-bar bg-success" style="width: 89%">89% Implemented</div>
+                                        </div>
+                                        <small class="text-muted">83 implemented, 10 in progress</small>
+                                    </div>
+                                </div>
+
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>NIST Cybersecurity Framework 2.0</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Core Functions:</h6>
+                                        <ul>
+                                            <li><strong>Govern (GV):</strong> Enterprise cybersecurity governance</li>
+                                            <li><strong>Identify (ID):</strong> Asset & risk identification</li>
+                                            <li><strong>Protect (PR):</strong> Safeguards implementation</li>
+                                            <li><strong>Detect (DE):</strong> Anomaly & event detection</li>
+                                            <li><strong>Respond (RS):</strong> Incident response activities</li>
+                                            <li><strong>Recover (RC):</strong> Business continuity & resilience</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4">
+                            <div class="framework-card">
+                                <h6><i class="fas fa-university text-warning me-2"></i>Financial Regulations</h6>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>SOX Compliance</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Section 404 IT Controls:</h6>
+                                        <ul>
+                                            <li><strong>ITGC:</strong> IT General Controls</li>
+                                            <li><strong>Application Controls:</strong> Financial system controls</li>
+                                            <li><strong>Change Management:</strong> SDLC controls</li>
+                                            <li><strong>Access Controls:</strong> Segregation of duties</li>
+                                        </ul>
+
+                                        <h6>Control Testing Schedule:</h6>
+                                        <ul>
+                                            <li>Q1: Design effectiveness testing</li>
+                                            <li>Q2-Q4: Operating effectiveness testing</li>
+                                            <li>Annual: Management assessment</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>PCI-DSS 4.0</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>12 Requirements Framework:</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <tr><td>Req 1-2</td><td>Build & Maintain Secure Network</td></tr>
+                                                <tr><td>Req 3-4</td><td>Protect Cardholder Data</td></tr>
+                                                <tr><td>Req 5-6</td><td>Maintain Vulnerability Program</td></tr>
+                                                <tr><td>Req 7-8</td><td>Implement Strong Access Control</td></tr>
+                                                <tr><td>Req 9-10</td><td>Monitor & Test Networks</td></tr>
+                                                <tr><td>Req 11-12</td><td>Maintain Information Security Policy</td></tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4">
+                            <div class="framework-card">
+                                <h6><i class="fas fa-map text-success me-2"></i>Regional Privacy Laws</h6>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>GDPR Compliance</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Core Principles (Art. 5):</h6>
+                                        <ul>
+                                            <li><strong>Lawfulness:</strong> Legal basis for processing</li>
+                                            <li><strong>Fairness & Transparency:</strong> Clear communication</li>
+                                            <li><strong>Purpose Limitation:</strong> Specified purposes only</li>
+                                            <li><strong>Data Minimisation:</strong> Adequate & relevant data</li>
+                                            <li><strong>Accuracy:</strong> Up-to-date & correct data</li>
+                                            <li><strong>Storage Limitation:</strong> Retention policies</li>
+                                            <li><strong>Security:</strong> Appropriate technical measures</li>
+                                        </ul>
+
+                                        <h6>Individual Rights:</h6>
+                                        <ul>
+                                            <li>Right to be informed</li>
+                                            <li>Right of access (Art. 15)</li>
+                                            <li>Right to rectification (Art. 16)</li>
+                                            <li>Right to erasure (Art. 17)</li>
+                                            <li>Right to data portability (Art. 20)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>DPDP Act 2023 (India)</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Key Requirements:</h6>
+                                        <ul>
+                                            <li><strong>Consent Framework:</strong> Clear & specific consent</li>
+                                            <li><strong>Data Fiduciary Obligations:</strong> Security & purpose limitation</li>
+                                            <li><strong>Cross-border Transfers:</strong> Restricted countries list</li>
+                                            <li><strong>Breach Notification:</strong> DPB notification within 72 hours</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="framework-card">
+                        <h5>Vendor & Supply Chain Compliance</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Third-Party Risk Management:</h6>
+                                <ul>
+                                    <li><strong>Due Diligence:</strong> Pre-contract security assessments</li>
+                                    <li><strong>SLA Management:</strong> Security performance metrics</li>
+                                    <li><strong>Continuous Monitoring:</strong> Ongoing risk assessments</li>
+                                    <li><strong>Incident Management:</strong> Vendor incident response procedures</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Supply Chain Security:</h6>
+                                <ul>
+                                    <li><strong>Vendor Security Questionnaires:</strong> Standardized assessments</li>
+                                    <li><strong>SOC 2 Requirements:</strong> Audit report reviews</li>
+                                    <li><strong>Contract Security Clauses:</strong> Mandatory security terms</li>
+                                    <li><strong>Business Continuity:</strong> Vendor BCP requirements</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Risk Management -->
+                <section id="risk" class="mb-5">
+                    <div class="section-header">
+                        <h2><i class="fas fa-exclamation-triangle text-primary me-3"></i>Enterprise Risk Management</h2>
+                        <p class="mb-0">Comprehensive risk identification, assessment, and mitigation framework</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-lg-8 mb-4">
+                            <div class="framework-card">
+                                <h5>Risk Register Dashboard</h5>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Risk Category</th>
+                                                <th>High</th>
+                                                <th>Medium</th>
+                                                <th>Low</th>
+                                                <th>Total</th>
+                                                <th>Trend</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Cybersecurity</strong></td>
+                                                <td><span class="badge risk-level-high">0</span></td>
+                                                <td><span class="badge risk-level-medium">2</span></td>
+                                                <td><span class="badge risk-level-low">5</span></td>
+                                                <td>7</td>
+                                                <td><i class="fas fa-arrow-down text-success"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Operational</strong></td>
+                                                <td><span class="badge risk-level-high">0</span></td>
+                                                <td><span class="badge risk-level-medium">1</span></td>
+                                                <td><span class="badge risk-level-low">3</span></td>
+                                                <td>4</td>
+                                                <td><i class="fas fa-arrow-right text-warning"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Compliance</strong></td>
+                                                <td><span class="badge risk-level-high">0</span></td>
+                                                <td><span class="badge risk-level-medium">0</span></td>
+                                                <td><span class="badge risk-level-low">2</span></td>
+                                                <td>2</td>
+                                                <td><i class="fas fa-arrow-down text-success"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Technical Debt</strong></td>
+                                                <td><span class="badge risk-level-high">0</span></td>
+                                                <td><span class="badge risk-level-medium">0</span></td>
+                                                <td><span class="badge risk-level-low">2</span></td>
+                                                <td>2</td>
+                                                <td><i class="fas fa-arrow-down text-success"></i></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4">
+                            <div class="framework-card">
+                                <h6>Key Risk Indicators (KRIs)</h6>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Security Incidents</span>
+                                        <span class="text-success">↓ 15%</span>
+                                    </div>
+                                    <div class="progress progress-custom">
+                                        <div class="progress-bar bg-success" style="width: 85%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Vulnerability Remediation</span>
+                                        <span class="text-success">↑ 92%</span>
+                                    </div>
+                                    <div class="progress progress-custom">
+                                        <div class="progress-bar bg-success" style="width: 92%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Patch Compliance</span>
+                                        <span class="text-warning">89%</span>
+                                    </div>
+                                    <div class="progress progress-custom">
+                                        <div class="progress-bar bg-warning" style="width: 89%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-shield-virus text-danger me-2"></i>Cybersecurity Risk</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Threat Landscape Analysis</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Critical Threat Vectors:</h6>
+                                        <ul>
+                                            <li><strong>Ransomware:</strong> Advanced persistent threats</li>
+                                            <li><strong>Supply Chain:</strong> Third-party compromises</li>
+                                            <li><strong>Cloud Misconfigurations:</strong> Infrastructure exposure</li>
+                                            <li><strong>Social Engineering:</strong> Phishing & BEC attacks</li>
+                                            <li><strong>Insider Threats:</strong> Malicious & negligent actors</li>
+                                        </ul>
+
+                                        <h6>Risk Mitigation Strategy:</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr><th>Control</th><th>Implementation</th><th>Effectiveness</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr><td>EDR/XDR</td><td>100%</td><td>95%</td></tr>
+                                                    <tr><td>Security Awareness</td><td>100%</td><td>88%</td></tr>
+                                                    <tr><td>Backup & Recovery</td><td>100%</td><td>99%</td></tr>
+                                                    <tr><td>Incident Response</td><td>95%</td><td>92%</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Ransomware Mitigation Program</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Multi-layered Defense:</h6>
+                                        <ul>
+                                            <li><strong>Prevention:</strong> Endpoint protection, email security</li>
+                                            <li><strong>Detection:</strong> Behavioral analysis, file integrity monitoring</li>
+                                            <li><strong>Response:</strong> Automated isolation, incident response</li>
+                                            <li><strong>Recovery:</strong> Immutable backups, recovery procedures</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-cogs text-info me-2"></i>Operational Risk</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Business Continuity Management</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Business Impact Analysis (BIA):</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr><th>Process</th><th>RTO</th><th>RPO</th><th>Priority</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr><td>Core Banking</td><td>1 hour</td><td>15 mins</td><td>Critical</td></tr>
+                                                    <tr><td>Customer Portal</td><td>4 hours</td><td>1 hour</td><td>High</td></tr>
+                                                    <tr><td>Internal Systems</td><td>8 hours</td><td>4 hours</td><td>Medium</td></tr>
+                                                    <tr><td>Reporting</td><td>24 hours</td><td>8 hours</td><td>Low</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <h6>Disaster Recovery Strategy:</h6>
+                                        <ul>
+                                            <li><strong>Hot Site:</strong> Real-time replication for critical systems</li>
+                                            <li><strong>Warm Site:</strong> 4-hour recovery for high priority</li>
+                                            <li><strong>Cold Site:</strong> 24-hour recovery for non-critical</li>
+                                            <li><strong>Cloud DR:</strong> Multi-region deployment strategy</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-cloud text-warning me-2"></i>Cloud & Vendor Risk</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Cloud Risk Management</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Cloud Security Risks:</h6>
+                                        <ul>
+                                            <li><strong>Misconfigurations:</strong> Default settings, open buckets</li>
+                                            <li><strong>Identity & Access:</strong> Overprivileged accounts</li>
+                                            <li><strong>Data Loss:</strong> Inadequate encryption, backup failures</li>
+                                            <li><strong>Compliance:</strong> Regulatory data residency</li>
+                                        </ul>
+
+                                        <h6>Multi-Cloud Strategy:</h6>
+                                        <ul>
+                                            <li><strong>AWS:</strong> 60% of workloads (Primary)</li>
+                                            <li><strong>Azure:</strong> 30% of workloads (Secondary)</li>
+                                            <li><strong>GCP:</strong> 10% of workloads (Specialized)</li>
+                                            <li><strong>Hybrid:</strong> On-premises integration</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-database text-success me-2"></i>Data & Technical Risk</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Technical Debt Management</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Legacy System Risks:</h6>
+                                        <ul>
+                                            <li><strong>End-of-Life Systems:</strong> Unsupported software/hardware</li>
+                                            <li><strong>Security Gaps:</strong> Unpatched vulnerabilities</li>
+                                            <li><strong>Integration Challenges:</strong> API compatibility issues</li>
+                                            <li><strong>Skill Gaps:</strong> Declining expertise in legacy tech</li>
+                                        </ul>
+
+                                        <h6>Modernization Roadmap:</h6>
+                                        <div class="implementation-timeline">
+                                            <div class="timeline-item">
+                                                <div class="timeline-marker">Q1</div>
+                                                <div>
+                                                    <h6>Assessment & Planning</h6>
+                                                    <p>Legacy system inventory and risk assessment</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-item">
+                                                <div class="timeline-marker">Q2</div>
+                                                <div>
+                                                    <h6>Prioritization</h6>
+                                                    <p>Business impact analysis and migration strategy</p>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-item">
+                                                <div class="timeline-marker">Q3</div>
+                                                <div>
+                                                    <h6>Implementation</h6>
+                                                    <p>Phased migration to modern platforms</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Audit Readiness -->
+                <section id="audit" class="mb-5">
+                    <div class="section-header">
+                        <h2><i class="fas fa-search text-primary me-3"></i>Audit Readiness Framework</h2>
+                        <p class="mb-0">Comprehensive audit preparation and evidence management system</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-clipboard-list text-success me-2"></i>Internal Audit Program</h5>
+                                
+                                <div class="audit-checklist">
+                                    <h6>Quarterly Internal Audits:</h6>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Security Controls Testing
+                                    </div>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Access Reviews
+                                    </div>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Change Management
+                                    </div>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" disabled> Incident Response Testing
+                                    </div>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Backup & Recovery
+                                    </div>
+                                </div>
+
+                                <h6 class="mt-3">Audit Findings Management:</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Current Quarter:</strong> 2 findings (both remediated)</li>
+                                    <li><strong>Average Resolution:</strong> 15 days</li>
+                                    <li><strong>Recurring Issues:</strong> 0</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-building text-warning me-2"></i>External Audit Coordination</h5>
+                                
+                                <h6>Annual Audit Schedule:</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr><th>Audit Type</th><th>Frequency</th><th>Next Due</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>SOC 2 Type II</td><td>Annual</td><td>Q2 2024</td></tr>
+                                            <tr><td>ISO 27001</td><td>Annual</td><td>Q3 2024</td></tr>
+                                            <tr><td>PCI-DSS</td><td>Annual</td><td>Q1 2024</td></tr>
+                                            <tr><td>SOX ITGC</td><td>Annual</td><td>Q4 2024</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="expandable-section mt-3">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Common Audit Questions</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Security Controls:</h6>
+                                        <ul>
+                                            <li>How do you ensure least privilege access?</li>
+                                            <li>What is your incident response process?</li>
+                                            <li>How do you manage vendor security?</li>
+                                            <li>What are your backup and recovery procedures?</li>
+                                        </ul>
+
+                                        <h6>Change Management:</h6>
+                                        <ul>
+                                            <li>Describe your SDLC process</li>
+                                            <li>How do you test security controls?</li>
+                                            <li>What is your emergency change process?</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-gavel text-danger me-2"></i>Regulatory Compliance</h5>
+                                
+                                <h6>Regulatory Audit Readiness:</h6>
+                                <div class="audit-checklist">
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Data Privacy Impact Assessments
+                                    </div>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Breach Notification Procedures
+                                    </div>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Cross-border Data Transfer Records
+                                    </div>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Consent Management Documentation
+                                    </div>
+                                    <div class="checklist-item">
+                                        <input type="checkbox" checked disabled> Data Subject Rights Procedures
+                                    </div>
+                                </div>
+
+                                <h6 class="mt-3">Regulatory Interactions:</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Last Regulatory Exam:</strong> Q2 2023 (No findings)</li>
+                                    <li><strong>Outstanding Actions:</strong> 0</li>
+                                    <li><strong>Regulatory Notifications:</strong> Current</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="framework-card">
+                        <h5><i class="fas fa-folder text-primary me-2"></i>Evidence Management System</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Evidence Repository Structure:</h6>
+                                <ul>
+                                    <li><strong>Policies & Procedures:</strong> Current versions with approval records</li>
+                                    <li><strong>Risk Assessments:</strong> Annual and ad-hoc assessments</li>
+                                    <li><strong>Control Testing:</strong> Quarterly evidence packages</li>
+                                    <li><strong>Training Records:</strong> Completion certificates and acknowledgments</li>
+                                    <li><strong>Incident Documentation:</strong> Complete incident lifecycle records</li>
+                                    <li><strong>Vendor Management:</strong> Due diligence and monitoring evidence</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Automated Evidence Collection:</h6>
+                                <ul>
+                                    <li><strong>Configuration Management:</strong> Automated baseline monitoring</li>
+                                    <li><strong>Access Reviews:</strong> Quarterly attestation workflows</li>
+                                    <li><strong>Vulnerability Scans:</strong> Continuous security assessments</li>
+                                    <li><strong>Log Management:</strong> Centralized audit trail collection</li>
+                                    <li><strong>Compliance Dashboards:</strong> Real-time control status</li>
+                                    <li><strong>Backup Verification:</strong> Automated recovery testing</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6>Continual Compliance Monitoring:</h6>
+                            <div class="row">
+                                <div class="col-md-3 text-center">
+                                    <div class="kpi-number text-success">100%</div>
+                                    <small>Policy Compliance</small>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <div class="kpi-number text-success">98%</div>
+                                    <small>Control Effectiveness</small>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <div class="kpi-number text-warning">95%</div>
+                                    <small>Evidence Completeness</small>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <div class="kpi-number text-success">100%</div>
+                                    <small>Audit Readiness</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AI-Era Security -->
+                <section id="ai-security" class="mb-5">
+                    <div class="section-header">
+                        <h2><i class="fas fa-robot text-primary me-3"></i>AI-Era Security & Risk Management</h2>
+                        <p class="mb-0">Comprehensive governance framework for Generative AI and emerging AI technologies</p>
+                    </div>
+
+                    <div class="executive-summary">
+                        <h4 class="text-primary mb-3">AI Governance Strategic Framework</h4>
+                        <p><strong>Objective:</strong> Establish responsible AI adoption while maintaining security, privacy, and regulatory compliance in the era of Generative AI and Large Language Models.</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-shield-alt text-success me-2"></i>AI Security Pillars</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Model Security & Access Control</li>
+                                    <li>• Data Privacy & Confidentiality</li>
+                                    <li>• Bias Detection & Mitigation</li>
+                                    <li>• Transparency & Explainability</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-balance-scale text-warning me-2"></i>Risk Categories</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Data Leakage & IP Theft</li>
+                                    <li>• Algorithmic Bias & Discrimination</li>
+                                    <li>• Model Poisoning & Adversarial Attacks</li>
+                                    <li>• Regulatory Non-Compliance</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-users text-info me-2"></i>Governance Structure</h6>
+                                <ul class="list-unstyled">
+                                    <li>• AI Ethics Committee</li>
+                                    <li>• Technical Review Board</li>
+                                    <li>• Business Risk Assessment</li>
+                                    <li>• Continuous Monitoring</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-governance-grid">
+                        <div class="framework-card">
+                            <h5><i class="fas fa-file-contract text-primary me-2"></i>AI Acceptable Use Policy</h5>
+                            
+                            <div class="expandable-section">
+                                <div class="expandable-header" onclick="toggleSection(this)">
+                                    <span>Approved AI Tools & Platforms</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="expandable-content">
+                                    <h6>Enterprise-Approved AI Services:</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr><th>Platform</th><th>Use Case</th><th>Classification</th><th>Status</th></tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr><td>GitHub Copilot Enterprise</td><td>Code Generation</td><td>Internal Use</td><td><span class="badge bg-success">Approved</span></td></tr>
+                                                <tr><td>Microsoft 365 Copilot</td><td>Productivity</td><td>Confidential Data</td><td><span class="badge bg-success">Approved</span></td></tr>
+                                                <tr><td>OpenAI API Enterprise</td><td>Development</td><td>Non-sensitive</td><td><span class="badge bg-warning">Review</span></td></tr>
+                                                <tr><td>Amazon Bedrock</td><td>Custom Models</td><td>Restricted</td><td><span class="badge bg-info">Testing</span></td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <h6>Prohibited Actions:</h6>
+                                    <ul>
+                                        <li><strong>Sensitive Data Input:</strong> PII, PHI, financial data, trade secrets</li>
+                                        <li><strong>Unauthorized Tools:</strong> Consumer AI platforms for business use</li>
+                                        <li><strong>Model Training:</strong> Using proprietary data without approval</li>
+                                        <li><strong>Automated Decisions:</strong> AI-only decisions affecting customers</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="expandable-section">
+                                <div class="expandable-header" onclick="toggleSection(this)">
+                                    <span>Data Classification for AI</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="expandable-content">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr><th>Data Type</th><th>AI Usage</th><th>Approval Required</th></tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr><td>Public</td><td>Allowed</td><td>No</td></tr>
+                                                <tr><td>Internal</td><td>Enterprise AI Only</td><td>Manager</td></tr>
+                                                <tr><td>Confidential</td><td>Restricted Platforms</td><td>AI Committee</td></tr>
+                                                <tr><td>Restricted</td><td>Prohibited</td><td>Not Applicable</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="framework-card">
+                            <h5><i class="fas fa-code text-info me-2"></i>Developer AI Guardrails</h5>
+                            
+                            <div class="expandable-section">
+                                <div class="expandable-header" onclick="toggleSection(this)">
+                                    <span>Secure AI Development Practices</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="expandable-content">
+                                    <h6>AI Code Review Requirements:</h6>
+                                    <ul>
+                                        <li><strong>Prompt Injection Prevention:</strong> Input sanitization and validation</li>
+                                        <li><strong>Output Filtering:</strong> Content moderation and safety checks</li>
+                                        <li><strong>Data Minimization:</strong> Least privilege data access</li>
+                                        <li><strong>Audit Logging:</strong> Comprehensive AI interaction logs</li>
+                                    </ul>
+
+                                    <h6>Automated Security Scanning:</h6>
+                                    <ul>
+                                        <li><strong>Secret Detection:</strong> API keys, credentials in prompts</li>
+                                        <li><strong>Dependency Analysis:</strong> AI library vulnerability scanning</li>
+                                        <li><strong>Model Validation:</strong> Bias and fairness testing</li>
+                                        <li><strong>Performance Monitoring:</strong> Model drift detection</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="expandable-section">
+                                <div class="expandable-header" onclick="toggleSection(this)">
+                                    <span>AI Development Pipeline Security</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="expandable-content">
+                                    <div class="implementation-timeline">
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker">1</div>
+                                            <div>
+                                                <h6>Design Phase</h6>
+                                                <p>AI impact assessment, privacy review, bias evaluation</p>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker">2</div>
+                                            <div>
+                                                <h6>Development</h6>
+                                                <p>Secure coding practices, automated testing, peer review</p>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker">3</div>
+                                            <div>
+                                                <h6>Deployment</h6>
+                                                <p>Security scanning, performance validation, monitoring setup</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="framework-card">
+                            <h5><i class="fas fa-lock text-warning me-2"></i>Model Access Controls</h5>
+                            
+                            <h6>AI Model Governance Framework:</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr><th>Model Category</th><th>Access Level</th><th>Approval Process</th><th>Monitoring</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Public Models</td><td>General Use</td><td>Self-Service</td><td>Usage Tracking</td></tr>
+                                        <tr><td>Enterprise Models</td><td>Role-Based</td><td>Manager Approval</td><td>Activity Logging</td></tr>
+                                        <tr><td>Custom Models</td><td>Restricted</td><td>AI Committee</td><td>Full Audit Trail</td></tr>
+                                        <tr><td>Sensitive Models</td><td>Admin Only</td><td>CISO Approval</td><td>Real-time Monitoring</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="expandable-section">
+                                <div class="expandable-header" onclick="toggleSection(this)">
+                                    <span>Technical Access Controls</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="expandable-content">
+                                    <h6>Authentication & Authorization:</h6>
+                                    <ul>
+                                        <li><strong>Multi-Factor Authentication:</strong> Required for all AI platform access</li>
+                                        <li><strong>API Key Management:</strong> Rotation and scope limitation</li>
+                                        <li><strong>Rate Limiting:</strong> Usage quotas and throttling</li>
+                                        <li><strong>Session Management:</strong> Timeout and concurrent session limits</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="framework-card">
+                            <h5><i class="fas fa-user-shield text-success me-2"></i>Privacy & Bias Management</h5>
+                            
+                            <div class="expandable-section">
+                                <div class="expandable-header" onclick="toggleSection(this)">
+                                    <span>AI Privacy Protection</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="expandable-content">
+                                    <h6>Privacy-Preserving AI Techniques:</h6>
+                                    <ul>
+                                        <li><strong>Differential Privacy:</strong> Mathematical privacy guarantees</li>
+                                        <li><strong>Federated Learning:</strong> Decentralized model training</li>
+                                        <li><strong>Synthetic Data:</strong> Privacy-safe training datasets</li>
+                                        <li><strong>Homomorphic Encryption:</strong> Computation on encrypted data</li>
+                                    </ul>
+
+                                    <h6>Data Subject Rights in AI:</h6>
+                                    <ul>
+                                        <li><strong>Right to Explanation:</strong> AI decision transparency</li>
+                                        <li><strong>Right to Rectification:</strong> Correction of AI inputs</li>
+                                        <li><strong>Right to Erasure:</strong> Model retraining without data</li>
+                                        <li><strong>Right to Object:</strong> Opt-out of AI processing</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="expandable-section">
+                                <div class="expandable-header" onclick="toggleSection(this)">
+                                    <span>AI Bias Detection & Mitigation</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="expandable-content">
+                                    <h6>Bias Assessment Framework:</h6>
+                                    <ul>
+                                        <li><strong>Statistical Parity:</strong> Equal outcomes across groups</li>
+                                        <li><strong>Equalized Odds:</strong> Equal true positive rates</li>
+                                        <li><strong>Individual Fairness:</strong> Similar treatment for similar individuals</li>
+                                        <li><strong>Counterfactual Fairness:</strong> Decisions unaffected by sensitive attributes</li>
+                                    </ul>
+
+                                    <h6>Mitigation Strategies:</h6>
+                                    <ul>
+                                        <li><strong>Pre-processing:</strong> Bias-aware data sampling</li>
+                                        <li><strong>In-processing:</strong> Fairness constraints during training</li>
+                                        <li><strong>Post-processing:</strong> Output adjustment for fairness</li>
+                                        <li><strong>Continuous Monitoring:</strong> Ongoing bias detection</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="framework-card">
+                        <h5><i class="fas fa-chart-line text-primary me-2"></i>AI Risk Assessment Matrix</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Risk Category</th>
+                                        <th>Threat</th>
+                                        <th>Impact</th>
+                                        <th>Likelihood</th>
+                                        <th>Risk Level</th>
+                                        <th>Mitigation Strategy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Data Privacy</strong></td>
+                                        <td>Sensitive data exposure via AI</td>
+                                        <td>High</td>
+                                        <td>Medium</td>
+                                        <td><span class="badge risk-level-medium">Medium</span></td>
+                                        <td>Data classification, enterprise AI only</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>IP Theft</strong></td>
+                                        <td>Proprietary code/data leakage</td>
+                                        <td>High</td>
+                                        <td>Low</td>
+                                        <td><span class="badge risk-level-low">Low</span></td>
+                                        <td>Approved tools, usage monitoring</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Algorithmic Bias</strong></td>
+                                        <td>Discriminatory AI decisions</td>
+                                        <td>High</td>
+                                        <td>Medium</td>
+                                        <td><span class="badge risk-level-medium">Medium</span></td>
+                                        <td>Bias testing, human oversight</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Regulatory</strong></td>
+                                        <td>AI compliance violations</td>
+                                        <td>Medium</td>
+                                        <td>Low</td>
+                                        <td><span class="badge risk-level-low">Low</span></td>
+                                        <td>Legal review, policy compliance</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Executive Leadership -->
+                <section id="executive" class="mb-5">
+                    <div class="section-header">
+                        <h2><i class="fas fa-users-cog text-primary me-3"></i>Executive Leadership Demonstration</h2>
+                        <p class="mb-0">Strategic communication frameworks and executive-ready templates for board and leadership engagement</p>
+                    </div>
+
+                    <div class="executive-summary">
+                        <h4 class="text-primary mb-3">Executive Communication Framework</h4>
+                        <p><strong>Leadership Philosophy:</strong> Drive business enablement through risk-informed technology decisions, transparent communication, and strategic alignment with organizational objectives.</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-chart-line text-success me-2"></i>Business Value Delivery</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Cost optimization through automation</li>
+                                    <li>• Risk reduction via Zero Trust</li>
+                                    <li>• Innovation enablement with AI</li>
+                                    <li>• Competitive advantage through security</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-handshake text-warning me-2"></i>Stakeholder Engagement</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Board-level risk communication</li>
+                                    <li>• C-suite strategic alignment</li>
+                                    <li>• Business unit collaboration</li>
+                                    <li>• Regulatory relationship management</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6><i class="fas fa-trophy text-info me-2"></i>Leadership Excellence</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Data-driven decision making</li>
+                                    <li>• Proactive risk management</li>
+                                    <li>• Innovation with governance</li>
+                                    <li>• Continuous improvement culture</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-presentation text-primary me-2"></i>Board Presentation Templates</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Quarterly Security Briefing</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Executive Summary Template:</h6>
+                                        <div class="border p-3 bg-light rounded">
+                                            <strong>Security Posture Overview - Q4 2024</strong><br>
+                                            <strong>Overall Assessment:</strong> STRONG - No critical vulnerabilities, 98.7% security score<br>
+                                            <strong>Key Achievements:</strong> Zero Trust phase 2 completion, AI governance framework deployment<br>
+                                            <strong>Risk Highlights:</strong> 3 medium risks identified, all with mitigation plans in progress<br>
+                                            <strong>Investment Requests:</strong> $2.1M for advanced threat detection capabilities<br>
+                                            <strong>Regulatory Status:</strong> Fully compliant across all frameworks<br>
+                                        </div>
+
+                                        <h6 class="mt-3">Key Metrics Dashboard:</h6>
+                                        <ul>
+                                            <li>Security Incidents: ↓ 25% YoY</li>
+                                            <li>Mean Time to Resolution: ↓ 40% to 4.2 hours</li>
+                                            <li>Compliance Score: 100% across all frameworks</li>
+                                            <li>Security Training Completion: 98%</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Risk Assessment Summary</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Executive Risk Summary:</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr><th>Risk Area</th><th>Current State</th><th>Target State</th><th>Timeline</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr><td>Cyber Threats</td><td>Managed</td><td>Optimized</td><td>Q2 2024</td></tr>
+                                                    <tr><td>AI Governance</td><td>Developing</td><td>Mature</td><td>Q3 2024</td></tr>
+                                                    <tr><td>Cloud Security</td><td>Advanced</td><td>Leading</td><td>Q1 2024</td></tr>
+                                                    <tr><td>Compliance</td><td>Compliant</td><td>Optimized</td><td>Q4 2024</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-comments text-success me-2"></i>Executive Communication Scripts</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Security Investment Justification</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Business Case Template:</h6>
+                                        <div class="border p-3 bg-light rounded">
+                                            <strong>"Our security investment strategy focuses on three key areas that directly impact business value:</strong><br><br>
+                                            
+                                            <strong>1. Risk Reduction:</strong> The proposed $X investment will reduce our cyber risk exposure by Y%, translating to $Z in potential loss avoidance.<br><br>
+                                            
+                                            <strong>2. Operational Efficiency:</strong> Automation capabilities will reduce manual security tasks by X hours annually, saving $Y in operational costs.<br><br>
+                                            
+                                            <strong>3. Business Enablement:</strong> Enhanced security controls will support our digital transformation initiatives, enabling $X in new revenue opportunities while maintaining regulatory compliance."
+                                        </div>
+
+                                        <h6 class="mt-3">ROI Calculation Framework:</h6>
+                                        <ul>
+                                            <li><strong>Risk Avoidance:</strong> Probability × Impact × Mitigation Effectiveness</li>
+                                            <li><strong>Cost Savings:</strong> Automation + Efficiency + Compliance</li>
+                                            <li><strong>Revenue Enablement:</strong> New capabilities + Market opportunities</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Incident Communication Templates</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Executive Incident Briefing:</h6>
+                                        <div class="border p-3 bg-light rounded">
+                                            <strong>Incident: [Type] - [Severity Level]</strong><br>
+                                            <strong>Business Impact:</strong> [Current impact on operations/customers]<br>
+                                            <strong>Root Cause:</strong> [Technical summary in business terms]<br>
+                                            <strong>Immediate Actions:</strong> [Steps taken to contain/resolve]<br>
+                                            <strong>Timeline:</strong> [Expected resolution timeframe]<br>
+                                            <strong>Lessons Learned:</strong> [Prevention measures being implemented]<br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-road text-warning me-2"></i>Strategic Roadmap Communication</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Zero Trust Implementation Journey</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Executive Roadmap Narrative:</h6>
+                                        <div class="border p-3 bg-light rounded">
+                                            <strong>"Our Zero Trust journey represents a fundamental shift from perimeter-based security to identity-centric protection, aligning with our cloud-first strategy and remote work requirements.</strong><br><br>
+                                            
+                                            <strong>Phase 1 (Complete):</strong> Identity foundation with MFA and SSO - 100% deployment, $1.2M cost savings in password resets<br><br>
+                                            
+                                            <strong>Phase 2 (In Progress):</strong> Network segmentation and device trust - 70% complete, targeting 40% reduction in lateral movement risk<br><br>
+                                            
+                                            <strong>Phase 3 (Q2 2024):</strong> Application-level security with continuous verification - Expected 60% improvement in threat detection"
+                                        </div>
+
+                                        <h6 class="mt-3">Business Benefits Communication:</h6>
+                                        <ul>
+                                            <li><strong>Security:</strong> 85% reduction in successful attacks</li>
+                                            <li><strong>Compliance:</strong> Simplified audit processes</li>
+                                            <li><strong>Productivity:</strong> Seamless user experience</li>
+                                            <li><strong>Cost:</strong> 30% reduction in security tool sprawl</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="framework-card">
+                                <h5><i class="fas fa-chart-bar text-info me-2"></i>Performance Metrics Framework</h5>
+                                
+                                <div class="expandable-section">
+                                    <div class="expandable-header" onclick="toggleSection(this)">
+                                        <span>Executive KPI Dashboard</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="expandable-content">
+                                        <h6>Strategic KPIs (Board Level):</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr><th>Metric</th><th>Current</th><th>Target</th><th>Trend</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr><td>Overall Security Score</td><td>98.7%</td><td>99%</td><td><i class="fas fa-arrow-up text-success"></i></td></tr>
+                                                    <tr><td>Regulatory Compliance</td><td>100%</td><td>100%</td><td><i class="fas fa-arrow-right text-success"></i></td></tr>
+                                                    <tr><td>Mean Time to Detect</td><td>12 min</td><td>10 min</td><td><i class="fas fa-arrow-down text-success"></i></td></tr>
+                                                    <tr><td>Security ROI</td><td>312%</td><td>300%</td><td><i class="fas fa-arrow-up text-success"></i></td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <h6>Operational KPIs (Management Level):</h6>
+                                        <ul>
+                                            <li><strong>Incident Response:</strong> Mean time to resolution</li>
+                                            <li><strong>Vulnerability Management:</strong> Time to patch critical vulnerabilities</li>
+                                            <li><strong>User Security:</strong> Phishing simulation success rate</li>
+                                            <li><strong>Access Management:</strong> Access review completion rate</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="framework-card">
+                        <h5><i class="fas fa-lightbulb text-primary me-2"></i>Innovation & Digital Transformation Leadership</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Security-by-Design Implementation:</h6>
+                                <ul>
+                                    <li><strong>DevSecOps Integration:</strong> Security embedded in CI/CD pipelines</li>
+                                    <li><strong>Cloud-Native Security:</strong> Infrastructure-as-Code security templates</li>
+                                    <li><strong>API-First Security:</strong> Zero Trust microservices architecture</li>
+                                    <li><strong>AI-Powered Security:</strong> Machine learning for threat detection</li>
+                                </ul>
+
+                                <h6>Digital Transformation Enablement:</h6>
+                                <ul>
+                                    <li><strong>Secure Remote Work:</strong> Productivity without compromise</li>
+                                    <li><strong>Cloud Migration Security:</strong> Risk-informed modernization</li>
+                                    <li><strong>Data Democratization:</strong> Secure self-service analytics</li>
+                                    <li><strong>Innovation Sandbox:</strong> Secure development environments</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Executive Success Metrics:</h6>
+                                <div class="row text-center">
+                                    <div class="col-6 mb-3">
+                                        <div class="kpi-number text-primary">$8.2M</div>
+                                        <small>Annual Risk Reduction Value</small>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <div class="kpi-number text-success">127%</div>
+                                        <small>Security Investment ROI</small>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <div class="kpi-number text-info">99.2%</div>
+                                        <small>Business Availability</small>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <div class="kpi-number text-warning">0</div>
+                                        <small>Critical Audit Findings</small>
+                                    </div>
+                                </div>
+
+                                <h6>Leadership Recognition:</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Industry Security Excellence Award 2024</li>
+                                    <li>• Zero Trust Implementation Leadership</li>
+                                    <li>• AI Governance Best Practice Recognition</li>
+                                    <li>• Regulatory Compliance Achievement</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-2"><strong>IT Director Strategic Playbook</strong> - Comprehensive Security, Compliance, Risk & AI Governance Framework</p>
+            <p class="mb-0">
+                <small>Executive-ready strategic guidance for modern IT leadership | Last Updated: November 2024</small>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Smooth scrolling for navigation
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            const navHeight = 80; // Height of fixed navbar
+            const elementPosition = element.offsetTop - navHeight;
+            
+            window.scrollTo({
+                top: elementPosition,
+                behavior: 'smooth'
+            });
+
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Toggle expandable sections
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('i.fa-chevron-down, i.fa-chevron-up');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                content.classList.add('show');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        }
+
+        // Update active navigation on scroll
+        window.addEventListener('scroll', function() {
+            const sections = ['dashboard', 'security', 'compliance', 'risk', 'audit', 'ai-security', 'executive'];
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const element = document.getElementById(section);
+                if (element && window.scrollY >= element.offsetTop - 100) {
+                    currentSection = section;
+                }
+            });
+            
+            // Update sidebar active state
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.toLowerCase().includes(currentSection.replace('-', ' '))) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Initialize with dashboard active
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstNavItem = document.querySelector('.nav-item');
+            if (firstNavItem) {
+                firstNavItem.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

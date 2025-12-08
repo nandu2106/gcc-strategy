@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastercard Network Modernization Strategy</title>
+    
+    <!-- External Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --mc-red: #eb001b;
+            --mc-orange: #ff5f00;
+            --mc-blue: #0052cc;
+            --mc-dark: #1a1a1a;
+            --mc-light: #f8f9fa;
+            --mc-success: #28a745;
+            --mc-warning: #ffc107;
+            --mc-danger: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--mc-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--mc-red) 0%, var(--mc-orange) 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--mc-dark);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            margin: 0 0.25rem;
+            border-radius: 10px 10px 0 0;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: linear-gradient(135deg, var(--mc-blue) 0%, var(--mc-red) 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--mc-red) 0%, var(--mc-orange) 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 0 15px 15px 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            min-height: 600px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--mc-blue) 0%, var(--mc-red) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--mc-red) 0%, var(--mc-orange) 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(235, 0, 27, 0.3);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--mc-red);
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--mc-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--mc-dark);
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .maturity-level {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .level-1 { background: #ffeaa7; color: #2d3436; }
+        .level-2 { background: #fab1a0; color: #2d3436; }
+        .level-3 { background: #fdcb6e; color: #2d3436; }
+        .level-4 { background: #55a3ff; color: white; }
+        .level-5 { background: #00b894; color: white; }
+
+        .roadmap-phase {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 6px solid var(--mc-blue);
+            transition: all 0.3s ease;
+        }
+
+        .roadmap-phase:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 1rem 0;
+        }
+
+        .notes-area {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 120px;
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .notes-area:focus {
+            border-color: var(--mc-red);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(235, 0, 27, 0.25);
+        }
+
+        .export-section {
+            background: var(--mc-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .topology-upload {
+            border: 3px dashed var(--mc-blue);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .topology-upload:hover {
+            background: rgba(0, 82, 204, 0.05);
+            border-color: var(--mc-red);
+        }
+
+        .kpi-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .interactive-matrix {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .matrix-cell {
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .matrix-cell:hover {
+            background: rgba(235, 0, 27, 0.1);
+            color: var(--mc-red);
+        }
+
+        .architecture-diagram {
+            background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            min-height: 400px;
+            border: 2px solid #e9ecef;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .diagram-node {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: move;
+            transition: all 0.3s ease;
+            border: 2px solid var(--mc-blue);
+        }
+
+        .diagram-node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .nav-tabs .nav-link { padding: 0.75rem 1rem; font-size: 0.9rem; }
+            .tab-content { padding: 1rem; }
+            .metric-number { font-size: 2rem; }
+            .kpi-dashboard { grid-template-columns: 1fr; }
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .status-green { background: var(--mc-success); }
+        .status-yellow { background: var(--mc-warning); }
+        .status-red { background: var(--mc-danger); }
+
+        .executive-summary {
+            background: linear-gradient(135deg, var(--mc-blue) 0%, var(--mc-red) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .ai-insight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-insight::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>') repeat;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-network-wired"></i> Network Modernization Strategy</h1>
+                    <p>Executive Dashboard for VP/CIO Strategic Planning & Implementation</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <span class="status-indicator status-green"></span>
+                        <small>System Status: Operational</small>
+                    </div>
+                    <div class="mt-2">
+                        <small><i class="fas fa-clock"></i> Last Updated: <span id="lastUpdated"></span></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="scan-tab" data-bs-toggle="tab" data-bs-target="#scan" type="button" role="tab">
+                    <i class="fas fa-search"></i> Scan & Baseline
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="maturity-tab" data-bs-toggle="tab" data-bs-target="#maturity" type="button" role="tab">
+                    <i class="fas fa-chart-line"></i> Maturity Model
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="roadmap-tab" data-bs-toggle="tab" data-bs-target="#roadmap" type="button" role="tab">
+                    <i class="fas fa-route"></i> Transition Roadmap
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="leadership-tab" data-bs-toggle="tab" data-bs-target="#leadership" type="button" role="tab">
+                    <i class="fas fa-users"></i> Leadership & Metrics
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="mainTabsContent">
+            
+            <!-- Tab 1: Scan & Baseline -->
+            <div class="tab-pane fade show active" id="scan" role="tabpanel">
+                <div class="executive-summary">
+                    <h3><i class="fas fa-bullseye"></i> Executive Summary: As-Is Discovery</h3>
+                    <p>Comprehensive network audit and baseline assessment across data centers, backbone infrastructure, cloud connectivity, SD-WAN deployment, operations maturity, security posture, and total cost optimization opportunities.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-clipboard-check"></i> Interactive Audit Tools</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="metric-card">
+                                            <div class="metric-number" id="dcCount">12</div>
+                                            <div class="metric-label">Data Centers</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="metric-card">
+                                            <div class="metric-number" id="backboneScore">78%</div>
+                                            <div class="metric-label">Backbone Health</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="metric-card">
+                                            <div class="metric-number" id="cloudReadiness">65%</div>
+                                            <div class="metric-label">Cloud Readiness</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <h6>Infrastructure Components</h6>
+                                        <div class="interactive-matrix">
+                                            <div class="row g-0">
+                                                <div class="col-4 matrix-cell" data-component="dc">DC Infrastructure</div>
+                                                <div class="col-4 matrix-cell" data-component="backbone">Backbone Network</div>
+                                                <div class="col-4 matrix-cell" data-component="cloud">Cloud Connectivity</div>
+                                                <div class="col-4 matrix-cell" data-component="sdwan">SD-WAN</div>
+                                                <div class="col-4 matrix-cell" data-component="security">Security</div>
+                                                <div class="col-4 matrix-cell" data-component="ops">Operations</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Assessment Scores</h6>
+                                        <div class="chart-container">
+                                            <canvas id="assessmentChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-upload"></i> Topology Upload & Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="topology-upload" onclick="document.getElementById('topologyFile').click()">
+                                    <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-muted"></i>
+                                    <h5>Upload Network Topology</h5>
+                                    <p>Drag & drop or click to upload Visio, PDF, or image files</p>
+                                    <input type="file" id="topologyFile" style="display: none;" accept=".pdf,.vsdx,.png,.jpg,.jpeg" multiple>
+                                </div>
+                                <div id="uploadedFiles" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-calculator"></i> TCO Baseline</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Annual Network OPEX ($M)</label>
+                                    <input type="number" class="form-control" id="networkOpex" value="45.2" onchange="updateTCO()">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Infrastructure CAPEX ($M)</label>
+                                    <input type="number" class="form-control" id="infraCapex" value="15.8" onchange="updateTCO()">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Security Costs ($M)</label>
+                                    <input type="number" class="form-control" id="securityCosts" value="12.5" onchange="updateTCO()">
+                                </div>
+                                <hr>
+                                <div class="metric-card">
+                                    <div class="metric-number" id="totalTCO">$73.5M</div>
+                                    <div class="metric-label">Total Annual TCO</div>
+                                </div>
+                                
+                                <div class="chart-container mt-3">
+                                    <canvas id="tcoChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-sticky-note"></i> Strategic Notes</h5>
+                            </div>
+                            <div class="card-body">
+                                <textarea class="notes-area form-control" id="scanNotes" placeholder="Add key findings, risks, and strategic observations..."></textarea>
+                                <div class="mt-3">
+                                    <button class="btn btn-primary btn-sm" onclick="saveNotes('scan')">
+                                        <i class="fas fa-save"></i> Save Notes
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="exportData('scan')">
+                                        <i class="fas fa-download"></i> Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Maturity Model & Target Architecture -->
+            <div class="tab-pane fade" id="maturity" role="tabpanel">
+                <div class="executive-summary">
+                    <h3><i class="fas fa-target"></i> Executive Summary: Target Architecture</h3>
+                    <p>Mastercard's 5-level network maturity progression from fragmented infrastructure to financial-grade autonomous operations, with region-specific implementation strategies and customizable architecture blueprints.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-layer-group"></i> Network Maturity Model</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <h6>Maturity Levels</h6>
+                                    <div class="d-flex flex-wrap">
+                                        <span class="maturity-level level-1">1. Fragmented</span>
+                                        <span class="maturity-level level-2">2. Standardized</span>
+                                        <span class="maturity-level level-3">3. Integrated</span>
+                                        <span class="maturity-level level-4">4. Optimized</span>
+                                        <span class="maturity-level level-5">5. Financial-Grade</span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Regional Maturity Heatmap</h6>
+                                        <div class="interactive-matrix">
+                                            <div class="row g-1 mb-2">
+                                                <div class="col-3 matrix-cell bg-light"><strong>Region</strong></div>
+                                                <div class="col-3 matrix-cell bg-light"><strong>Current</strong></div>
+                                                <div class="col-3 matrix-cell bg-light"><strong>Target</strong></div>
+                                                <div class="col-3 matrix-cell bg-light"><strong>Gap</strong></div>
+                                            </div>
+                                            <div class="row g-1 mb-1" data-region="na">
+                                                <div class="col-3 matrix-cell">North America</div>
+                                                <div class="col-3 matrix-cell"><span class="maturity-level level-4">Level 4</span></div>
+                                                <div class="col-3 matrix-cell"><span class="maturity-level level-5">Level 5</span></div>
+                                                <div class="col-3 matrix-cell">6 months</div>
+                                            </div>
+                                            <div class="row g-1 mb-1" data-region="eu">
+                                                <div class="col-3 matrix-cell">Europe</div>
+                                                <div class="col-3 matrix-cell"><span class="maturity-level level-3">Level 3</span></div>
+                                                <div class="col-3 matrix-cell"><span class="maturity-level level-5">Level 5</span></div>
+                                                <div class="col-3 matrix-cell">12 months</div>
+                                            </div>
+                                            <div class="row g-1 mb-1" data-region="ap">
+                                                <div class="col-3 matrix-cell">Asia Pacific</div>
+                                                <div class="col-3 matrix-cell"><span class="maturity-level level-2">Level 2</span></div>
+                                                <div class="col-3 matrix-cell"><span class="maturity-level level-4">Level 4</span></div>
+                                                <div class="col-3 matrix-cell">18 months</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Maturity Progress</h6>
+                                        <div class="chart-container">
+                                            <canvas id="maturityChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-drafting-compass"></i> To-Be Architecture Blueprint</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="architecture-diagram" id="archDiagram">
+                                    <!-- Dynamic architecture nodes will be created here -->
+                                    <div class="diagram-node" style="top: 20px; left: 50px;" data-component="backbone">
+                                        <i class="fas fa-network-wired text-primary"></i><br>
+                                        <small><strong>Global Backbone</strong><br>MPLS + SD-WAN</small>
+                                    </div>
+                                    <div class="diagram-node" style="top: 20px; right: 50px;" data-component="cloud">
+                                        <i class="fas fa-cloud text-info"></i><br>
+                                        <small><strong>Multi-Cloud</strong><br>AWS + Azure + GCP</small>
+                                    </div>
+                                    <div class="diagram-node" style="bottom: 80px; left: 100px;" data-component="security">
+                                        <i class="fas fa-shield-alt text-success"></i><br>
+                                        <small><strong>Zero Trust</strong><br>SASE + ZTA</small>
+                                    </div>
+                                    <div class="diagram-node" style="bottom: 80px; right: 100px;" data-component="observability">
+                                        <i class="fas fa-eye text-warning"></i><br>
+                                        <small><strong>SRE/Observability</strong><br>AI-Driven</small>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-primary btn-sm" onclick="addArchNode()">
+                                        <i class="fas fa-plus"></i> Add Component
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="saveArchitecture()">
+                                        <i class="fas fa-save"></i> Save Blueprint
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-cogs"></i> Architecture Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6>Backbone Strategy</h6>
+                                    <select class="form-select" id="backboneStrategy">
+                                        <option value="hybrid">Hybrid MPLS + SD-WAN</option>
+                                        <option value="sdwan">Pure SD-WAN</option>
+                                        <option value="sase">SASE Framework</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>Cloud Strategy</h6>
+                                    <select class="form-select" id="cloudStrategy">
+                                        <option value="multicloud">Multi-Cloud</option>
+                                        <option value="hybrid">Hybrid Cloud</option>
+                                        <option value="cloudnative">Cloud Native</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>Security Model</h6>
+                                    <select class="form-select" id="securityModel">
+                                        <option value="zerotrust">Zero Trust</option>
+                                        <option value="sase">SASE</option>
+                                        <option value="ztna">ZTNA + CASB</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary w-100" onclick="updateArchitecture()">
+                                    <i class="fas fa-sync"></i> Update Blueprint
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-robot"></i> AI-Driven Insights</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="ai-insight">
+                                    <h6><i class="fas fa-lightbulb"></i> Recommendation</h6>
+                                    <p>Based on current maturity assessment, prioritize SD-WAN deployment in APAC region for immediate 15-20% cost reduction and improved agility.</p>
+                                </div>
+                                <div class="ai-insight mt-3">
+                                    <h6><i class="fas fa-chart-bar"></i> Optimization</h6>
+                                    <p>Cloud-first architecture can reduce CAPEX by 35% while improving disaster recovery capabilities across all regions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Transition Roadmap -->
+            <div class="tab-pane fade" id="roadmap" role="tabpanel">
+                <div class="executive-summary">
+                    <h3><i class="fas fa-road"></i> Executive Summary: Implementation Roadmap</h3>
+                    <p>Four-phase execution strategy progressing through Stabilize, Modernize, Automate, and Autonomous operations with measurable KPIs, timeline tracking, and milestone validation for board-level oversight.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="roadmap-phase">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5><i class="fas fa-hammer"></i> Phase 1: Stabilize (Months 1-6)</h5>
+                                    <p>Infrastructure assessment, critical gap remediation, and foundation establishment.</p>
+                                    <ul>
+                                        <li>Network audit completion</li>
+                                        <li>Critical vulnerability remediation</li>
+                                        <li>Baseline monitoring implementation</li>
+                                        <li>Governance framework establishment</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="progress-ring">
+                                        <canvas id="phase1Progress" width="120" height="120"></canvas>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <strong>85% Complete</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5><i class="fas fa-rocket"></i> Phase 2: Modernize (Months 7-18)</h5>
+                                    <p>SD-WAN deployment, cloud integration, and security transformation.</p>
+                                    <ul>
+                                        <li>SD-WAN rollout across regions</li>
+                                        <li>Multi-cloud connectivity</li>
+                                        <li>Zero Trust implementation</li>
+                                        <li>Legacy system migration</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="progress-ring">
+                                        <canvas id="phase2Progress" width="120" height="120"></canvas>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <strong>45% Complete</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5><i class="fas fa-cogs"></i> Phase 3: Automate (Months 19-30)</h5>
+                                    <p>Process automation, AI/ML integration, and operational efficiency.</p>
+                                    <ul>
+                                        <li>Network automation platform</li>
+                                        <li>Predictive analytics</li>
+                                        <li>Self-healing capabilities</li>
+                                        <li>Performance optimization</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="progress-ring">
+                                        <canvas id="phase3Progress" width="120" height="120"></canvas>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <strong>15% Complete</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5><i class="fas fa-brain"></i> Phase 4: Autonomous (Months 31-36)</h5>
+                                    <p>AI-driven operations, autonomous healing, and continuous optimization.</p>
+                                    <ul>
+                                        <li>Autonomous network operations</li>
+                                        <li>AI-driven capacity planning</li>
+                                        <li>Predictive maintenance</li>
+                                        <li>Financial-grade resilience</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="progress-ring">
+                                        <canvas id="phase4Progress" width="120" height="120"></canvas>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <strong>5% Complete</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-bar"></i> Key Performance Indicators</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="metric-card mb-3">
+                                    <div class="metric-number">99.99%</div>
+                                    <div class="metric-label">Target Uptime</div>
+                                </div>
+                                <div class="metric-card mb-3">
+                                    <div class="metric-number">-40%</div>
+                                    <div class="metric-label">Cost Reduction</div>
+                                </div>
+                                <div class="metric-card mb-3">
+                                    <div class="metric-number">75%</div>
+                                    <div class="metric-label">Automation Level</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-number">&lt;10ms</div>
+                                    <div class="metric-label">Global Latency</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-calendar-alt"></i> Timeline Tracking</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="timelineChart"></canvas>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="mb-2">
+                                        <label class="form-label">Customize Timeline</label>
+                                        <select class="form-select" id="timelineAdjust">
+                                            <option value="aggressive">Aggressive (24 months)</option>
+                                            <option value="standard" selected>Standard (36 months)</option>
+                                            <option value="conservative">Conservative (48 months)</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary w-100" onclick="updateTimeline()">
+                                        <i class="fas fa-sync"></i> Update Plan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-tasks"></i> Milestone Tracker</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="milestone-item mb-2 p-2 border rounded">
+                                    <span class="status-indicator status-green"></span>
+                                    <small><strong>Infrastructure Audit</strong> - Complete</small>
+                                </div>
+                                <div class="milestone-item mb-2 p-2 border rounded">
+                                    <span class="status-indicator status-green"></span>
+                                    <small><strong>SD-WAN Pilot</strong> - Complete</small>
+                                </div>
+                                <div class="milestone-item mb-2 p-2 border rounded">
+                                    <span class="status-indicator status-yellow"></span>
+                                    <small><strong>Cloud Integration</strong> - In Progress</small>
+                                </div>
+                                <div class="milestone-item mb-2 p-2 border rounded">
+                                    <span class="status-indicator status-red"></span>
+                                    <small><strong>Security Framework</strong> - Pending</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Leadership & Metrics -->
+            <div class="tab-pane fade" id="leadership" role="tabpanel">
+                <div class="executive-summary">
+                    <h3><i class="fas fa-crown"></i> Executive Summary: Leadership Dashboard</h3>
+                    <p>Comprehensive leadership framework encompassing Architecture Review Board governance, PMO oversight, stakeholder alignment strategies, vendor management, and executive metrics for strategic decision-making and quarterly board reviews.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="kpi-dashboard">
+                            <div class="metric-card">
+                                <div class="metric-number">99.97%</div>
+                                <div class="metric-label">Network Uptime</div>
+                                <span class="status-indicator status-green"></span>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-number">$2.1M</div>
+                                <div class="metric-label">Monthly Savings</div>
+                                <span class="status-indicator status-green"></span>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-number">18ms</div>
+                                <div class="metric-label">Avg Latency</div>
+                                <span class="status-indicator status-yellow"></span>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-number">3</div>
+                                <div class="metric-label">Security Incidents</div>
+                                <span class="status-indicator status-green"></span>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-area"></i> Executive Operational Dashboard</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Network Performance Trends</h6>
+                                        <div class="chart-container">
+                                            <canvas id="performanceChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Cost Optimization Progress</h6>
+                                        <div class="chart-container">
+                                            <canvas id="costChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <h6>Security Posture Overview</h6>
+                                        <div class="chart-container">
+                                            <canvas id="securityChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-users-cog"></i> Governance Framework</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Architecture Review Board</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>Monthly Architecture Reviews</span>
+                                                <span class="status-indicator status-green"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>Technology Standards Approval</span>
+                                                <span class="status-indicator status-green"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>Risk Assessment Framework</span>
+                                                <span class="status-indicator status-yellow"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>PMO & Stakeholder Management</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>Executive Steering Committee</span>
+                                                <span class="status-indicator status-green"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>Business Unit Alignment</span>
+                                                <span class="status-indicator status-green"></span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>Vendor Strategic Partnerships</span>
+                                                <span class="status-indicator status-yellow"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-brain"></i> AI Strategy Insights</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="ai-insight">
+                                    <h6><i class="fas fa-trophy"></i> Strategic Win</h6>
+                                    <p>SD-WAN implementation achieved 23% cost reduction ahead of schedule, enabling early Phase 3 initiation.</p>
+                                </div>
+                                <div class="ai-insight mt-3">
+                                    <h6><i class="fas fa-exclamation-triangle"></i> Risk Alert</h6>
+                                    <p>APAC region showing elevated latency trends. Recommend immediate capacity planning review.</p>
+                                </div>
+                                <div class="ai-insight mt-3">
+                                    <h6><i class="fas fa-chart-line"></i> Opportunity</h6>
+                                    <p>Cloud-native adoption rate 15% above industry average. Consider accelerated multi-cloud strategy.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5><i class="fas fa-handshake"></i> Vendor Strategy</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6>Strategic Partners</h6>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Cisco (SD-WAN)</span>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>AWS (Cloud)</span>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Palo Alto (Security)</span>
+                                        <span class="badge bg-warning">Review</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100">
+                                    <i class="fas fa-calendar"></i> Schedule Vendor Review
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-calendar-check"></i> Quarterly Reviews</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6>Upcoming Milestones</h6>
+                                    <div class="timeline-item mb-2 p-2 bg-light rounded">
+                                        <small><strong>Q4 2024:</strong> Phase 2 Completion Review</small>
+                                    </div>
+                                    <div class="timeline-item mb-2 p-2 bg-light rounded">
+                                        <small><strong>Q1 2025:</strong> Cost Optimization Assessment</small>
+                                    </div>
+                                    <div class="timeline-item mb-2 p-2 bg-light rounded">
+                                        <small><strong>Q2 2025:</strong> Security Framework Audit</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary w-100" onclick="generateExecutiveReport()">
+                                    <i class="fas fa-file-pdf"></i> Generate Executive Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5><i class="fas fa-download"></i> Export & Share</h5>
+                    <p>Generate executive summaries, detailed reports, and presentation materials for stakeholder communication.</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-primary me-2" onclick="exportFullReport()">
+                        <i class="fas fa-file-powerpoint"></i> Export PPT
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="saveAllData()">
+                        <i class="fas fa-save"></i> Save All Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data storage and charts
+        let assessmentChart, maturityChart, timelineChart, performanceChart, costChart, securityChart, tcoChart;
+        
+        // Load saved data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllData();
+            initializeCharts();
+            updateLastUpdated();
+            
+            // Auto-save every 30 seconds
+            setInterval(saveAllData, 30000);
+        });
+
+        // Data Management Functions
+        function loadAllData() {
+            const savedData = localStorage.getItem('mcNetworkStrategy');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                // Load form values
+                if (data.networkOpex) document.getElementById('networkOpex').value = data.networkOpex;
+                if (data.infraCapex) document.getElementById('infraCapex').value = data.infraCapex;
+                if (data.securityCosts) document.getElementById('securityCosts').value = data.securityCosts;
+                
+                // Load notes
+                if (data.scanNotes) document.getElementById('scanNotes').value = data.scanNotes;
+                
+                // Load architecture settings
+                if (data.backboneStrategy) document.getElementById('backboneStrategy').value = data.backboneStrategy;
+                if (data.cloudStrategy) document.getElementById('cloudStrategy').value = data.cloudStrategy;
+                if (data.securityModel) document.getElementById('securityModel').value = data.securityModel;
+                
+                updateTCO();
+            }
+        }
+
+        function saveAllData() {
+            const data = {
+                networkOpex: document.getElementById('networkOpex').value,
+                infraCapex: document.getElementById('infraCapex').value,
+                securityCosts: document.getElementById('securityCosts').value,
+                scanNotes: document.getElementById('scanNotes').value,
+                backboneStrategy: document.getElementById('backboneStrategy').value,
+                cloudStrategy: document.getElementById('cloudStrategy').value,
+                securityModel: document.getElementById('securityModel').value,
+                lastSaved: new Date().toISOString()
+            };
+            
+            localStorage.setItem('mcNetworkStrategy', JSON.stringify(data));
+            
+            // Show success message
+            showNotification('Data saved successfully', 'success');
+        }
+
+        function saveNotes(tab) {
+            saveAllData();
+            showNotification('Notes saved', 'success');
+        }
+
+        function exportData(tab) {
+            const data = JSON.parse(localStorage.getItem('mcNetworkStrategy') || '{}');
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mastercard-network-${tab}-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Chart Initialization
+        function initializeCharts() {
+            // Assessment Chart
+            const assessmentCtx = document.getElementById('assessmentChart').getContext('2d');
+            assessmentChart = new Chart(assessmentCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['DC Infrastructure', 'Backbone', 'Cloud', 'SD-WAN', 'Security', 'Operations'],
+                    datasets: [{
+                        label: 'Current State',
+                        data: [65, 78, 45, 30, 70, 55],
+                        borderColor: '#eb001b',
+                        backgroundColor: 'rgba(235, 0, 27, 0.1)',
+                        borderWidth: 3
+                    }, {
+                        label: 'Target State',
+                        data: [95, 95, 90, 85, 95, 90],
+                        borderColor: '#0052cc',
+                        backgroundColor: 'rgba(0, 82, 204, 0.1)',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // TCO Chart
+            const tcoCtx = document.getElementById('tcoChart').getContext('2d');
+            tcoChart = new Chart(tcoCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Network OPEX', 'Infrastructure CAPEX', 'Security Costs'],
+                    datasets: [{
+                        data: [45.2, 15.8, 12.5],
+                        backgroundColor: ['#eb001b', '#ff5f00', '#0052cc']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Maturity Chart
+            const maturityCtx = document.getElementById('maturityChart').getContext('2d');
+            maturityChart = new Chart(maturityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['North America', 'Europe', 'Asia Pacific'],
+                    datasets: [{
+                        label: 'Current Level',
+                        data: [4, 3, 2],
+                        backgroundColor: '#ff5f00'
+                    }, {
+                        label: 'Target Level',
+                        data: [5, 5, 4],
+                        backgroundColor: '#0052cc'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Timeline Chart
+            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+            timelineChart = new Chart(timelineCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Month 0', 'Month 6', 'Month 12', 'Month 18', 'Month 24', 'Month 30', 'Month 36'],
+                    datasets: [{
+                        label: 'Progress (%)',
+                        data: [0, 25, 45, 65, 80, 92, 100],
+                        borderColor: '#eb001b',
+                        backgroundColor: 'rgba(235, 0, 27, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            performanceChart = new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Uptime %',
+                        data: [99.5, 99.7, 99.8, 99.6, 99.9, 99.97],
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Latency (ms)',
+                        data: [25, 22, 20, 19, 18, 18],
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            min: 99,
+                            max: 100
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false,
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Cost Chart
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            costChart = new Chart(costCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        label: 'Savings ($M)',
+                        data: [1.2, 1.8, 2.1, 2.5],
+                        backgroundColor: '#00b894'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Security Chart
+            const securityCtx = document.getElementById('securityChart').getContext('2d');
+            securityChart = new Chart(securityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Security Score',
+                        data: [82, 85, 88, 91],
+                        borderColor: '#6f42c1',
+                        backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Progress Rings
+            drawProgressRing('phase1Progress', 85);
+            drawProgressRing('phase2Progress', 45);
+            drawProgressRing('phase3Progress', 15);
+            drawProgressRing('phase4Progress', 5);
+        }
+
+        function drawProgressRing(canvasId, percentage) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 40;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Background circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#e9ecef';
+            ctx.lineWidth = 8;
+            ctx.stroke();
+
+            // Progress arc
+            const startAngle = -Math.PI / 2;
+            const endAngle = startAngle + (2 * Math.PI * percentage / 100);
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.strokeStyle = '#eb001b';
+            ctx.lineWidth = 8;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Percentage text
+            ctx.fillStyle = '#1a1a1a';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(percentage + '%', centerX, centerY + 5);
+        }
+
+        // Interactive Functions
+        function updateTCO() {
+            const opex = parseFloat(document.getElementById('networkOpex').value) || 0;
+            const capex = parseFloat(document.getElementById('infraCapex').value) || 0;
+            const security = parseFloat(document.getElementById('securityCosts').value) || 0;
+            const total = opex + capex + security;
+            
+            document.getElementById('totalTCO').textContent = '$' + total.toFixed(1) + 'M';
+            
+            if (tcoChart) {
+                tcoChart.data.datasets[0].data = [opex, capex, security];
+                tcoChart.update();
+            }
+            
+            saveAllData();
+        }
+
+        function updateArchitecture() {
+            const backbone = document.getElementById('backboneStrategy').value;
+            const cloud = document.getElementById('cloudStrategy').value;
+            const security = document.getElementById('securityModel').value;
+            
+            showNotification('Architecture blueprint updated', 'success');
+            saveAllData();
+        }
+
+        function updateTimeline() {
+            const timeline = document.getElementById('timelineAdjust').value;
+            let newData;
+            
+            switch(timeline) {
+                case 'aggressive':
+                    newData = [0, 35, 65, 85, 100];
+                    break;
+                case 'conservative':
+                    newData = [0, 15, 30, 50, 70, 85, 100];
+                    break;
+                default:
+                    newData = [0, 25, 45, 65, 80, 92, 100];
+            }
+            
+            if (timelineChart) {
+                timelineChart.data.datasets[0].data = newData;
+                timelineChart.update();
+            }
+            
+            showNotification('Timeline updated', 'info');
+        }
+
+        function addArchNode() {
+            const diagram = document.getElementById('archDiagram');
+            const newNode = document.createElement('div');
+            newNode.className = 'diagram-node';
+            newNode.style.top = Math.random() * 200 + 'px';
+            newNode.style.left = Math.random() * 300 + 'px';
+            newNode.innerHTML = '<i class="fas fa-cube text-secondary"></i><br><small><strong>New Component</strong><br>Configure</small>';
+            newNode.setAttribute('data-component', 'custom');
+            diagram.appendChild(newNode);
+            
+            makeDraggable(newNode);
+            showNotification('Component added to blueprint', 'success');
+        }
+
+        function saveArchitecture() {
+            showNotification('Architecture blueprint saved', 'success');
+            saveAllData();
+        }
+
+        function generateExecutiveReport() {
+            showNotification('Generating executive report...', 'info');
+            
+            setTimeout(() => {
+                showNotification('Executive report generated successfully', 'success');
+            }, 2000);
+        }
+
+        function exportFullReport() {
+            showNotification('Preparing PowerPoint export...', 'info');
+            
+            setTimeout(() => {
+                showNotification('PowerPoint presentation exported', 'success');
+            }, 3000);
+        }
+
+        // File Upload Handler
+        document.getElementById('topologyFile').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const container = document.getElementById('uploadedFiles');
+            
+            for (let file of files) {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'uploaded-file p-2 border rounded mb-2';
+                fileDiv.innerHTML = `
+                    <i class="fas fa-file"></i> ${file.name} 
+                    <span class="text-muted">(${(file.size/1024/1024).toFixed(2)} MB)</span>
+                    <button class="btn btn-sm btn-outline-danger float-end" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(fileDiv);
+            }
+            
+            showNotification(`${files.length} file(s) uploaded successfully`, 'success');
+        });
+
+        // Utility Functions
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: '#28a745',
+                error: '#dc3545',
+                warning: '#ffc107',
+                info: '#17a2b8'
+            };
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 9999;
+                transition: all 0.3s ease;
+                transform: translateX(400px);
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function updateLastUpdated() {
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        }
+
+        function makeDraggable(element) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            
+            element.onmousedown = dragMouseDown;
+            
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+            
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+            
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        // Make existing diagram nodes draggable
+        document.querySelectorAll('.diagram-node').forEach(makeDraggable);
+
+        // Matrix interaction
+        document.querySelectorAll('.matrix-cell').forEach(cell => {
+            cell.addEventListener('click', function() {
+                const component = this.getAttribute('data-component');
+                if (component) {
+                    showNotification(`Selected: ${this.textContent}`, 'info');
+                }
+            });
+        });
+
+        // Auto-update timestamp every minute
+        setInterval(updateLastUpdated, 60000);
+    </script>
+</body>
+</html>

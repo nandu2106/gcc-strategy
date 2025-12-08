@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinOps Governance Model - Cloud Infrastructure Engineering & Operations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --accent-color: #0ea5e9;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1e293b;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+
+        .main-container {
+            background: white;
+            margin: 20px auto;
+            max-width: 1400px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .nav-tabs {
+            background: var(--light-bg);
+            border-bottom: none;
+            padding: 0 2rem;
+            overflow-x: auto;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--secondary-color);
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            margin-right: 0.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: white;
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            padding: 0;
+        }
+
+        .tab-pane {
+            padding: 2rem;
+            min-height: 70vh;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--light-bg) 0%, #e2e8f0 100%);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .section-header h3 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--secondary-color);
+            margin: 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: var(--light-bg);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .governance-diagram {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .layer-box {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 1rem;
+            margin: 0.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .layer-box:hover {
+            transform: scale(1.05);
+        }
+
+        .raci-matrix {
+            overflow-x: auto;
+        }
+
+        .raci-matrix table {
+            width: 100%;
+            min-width: 800px;
+        }
+
+        .raci-cell {
+            text-align: center;
+            font-weight: bold;
+            padding: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .raci-r { background: #fee2e2; color: #dc2626; }
+        .raci-a { background: #dbeafe; color: #2563eb; }
+        .raci-c { background: #fef3c7; color: #d97706; }
+        .raci-i { background: #e0e7ff; color: #6366f1; }
+
+        .notes-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .notes-toggle {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .notes-toggle:hover {
+            transform: scale(1.1);
+            background: var(--accent-color);
+        }
+
+        .notes-panel {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .notes-panel.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-export {
+            background: var(--success-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .framework-box {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .maturity-level {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .level-inform { background: #fef3c7; color: #92400e; }
+        .level-optimize { background: #dbeafe; color: #1e40af; }
+        .level-operate { background: #d1fae5; color: #065f46; }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+            }
+            
+            .header {
+                padding: 1.5rem 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tab-pane {
+                padding: 1rem;
+            }
+            
+            .notes-panel {
+                width: calc(100vw - 2rem);
+                right: -1rem;
+            }
+        }
+
+        .tool-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .aws-color { border-color: #ff9900; }
+        .azure-color { border-color: #0078d4; }
+        .gcp-color { border-color: #4285f4; }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .progress-bar-custom {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--accent-color));
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-cloud-dollar me-3"></i>FinOps Governance Model</h1>
+                <p>Cloud Infrastructure Engineering & Operations Framework</p>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs" id="finopsTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                    <i class="fas fa-sitemap me-2"></i>Overview & Model Layers
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ownership-tab" data-bs-toggle="tab" data-bs-target="#ownership" type="button" role="tab">
+                    <i class="fas fa-users-cog me-2"></i>Cost Ownership (RACI)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tagging-tab" data-bs-toggle="tab" data-bs-target="#tagging" type="button" role="tab">
+                    <i class="fas fa-tags me-2"></i>Tagging Governance
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="cadence-tab" data-bs-toggle="tab" data-bs-target="#cadence" type="button" role="tab">
+                    <i class="fas fa-calendar-alt me-2"></i>FinOps Cadence
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="policy-tab" data-bs-toggle="tab" data-bs-target="#policy" type="button" role="tab">
+                    <i class="fas fa-shield-alt me-2"></i>Policy-as-Code
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="budgeting-tab" data-bs-toggle="tab" data-bs-target="#budgeting" type="button" role="tab">
+                    <i class="fas fa-chart-line me-2"></i>Budgeting & Forecasting
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="maturity-tab" data-bs-toggle="tab" data-bs-target="#maturity" type="button" role="tab">
+                    <i class="fas fa-level-up-alt me-2"></i>Maturity Framework
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="kpi-tab" data-bs-toggle="tab" data-bs-target="#kpi" type="button" role="tab">
+                    <i class="fas fa-tachometer-alt me-2"></i>KPI & Scorecard
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="finopsTabContent">
+            <!-- Tab 1: Overview & Model Layers -->
+            <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                <div class="section-header">
+                    <h3><i class="fas fa-sitemap me-2"></i>FinOps Governance Model Overview</h3>
+                    <p>Comprehensive framework for cloud financial operations and governance across all organizational layers</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-layer-group me-2"></i>7-Layer Governance Architecture</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="governance-diagram">
+                                    <h6 class="mb-4">FinOps Governance Stack</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="layer-box">Layer 1: Cost Ownership Model (RACI)</div>
+                                            <div class="layer-box">Layer 2: Cost Allocation & Tagging</div>
+                                            <div class="layer-box">Layer 3: Operating Cadence & Rhythm</div>
+                                            <div class="layer-box">Layer 4: Policy-as-Code Governance</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="layer-box">Layer 5: Budgeting & Forecasting</div>
+                                            <div class="layer-box">Layer 6: Maturity & Optimization</div>
+                                            <div class="layer-box">Layer 7: KPI & Scorecard Framework</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <h6>Architecture Narrative</h6>
+                                    <p>The FinOps Governance Model provides a structured approach to cloud financial management through seven interconnected layers:</p>
+                                    <ul>
+                                        <li><strong>Foundation Layer:</strong> Establishes clear ownership and accountability through RACI matrices</li>
+                                        <li><strong>Operational Layers:</strong> Implements tagging strategies, cadence management, and policy automation</li>
+                                        <li><strong>Strategic Layers:</strong> Focuses on forecasting, maturity assessment, and performance measurement</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-bullseye me-2"></i>Executive Objectives</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="metric-card">
+                                    <div class="metric-value">30%</div>
+                                    <small>Cost Optimization Target</small>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value">95%</div>
+                                    <small>Resource Tagging Compliance</small>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value">24h</div>
+                                    <small>Policy Violation Response</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-users me-2"></i>Key Stakeholders</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-user-tie text-primary me-2"></i>CTO/Engineering VP</li>
+                                    <li class="mb-2"><i class="fas fa-calculator text-success me-2"></i>CFO/Finance</li>
+                                    <li class="mb-2"><i class="fas fa-cloud text-info me-2"></i>Cloud Architects</li>
+                                    <li class="mb-2"><i class="fas fa-cogs text-warning me-2"></i>DevOps Teams</li>
+                                    <li class="mb-2"><i class="fas fa-chart-bar text-danger me-2"></i>FinOps Practitioners</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-export" onclick="exportContent('overview')">
+                        <i class="fas fa-download me-2"></i>Export Overview
+                    </button>
+                    <button class="btn btn-export" onclick="printSection('overview')">
+                        <i class="fas fa-print me-2"></i>Print Section
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 2: Cloud Cost Ownership Model (RACI) -->
+            <div class="tab-pane fade" id="ownership" role="tabpanel">
+                <div class="section-header">
+                    <h3><i class="fas fa-users-cog me-2"></i>Cloud Cost Ownership Model (RACI)</h3>
+                    <p>Define roles, responsibilities, and accountability for cloud cost management across the organization</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-table me-2"></i>RACI Matrix - Cloud Cost Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="raci-matrix">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Activity</th>
+                                        <th>CTO/VP Eng</th>
+                                        <th>CFO/Finance</th>
+                                        <th>Cloud Architect</th>
+                                        <th>DevOps Lead</th>
+                                        <th>Product Owner</th>
+                                        <th>Engineering Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Budget Planning & Approval</strong></td>
+                                        <td><span class="raci-cell raci-a">A</span></td>
+                                        <td><span class="raci-cell raci-r">R</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-i">I</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Cost Monitoring & Alerting</strong></td>
+                                        <td><span class="raci-cell raci-i">I</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-r">R</span></td>
+                                        <td><span class="raci-cell raci-a">A</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-i">I</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Resource Tagging Compliance</strong></td>
+                                        <td><span class="raci-cell raci-a">A</span></td>
+                                        <td><span class="raci-cell raci-i">I</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-r">R</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-r">R</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Cost Optimization Actions</strong></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-i">I</span></td>
+                                        <td><span class="raci-cell raci-a">A</span></td>
+                                        <td><span class="raci-cell raci-r">R</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-r">R</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Monthly Cost Reviews</strong></td>
+                                        <td><span class="raci-cell raci-a">A</span></td>
+                                        <td><span class="raci-cell raci-r">R</span></td>
+                                        <td><span class="raci-cell raci-r">R</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-c">C</span></td>
+                                        <td><span class="raci-cell raci-i">I</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="raci-cell raci-r mb-2">R - Responsible</div>
+                                    <small>Does the work</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="raci-cell raci-a mb-2">A - Accountable</div>
+                                    <small>Owns the outcome</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="raci-cell raci-c mb-2">C - Consulted</div>
+                                    <small>Provides input</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="raci-cell raci-i mb-2">I - Informed</div>
+                                    <small>Kept updated</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-user-shield me-2"></i>Accountability Best Practices</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li><strong>Clear Escalation Paths:</strong> Define who to contact for budget overruns</li>
+                                    <li><strong>Regular Reviews:</strong> Monthly accountability check-ins</li>
+                                    <li><strong>Documentation:</strong> Maintain decision logs and rationale</li>
+                                    <li><strong>Training:</strong> Ensure all roles understand their responsibilities</li>
+                                    <li><strong>Metrics:</strong> Track performance against assigned responsibilities</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-lightbulb me-2"></i>Ownership Examples</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6>Development Team Ownership</h6>
+                                    <p><strong>Responsible for:</strong> Right-sizing resources, implementing cost-aware coding practices</p>
+                                    <p><strong>Accountable to:</strong> Product Owner for feature costs, DevOps for infrastructure efficiency</p>
+                                </div>
+                                
+                                <div class="framework-box">
+                                    <h6>Cloud Architect Ownership</h6>
+                                    <p><strong>Responsible for:</strong> Architecture decisions, cost modeling, optimization recommendations</p>
+                                    <p><strong>Accountable to:</strong> CTO for technical decisions, CFO for cost implications</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-export" onclick="exportContent('ownership')">
+                        <i class="fas fa-download me-2"></i>Export RACI Model
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 3: Cost Allocation & Tagging Governance -->
+            <div class="tab-pane fade" id="tagging" role="tabpanel">
+                <div class="section-header">
+                    <h3><i class="fas fa-tags me-2"></i>Cost Allocation & Tagging Governance</h3>
+                    <p>Implement comprehensive tagging strategies for accurate cost allocation and automated compliance enforcement</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-tag me-2"></i>Required Tag Taxonomy</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Tag Category</th>
+                                            <th>Tag Key</th>
+                                            <th>Format/Values</th>
+                                            <th>Enforcement Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="badge bg-primary">Financial</span></td>
+                                            <td>CostCenter</td>
+                                            <td>CC-XXXX (4-digit code)</td>
+                                            <td><span class="badge bg-danger">Mandatory</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-primary">Financial</span></td>
+                                            <td>Project</td>
+                                            <td>PRJ-YYYY-ZZ</td>
+                                            <td><span class="badge bg-danger">Mandatory</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-success">Operational</span></td>
+                                            <td>Environment</td>
+                                            <td>prod|staging|dev|test</td>
+                                            <td><span class="badge bg-danger">Mandatory</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-success">Operational</span></td>
+                                            <td>Application</td>
+                                            <td>application-name</td>
+                                            <td><span class="badge bg-danger">Mandatory</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-info">Technical</span></td>
+                                            <td>Owner</td>
+                                            <td>team-name</td>
+                                            <td><span class="badge bg-danger">Mandatory</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-warning">Compliance</span></td>
+                                            <td>DataClassification</td>
+                                            <td>public|internal|confidential</td>
+                                            <td><span class="badge bg-warning">Recommended</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-secondary">Lifecycle</span></td>
+                                            <td>AutoShutdown</td>
+                                            <td>true|false</td>
+                                            <td><span class="badge bg-warning">Recommended</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-code me-2"></i>Policy-as-Code Implementation</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>AWS Config Rule Example</h6>
+                                <pre class="bg-light p-3 rounded"><code>{
+  "ConfigRuleName": "required-tags-compliance",
+  "Source": {
+    "Owner": "AWS",
+    "SourceIdentifier": "REQUIRED_TAGS"
+  },
+  "InputParameters": {
+    "requiredTagKeys": "CostCenter,Project,Environment,Application,Owner"
+  },
+  "Scope": {
+    "ComplianceResourceTypes": [
+      "AWS::EC2::Instance",
+      "AWS::RDS::DBInstance",
+      "AWS::S3::Bucket"
+    ]
+  }
+}</code></pre>
+
+                                <h6 class="mt-4">Azure Policy Definition</h6>
+                                <pre class="bg-light p-3 rounded"><code>{
+  "mode": "Indexed",
+  "policyRule": {
+    "if": {
+      "anyOf": [
+        {"field": "tags['CostCenter']", "exists": "false"},
+        {"field": "tags['Project']", "exists": "false"},
+        {"field": "tags['Environment']", "exists": "false"}
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-pie me-2"></i>Compliance Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="metric-card">
+                                    <div class="metric-value">94.2%</div>
+                                    <small>Overall Tagging Compliance</small>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 94.2%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="metric-card">
+                                    <div class="metric-value">1,247</div>
+                                    <small>Resources Missing Tags</small>
+                                </div>
+
+                                <div class="metric-card">
+                                    <div class="metric-value">72h</div>
+                                    <small>Avg. Remediation Time</small>
+                                </div>
+
+                                <h6 class="mt-4">Compliance by Environment</h6>
+                                <div class="mb-2">
+                                    <small>Production: 98.5%</small>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 98.5%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <small>Staging: 91.3%</small>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 91.3%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <small>Development: 87.1%</small>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 87.1%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-tools me-2"></i>Automation Tools</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fab fa-aws text-warning me-2"></i><strong>AWS:</strong> Config, SCPs, Lambda</li>
+                                    <li class="mb-2"><i class="fab fa-microsoft text-primary me-2"></i><strong>Azure:</strong> Policy, Resource Graph</li>
+                                    <li class="mb-2"><i class="fab fa-google text-success me-2"></i><strong>GCP:</strong> Org Policies, Cloud Functions</li>
+                                    <li class="mb-2"><i class="fas fa-layer-group text-info me-2"></i><strong>Terraform:</strong> Validation Rules</li>
+                                    <li class="mb-2"><i class="fas fa-robot text-secondary me-2"></i><strong>Tag Titan:</strong> Auto-remediation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-export" onclick="exportContent('tagging')">
+                        <i class="fas fa-download me-2"></i>Export Tagging Policy
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 4: FinOps Cadence & Meeting Structure -->
+            <div class="tab-pane fade" id="cadence" role="tabpanel">
+                <div class="section-header">
+                    <h3><i class="fas fa-calendar-alt me-2"></i>FinOps Cadence & Meeting Structure</h3>
+                    <p>Establish consistent operating rhythm for cloud cost governance, reviews, and optimization activities</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-clock me-2"></i>Operating Rhythm Framework</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-calendar-day text-success me-2"></i>Daily (Automated)</h6>
+                                    <ul>
+                                        <li>Cost anomaly detection alerts</li>
+                                        <li>Budget threshold notifications</li>
+                                        <li>Policy violation reports</li>
+                                        <li>Automated right-sizing recommendations</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-calendar-week text-primary me-2"></i>Weekly (Team Level)</h6>
+                                    <ul>
+                                        <li>Engineering team cost reviews</li>
+                                        <li>Sprint cost planning</li>
+                                        <li>Resource optimization actions</li>
+                                        <li>Tagging compliance check</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-calendar-alt text-warning me-2"></i>Monthly (Cross-functional)</h6>
+                                    <ul>
+                                        <li>FinOps steering committee</li>
+                                        <li>Budget vs. actual analysis</li>
+                                        <li>Cost allocation reviews</li>
+                                        <li>Optimization initiative planning</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-calendar-check text-danger me-2"></i>Quarterly (Executive)</h6>
+                                    <ul>
+                                        <li>FinOps maturity assessment</li>
+                                        <li>Strategic cost planning</li>
+                                        <li>KPI scorecard review</li>
+                                        <li>Annual budget planning</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-clipboard-list me-2"></i>Monthly FinOps Review Agenda</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Topic</th>
+                                            <th>Duration</th>
+                                            <th>Owner</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Cost Performance Review</strong></td>
+                                            <td>15 min</td>
+                                            <td>FinOps Lead</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Budget vs Actual Analysis</td>
+                                            <td>10 min</td>
+                                            <td>Finance</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Optimization Wins & Failures</strong></td>
+                                            <td>15 min</td>
+                                            <td>Cloud Architect</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Compliance & Governance</td>
+                                            <td>10 min</td>
+                                            <td>DevOps Lead</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Action Items Review</strong></td>
+                                            <td>10 min</td>
+                                            <td>All</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Next Month Planning</td>
+                                            <td>10 min</td>
+                                            <td>Product Owner</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="mt-3">
+                                    <h6>Meeting Artifacts</h6>
+                                    <ul>
+                                        <li>Cost dashboard review</li>
+                                        <li>Action item tracker</li>
+                                        <li>Risk & issue register</li>
+                                        <li>Optimization backlog</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-bar me-2"></i>Executive Dashboard KPIs</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="metric-card text-center">
+                                            <div class="metric-value">$2.4M</div>
+                                            <small>Monthly Cloud Spend</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="metric-card text-center">
+                                            <div class="metric-value">-12%</div>
+                                            <small>YoY Cost Reduction</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="metric-card text-center">
+                                            <div class="metric-value">87%</div>
+                                            <small>Budget Accuracy</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="metric-card text-center">
+                                            <div class="metric-value">0.8</div>
+                                            <small>Cost per Feature</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-users-tie me-2"></i>CXO Alignment & Communication</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-user-tie text-primary me-2"></i>CTO Engagement</h6>
+                                    <ul>
+                                        <li>Technical debt vs. cost optimization</li>
+                                        <li>Engineering velocity impact</li>
+                                        <li>Infrastructure investment planning</li>
+                                        <li>Architecture decision cost implications</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-calculator text-success me-2"></i>CFO Engagement</h6>
+                                    <ul>
+                                        <li>Financial forecasting accuracy</li>
+                                        <li>Cost center allocation</li>
+                                        <li>Capital vs. operational expenditure</li>
+                                        <li>ROI on cloud investments</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-crown text-warning me-2"></i>CEO Engagement</h6>
+                                    <ul>
+                                        <li>Business value metrics</li>
+                                        <li>Competitive cost positioning</li>
+                                        <li>Risk management</li>
+                                        <li>Strategic investment alignment</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-export" onclick="exportContent('cadence')">
+                        <i class="fas fa-download me-2"></i>Export Cadence Framework
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 5: Policy-as-Code Governance -->
+            <div class="tab-pane fade" id="policy" role="tabpanel">
+                <div class="section-header">
+                    <h3><i class="fas fa-shield-alt me-2"></i>Policy-as-Code Governance</h3>
+                    <p>Automated policy enforcement, guardrails implementation, and cloud-native governance tools</p>
+                </div>
+
+                <div class="tool-comparison">
+                    <div class="tool-card aws-color">
+                        <h5><i class="fab fa-aws text-warning me-2"></i>AWS Governance</h5>
+                        <ul class="text-start">
+                            <li><strong>AWS Config:</strong> Resource compliance</li>
+                            <li><strong>SCPs:</strong> Preventive controls</li>
+                            <li><strong>CloudFormation:</strong> IaC governance</li>
+                            <li><strong>Cost Anomaly Detection:</strong> Automated alerts</li>
+                        </ul>
+                    </div>
+
+                    <div class="tool-card azure-color">
+                        <h5><i class="fab fa-microsoft text-primary me-2"></i>Azure Governance</h5>
+                        <ul class="text-start">
+                            <li><strong>Azure Policy:</strong> Resource compliance</li>
+                            <li><strong>Management Groups:</strong> Hierarchical control</li>
+                            <li><strong>ARM Templates:</strong> IaC governance</li>
+                            <li><strong>Cost Management:</strong> Budget controls</li>
+                        </ul>
+                    </div>
+
+                    <div class="tool-card gcp-color">
+                        <h5><i class="fab fa-google text-success me-2"></i>GCP Governance</h5>
+                        <ul class="text-start">
+                            <li><strong>Org Policies:</strong> Constraint enforcement</li>
+                            <li><strong>IAM Conditions:</strong> Conditional access</li>
+                            <li><strong>Cloud Asset Inventory:</strong> Resource tracking</li>
+                            <li><strong>Billing Budgets:</strong> Cost controls</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-code-branch me-2"></i>Policy Implementation Examples</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <h6>1. Cost Control Guardrails</h6>
+                                    <pre class="bg-light p-3 rounded"><code># Terraform - Instance Size Restrictions
+resource "aws_organizations_policy" "instance_size_restriction" {
+  name = "restrict-large-instances"
+  content = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Deny"
+        Action = [
+          "ec2:RunInstances"
+        ]
+        Resource = "arn:aws:ec2:*:*:instance/*"
+        Condition = {
+          StringNotEquals = {
+            "ec2:InstanceType" = [
+              "t3.micro", "t3.small", "t3.medium",
+              "m5.large", "m5.xlarge"
+            ]
+          }
+        }
+      }
+    ]
+  })
+}</code></pre>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h6>2. Auto-Shutdown Policy</h6>
+                                    <pre class="bg-light p-3 rounded"><code># Azure Policy - Auto-shutdown enforcement
+{
+  "mode": "Indexed",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {"field": "type", "equals": "Microsoft.Compute/virtualMachines"},
+        {"field": "tags['Environment']", "equals": "dev"}
+      ]
+    },
+    "then": {
+      "effect": "deployIfNotExists",
+      "details": {
+        "type": "Microsoft.DevTestLab/schedules",
+        "name": "shutdown-computevm-[field('name')]"
+      }
+    }
+  }
+}</code></pre>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h6>3. Budget Alert Automation</h6>
+                                    <pre class="bg-light p-3 rounded"><code># Lambda Function for Budget Alerts
+import boto3
+import json
+
+def lambda_handler(event, context):
+    # Parse budget alert
+    message = json.loads(event['Records'][0]['Sns']['Message'])
+    
+    if message['AlarmName'] == 'BudgetExceeded':
+        # Trigger cost optimization workflow
+        stepfunctions = boto3.client('stepfunctions')
+        stepfunctions.start_execution(
+            stateMachineArn='arn:aws:states:us-east-1:123456789:stateMachine:CostOptimization',
+            input=json.dumps(message)
+        )
+    
+    return {'statusCode': 200}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-exclamation-triangle me-2"></i>Remediation Playbooks</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6>High Cost Alert Response</h6>
+                                    <ol>
+                                        <li>Identify cost spike source</li>
+                                        <li>Assess business impact</li>
+                                        <li>Implement immediate controls</li>
+                                        <li>Notify stakeholders</li>
+                                        <li>Schedule optimization review</li>
+                                    </ol>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Policy Violation Response</h6>
+                                    <ol>
+                                        <li>Quarantine non-compliant resource</li>
+                                        <li>Notify resource owner</li>
+                                        <li>Provide remediation guidance</li>
+                                        <li>Set compliance deadline</li>
+                                        <li>Escalate if unresolved</li>
+                                    </ol>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Budget Threshold Response</h6>
+                                    <ol>
+                                        <li>Alert finance and engineering</li>
+                                        <li>Review forecast accuracy</li>
+                                        <li>Assess optimization opportunities</li>
+                                        <li>Request budget adjustment if needed</li>
+                                        <li>Document lessons learned</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-robot me-2"></i>Automation Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="metric-card">
+                                    <div class="metric-value">156</div>
+                                    <small>Active Policies</small>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value">98.7%</div>
+                                    <small>Policy Compliance Rate</small>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value">23min</div>
+                                    <small>Avg. Violation Response Time</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-export" onclick="exportContent('policy')">
+                        <i class="fas fa-download me-2"></i>Export Policy Framework
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 6: Budgeting, Forecasting & Unit Economics -->
+            <div class="tab-pane fade" id="budgeting" role="tabpanel">
+                <div class="section-header">
+                    <h3><i class="fas fa-chart-line me-2"></i>Budgeting, Forecasting & Unit Economics</h3>
+                    <p>Comprehensive framework for financial planning, forecasting accuracy, and business value measurement</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-calculator me-2"></i>Forecasting Model Framework</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6>Bottom-Up Forecasting</h6>
+                                    <ul>
+                                        <li><strong>Resource-based:</strong> Instance types, storage, networking</li>
+                                        <li><strong>Usage-based:</strong> Transaction volumes, API calls</li>
+                                        <li><strong>Growth-based:</strong> User adoption, data growth</li>
+                                        <li><strong>Feature-based:</strong> New capabilities, service launches</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Top-Down Forecasting</h6>
+                                    <ul>
+                                        <li><strong>Historical trends:</strong> Seasonal patterns, growth rates</li>
+                                        <li><strong>Business drivers:</strong> Revenue, customer count</li>
+                                        <li><strong>Market benchmarks:</strong> Industry standards</li>
+                                        <li><strong>Budget constraints:</strong> Allocated spending limits</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Hybrid Approach (Recommended)</h6>
+                                    <ul>
+                                        <li>Combine bottom-up and top-down methods</li>
+                                        <li>Cross-validate forecasts</li>
+                                        <li>Continuous model refinement</li>
+                                        <li>Scenario planning (optimistic, realistic, pessimistic)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-pie me-2"></i>Unit Economics Tracking</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Business Unit</th>
+                                            <th>Cost per User</th>
+                                            <th>Cost per Transaction</th>
+                                            <th>Trend</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Web Platform</strong></td>
+                                            <td>$2.45</td>
+                                            <td>$0.0032</td>
+                                            <td><span class="text-success"><i class="fas fa-arrow-down"></i> -12%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Mobile API</strong></td>
+                                            <td>$1.87</td>
+                                            <td>$0.0028</td>
+                                            <td><span class="text-success"><i class="fas fa-arrow-down"></i> -8%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Analytics Engine</strong></td>
+                                            <td>$0.92</td>
+                                            <td>$0.0156</td>
+                                            <td><span class="text-warning"><i class="fas fa-arrow-up"></i> +3%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ML Pipeline</strong></td>
+                                            <td>$4.12</td>
+                                            <td>$0.0089</td>
+                                            <td><span class="text-danger"><i class="fas fa-arrow-up"></i> +15%</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="mt-3">
+                                    <h6>Key Unit Economics Metrics</h6>
+                                    <ul>
+                                        <li><strong>Cost per Active User (CAU):</strong> Monthly infrastructure cost / MAU</li>
+                                        <li><strong>Cost per Transaction:</strong> Infrastructure cost / transaction volume</li>
+                                        <li><strong>Cost per Feature:</strong> Feature development and operational cost</li>
+                                        <li><strong>Cost per GB processed:</strong> Data processing efficiency</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-target me-2"></i>Budget Performance Dashboard</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="metric-card">
+                                            <div class="metric-value">$2.1M</div>
+                                            <small>YTD Actual Spend</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="metric-card">
+                                            <div class="metric-value">$2.3M</div>
+                                            <small>YTD Budget</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="metric-card">
+                                            <div class="metric-value">91%</div>
+                                            <small>Budget Utilization</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="metric-card">
+                                            <div class="metric-value">$3.2M</div>
+                                            <small>Annual Forecast</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h6 class="mt-4">Forecast Accuracy Trends</h6>
+                                <div class="mb-2">
+                                    <small>Q1 Accuracy: 94.2%</small>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 94.2%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <small>Q2 Accuracy: 87.8%</small>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 87.8%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <small>Q3 Accuracy: 92.1%</small>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 92.1%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <h6>Variance Analysis</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-server text-primary me-2"></i>
+                                            Compute: +$45K over budget (new feature launch)
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-database text-success me-2"></i>
+                                            Storage: -$23K under budget (data lifecycle optimization)
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-network-wired text-warning me-2"></i>
+                                            Network: +$12K over budget (increased traffic)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-handshake me-2"></i>Business Alignment Framework</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6>Value-Based Budgeting</h6>
+                                    <ul>
+                                        <li><strong>Revenue Attribution:</strong> Link cloud costs to revenue streams</li>
+                                        <li><strong>Feature ROI:</strong> Cost per feature vs. business impact</li>
+                                        <li><strong>Customer Value:</strong> Cost to serve different customer segments</li>
+                                        <li><strong>Innovation Investment:</strong> R&D vs. operational spending</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Cost Allocation Strategy</h6>
+                                    <ul>
+                                        <li><strong>Direct Costs:</strong> Attributable to specific products/teams</li>
+                                        <li><strong>Shared Services:</strong> Allocated based on usage metrics</li>
+                                        <li><strong>Platform Costs:</strong> Distributed based on team size/revenue</li>
+                                        <li><strong>Innovation Costs:</strong> Centrally managed, not allocated</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-export" onclick="exportContent('budgeting')">
+                        <i class="fas fa-download me-2"></i>Export Budget Framework
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 7: FinOps Maturity & Optimization Framework -->
+            <div class="tab-pane fade" id="maturity" role="tabpanel">
+                <div class="section-header">
+                    <h3><i class="fas fa-level-up-alt me-2"></i>FinOps Maturity & Optimization Framework</h3>
+                    <p>Structured approach to assess and advance FinOps maturity across the organization</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-stairs me-2"></i>FinOps Maturity Levels</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="maturity-level level-inform">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-info-circle fa-2x"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Level 1: Inform</h6>
+                                            <p class="mb-2">Basic visibility and awareness of cloud costs</p>
+                                            <ul class="mb-0">
+                                                <li>Cost visibility dashboards</li>
+                                                <li>Basic tagging implementation</li>
+                                                <li>Monthly cost reports</li>
+                                                <li>Ad-hoc cost analysis</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="maturity-level level-optimize">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-cogs fa-2x"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Level 2: Optimize</h6>
+                                            <p class="mb-2">Active cost optimization and governance</p>
+                                            <ul class="mb-0">
+                                                <li>Automated optimization recommendations</li>
+                                                <li>Policy-based governance</li>
+                                                <li>Regular optimization cycles</li>
+                                                <li>Cross-functional collaboration</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="maturity-level level-operate">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-rocket fa-2x"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Level 3: Operate</h6>
+                                            <p class="mb-2">Fully automated and integrated FinOps operations</p>
+                                            <ul class="mb-0">
+                                                <li>Autonomous cost optimization</li>
+                                                <li>Real-time cost allocation</li>
+                                                <li>Predictive analytics</li>
+                                                <li>Cultural transformation</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-area me-2"></i>Optimization Automation Loops</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-sync text-primary me-2"></i>Real-time Optimization Loop (Minutes)</h6>
+                                    <ol>
+                                        <li><strong>Detect:</strong> Performance metrics, cost anomalies</li>
+                                        <li><strong>Analyze:</strong> Root cause analysis, impact assessment</li>
+                                        <li><strong>Decide:</strong> Optimization recommendation engine</li>
+                                        <li><strong>Act:</strong> Automated resource scaling, right-sizing</li>
+                                        <li><strong>Monitor:</strong> Impact measurement, feedback loop</li>
+                                    </ol>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-calendar-day text-warning me-2"></i>Daily Optimization Loop (Hours)</h6>
+                                    <ol>
+                                        <li><strong>Assess:</strong> Overnight usage patterns, idle resources</li>
+                                        <li><strong>Recommend:</strong> Scheduled scaling, resource cleanup</li>
+                                        <li><strong>Validate:</strong> Business impact assessment</li>
+                                        <li><strong>Execute:</strong> Automated or semi-automated actions</li>
+                                        <li><strong>Report:</strong> Daily optimization summary</li>
+                                    </ol>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6><i class="fas fa-calendar-week text-success me-2"></i>Strategic Optimization Loop (Days/Weeks)</h6>
+                                    <ol>
+                                        <li><strong>Review:</strong> Architecture patterns, usage trends</li>
+                                        <li><strong>Plan:</strong> Long-term optimization roadmap</li>
+                                        <li><strong>Design:</strong> New architecture, service migration</li>
+                                        <li><strong>Implement:</strong> Structural changes, new services</li>
+                                        <li><strong>Measure:</strong> Long-term impact, ROI calculation</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-clipboard-check me-2"></i>Maturity Self-Assessment</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6>Visibility & Reporting</h6>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 75%"></div>
+                                    </div>
+                                    <small>Level 2 - Optimize (75%)</small>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Cost Allocation</h6>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 60%"></div>
+                                    </div>
+                                    <small>Level 2 - Optimize (60%)</small>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Governance & Controls</h6>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 45%"></div>
+                                    </div>
+                                    <small>Level 1 - Inform (45%)</small>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Optimization Automation</h6>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 30%"></div>
+                                    </div>
+                                    <small>Level 1 - Inform (30%)</small>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Culture & Collaboration</h6>
+                                    <div class="progress-bar-custom">
+                                        <div class="progress-fill" style="width: 55%"></div>
+                                    </div>
+                                    <small>Level 2 - Optimize (55%)</small>
+                                </div>
+
+                                <div class="mt-3 text-center">
+                                    <div class="metric-card">
+                                        <div class="metric-value">Level 1.8</div>
+                                        <small>Overall Maturity Score</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-route me-2"></i>Optimization Roadmap</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6>Q1 2024 - Foundation</h6>
+                                    <ul>
+                                        <li>Complete tagging implementation</li>
+                                        <li>Establish cost allocation model</li>
+                                        <li>Deploy monitoring dashboards</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Q2 2024 - Automation</h6>
+                                    <ul>
+                                        <li>Implement policy-as-code</li>
+                                        <li>Deploy auto-scaling</li>
+                                        <li>Set up anomaly detection</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Q3-Q4 2024 - Optimization</h6>
+                                    <ul>
+                                        <li>Advanced analytics platform</li>
+                                        <li>ML-driven recommendations</li>
+                                        <li>Cultural transformation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-export" onclick="exportContent('maturity')">
+                        <i class="fas fa-download me-2"></i>Export Maturity Assessment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 8: KPI & Scorecard Governance -->
+            <div class="tab-pane fade" id="kpi" role="tabpanel">
+                <div class="section-header">
+                    <h3><i class="fas fa-tachometer-alt me-2"></i>KPI & Scorecard Governance</h3>
+                    <p>Comprehensive metrics framework for measuring FinOps performance and business value</p>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6><i class="fas fa-dollar-sign text-success me-2"></i>Financial KPIs</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">12.3%</div>
+                                        <small>Cost Reduction YoY</small>
+                                    </div>
+                                    <div class="text-success">
+                                        <i class="fas fa-arrow-up fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">94.2%</div>
+                                        <small>Budget Accuracy</small>
+                                    </div>
+                                    <div class="text-primary">
+                                        <i class="fas fa-bullseye fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">$2.34</div>
+                                        <small>Cost per User/Month</small>
+                                    </div>
+                                    <div class="text-info">
+                                        <i class="fas fa-users fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h6><i class="fas fa-cogs text-primary me-2"></i>Operational KPIs</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">97.8%</div>
+                                        <small>Resource Utilization</small>
+                                    </div>
+                                    <div class="text-success">
+                                        <i class="fas fa-server fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">15min</div>
+                                        <small>Avg. Response Time</small>
+                                    </div>
+                                    <div class="text-warning">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">99.1%</div>
+                                        <small>Tagging Compliance</small>
+                                    </div>
+                                    <div class="text-success">
+                                        <i class="fas fa-tags fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h6><i class="fas fa-chart-line text-info me-2"></i>Efficiency KPIs</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">87%</div>
+                                        <small>Reserved Instance Coverage</small>
+                                    </div>
+                                    <div class="text-primary">
+                                        <i class="fas fa-percentage fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">73%</div>
+                                        <small>Spot Instance Usage</small>
+                                    </div>
+                                    <div class="text-success">
+                                        <i class="fas fa-bolt fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">156</div>
+                                        <small>Optimizations/Month</small>
+                                    </div>
+                                    <div class="text-warning">
+                                        <i class="fas fa-wrench fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h6><i class="fas fa-users text-warning me-2"></i>Cultural KPIs</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">89%</div>
+                                        <small>Team Engagement Score</small>
+                                    </div>
+                                    <div class="text-success">
+                                        <i class="fas fa-heart fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">245</div>
+                                        <small>Training Hours/Quarter</small>
+                                    </div>
+                                    <div class="text-info">
+                                        <i class="fas fa-graduation-cap fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="metric-value">92%</div>
+                                        <small>Cost Awareness Score</small>
+                                    </div>
+                                    <div class="text-primary">
+                                        <i class="fas fa-brain fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-bar me-2"></i>Executive Scorecard Template</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Metric</th>
+                                            <th>Current</th>
+                                            <th>Target</th>
+                                            <th>Trend</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="3"><strong>Financial</strong></td>
+                                            <td>Monthly Cloud Spend</td>
+                                            <td>$2.1M</td>
+                                            <td>$2.3M</td>
+                                            <td><span class="text-success"><i class="fas fa-arrow-down"></i></span></td>
+                                            <td><span class="badge bg-success">On Track</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cost per Transaction</td>
+                                            <td>$0.0045</td>
+                                            <td>$0.0040</td>
+                                            <td><span class="text-warning"><i class="fas fa-minus"></i></span></td>
+                                            <td><span class="badge bg-warning">Watch</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Budget Variance</td>
+                                            <td>-8.7%</td>
+                                            <td>±5%</td>
+                                            <td><span class="text-success"><i class="fas fa-arrow-down"></i></span></td>
+                                            <td><span class="badge bg-success">Excellent</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="2"><strong>Operational</strong></td>
+                                            <td>Resource Utilization</td>
+                                            <td>78%</td>
+                                            <td>85%</td>
+                                            <td><span class="text-success"><i class="fas fa-arrow-up"></i></span></td>
+                                            <td><span class="badge bg-warning">Improving</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Policy Compliance</td>
+                                            <td>94%</td>
+                                            <td>95%</td>
+                                            <td><span class="text-success"><i class="fas fa-arrow-up"></i></span></td>
+                                            <td><span class="badge bg-success">On Track</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="2"><strong>Strategic</strong></td>
+                                            <td>FinOps Maturity Level</td>
+                                            <td>2.1</td>
+                                            <td>2.5</td>
+                                            <td><span class="text-success"><i class="fas fa-arrow-up"></i></span></td>
+                                            <td><span class="badge bg-primary">Progressing</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Team Satisfaction</td>
+                                            <td>4.2/5</td>
+                                            <td>4.0/5</td>
+                                            <td><span class="text-success"><i class="fas fa-arrow-up"></i></span></td>
+                                            <td><span class="badge bg-success">Excellent</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-pie me-2"></i>Reporting Best Practices</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="framework-box">
+                                    <h6>Executive Reporting</h6>
+                                    <ul>
+                                        <li>High-level KPIs only</li>
+                                        <li>Trend analysis and context</li>
+                                        <li>Action items and next steps</li>
+                                        <li>Business impact focus</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Operational Reporting</h6>
+                                    <ul>
+                                        <li>Detailed metrics and drill-downs</li>
+                                        <li>Root cause analysis</li>
+                                        <li>Operational recommendations</li>
+                                        <li>Technical implementation details</li>
+                                    </ul>
+                                </div>
+
+                                <div class="framework-box">
+                                    <h6>Automated Alerts</h6>
+                                    <ul>
+                                        <li>Threshold-based notifications</li>
+                                        <li>Anomaly detection alerts</li>
+                                        <li>Escalation procedures</li>
+                                        <li>Context-aware messaging</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn btn-export" onclick="exportContent('kpi')">
+                        <i class="fas fa-download me-2"></i>Export KPI Framework
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Container -->
+    <div class="notes-container">
+        <div class="notes-panel" id="notesPanel">
+            <h6><i class="fas fa-sticky-note me-2"></i>Meeting Notes</h6>
+            <textarea id="notesText" class="form-control mb-3" rows="8" placeholder="Add your notes, action items, and key takeaways..."></textarea>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-sm" onclick="saveNotes()">
+                    <i class="fas fa-save me-1"></i>Save
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="exportNotes()">
+                    <i class="fas fa-download me-1"></i>Export
+                </button>
+                <button class="btn btn-outline-danger btn-sm" onclick="clearNotes()">
+                    <i class="fas fa-trash me-1"></i>Clear
+                </button>
+            </div>
+            <div id="notesSaved" class="text-success mt-2" style="display: none;">
+                <i class="fas fa-check me-1"></i>Notes saved!
+            </div>
+        </div>
+        <button class="notes-toggle" onclick="toggleNotes()">
+            <i class="fas fa-sticky-note"></i>
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Notes functionality
+        let notesVisible = false;
+
+        function toggleNotes() {
+            const panel = document.getElementById('notesPanel');
+            notesVisible = !notesVisible;
+            
+            if (notesVisible) {
+                panel.classList.add('active');
+                loadNotes();
+            } else {
+                panel.classList.remove('active');
+            }
+        }
+
+        function saveNotes() {
+            const notes = document.getElementById('notesText').value;
+            const activeTab = document.querySelector('.nav-link.active').getAttribute('data-bs-target').replace('#', '');
+            
+            localStorage.setItem(`finops-notes-${activeTab}`, notes);
+            
+            const savedIndicator = document.getElementById('notesSaved');
+            savedIndicator.style.display = 'block';
+            setTimeout(() => {
+                savedIndicator.style.display = 'none';
+            }, 2000);
+        }
+
+        function loadNotes() {
+            const activeTab = document.querySelector('.nav-link.active').getAttribute('data-bs-target').replace('#', '');
+            const savedNotes = localStorage.getItem(`finops-notes-${activeTab}`) || '';
+            document.getElementById('notesText').value = savedNotes;
+        }
+
+        function clearNotes() {
+            if (confirm('Are you sure you want to clear all notes for this section?')) {
+                document.getElementById('notesText').value = '';
+                const activeTab = document.querySelector('.nav-link.active').getAttribute('data-bs-target').replace('#', '');
+                localStorage.removeItem(`finops-notes-${activeTab}`);
+            }
+        }
+
+        function exportNotes() {
+            const notes = document.getElementById('notesText').value;
+            const activeTab = document.querySelector('.nav-link.active').textContent.trim();
+            
+            if (!notes.trim()) {
+                alert('No notes to export!');
+                return;
+            }
+
+            const blob = new Blob([`FinOps Governance Notes - ${activeTab}\n\nDate: ${new Date().toLocaleDateString()}\n\n${notes}`], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `finops-notes-${activeTab.toLowerCase().replace(/[^a-z0-9]/g, '-')}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Export content functionality
+        function exportContent(tabId) {
+            const tabElement = document.getElementById(tabId);
+            const tabTitle = document.querySelector(`[data-bs-target="#${tabId}"]`).textContent.trim();
+            
+            // Create a clean version of the content
+            const clonedElement = tabElement.cloneNode(true);
+            
+            // Remove interactive elements
+            clonedElement.querySelectorAll('.export-buttons, .notes-container').forEach(el => el.remove());
+            
+            const content = `
+FinOps Governance Framework Export
+==================================
+
+Section: ${tabTitle}
+Date: ${new Date().toLocaleDateString()}
+Time: ${new Date().toLocaleTimeString()}
+
+${clonedElement.textContent}
+
+---
+Generated by FinOps Governance Model Tool
+            `.trim();
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `finops-${tabId}-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function printSection(tabId) {
+            const tabElement = document.getElementById(tabId);
+            const tabTitle = document.querySelector(`[data-bs-target="#${tabId}"]`).textContent.trim();
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>FinOps Governance - ${tabTitle}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            .header { text-align: center; margin-bottom: 30px; }
+                            .content { margin: 20px 0; }
+                            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; }
+                            .no-print { display: none; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>FinOps Governance Model</h1>
+                            <h2>${tabTitle}</h2>
+                            <p>Generated on ${new Date().toLocaleDateString()}</p>
+                        </div>
+                        <div class="content">
+                            ${tabElement.innerHTML}
+                        </div>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Tab change event listener to load appropriate notes
+        document.addEventListener('shown.bs.tab', function (e) {
+            if (notesVisible) {
+                loadNotes();
+            }
+        });
+
+        // Initialize notes for the active tab on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-save notes periodically
+            setInterval(function() {
+                if (notesVisible && document.getElementById('notesText').value.trim()) {
+                    saveNotes();
+                }
+            }, 30000); // Auto-save every 30 seconds
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + S to save notes
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                if (notesVisible) {
+                    saveNotes();
+                }
+            }
+            
+            // Ctrl/Cmd + N to toggle notes
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                toggleNotes();
+            }
+        });
+    </script>
+</body>
+</html>

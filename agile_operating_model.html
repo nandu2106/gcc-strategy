@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agile Operating Model for Infrastructure Teams</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: 400;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            padding: 0;
+            margin: 0;
+            border-bottom: 3px solid #e9ecef;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .tab-nav-item {
+            flex: 1;
+            min-width: 180px;
+            padding: 20px 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-nav-item:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .tab-nav-item.active {
+            background: #fff;
+            color: #495057;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+            min-height: 800px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .content-grid {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .content-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .card-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .framework-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .framework-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .framework-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .framework-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .org-chart {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            position: relative;
+            height: 400px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .notes-section {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .notes-section.minimized {
+            transform: translateY(-50%) translateX(250px);
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .notes-toggle {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            height: 200px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .raci-matrix {
+            overflow-x: auto;
+        }
+
+        .raci-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .raci-table th,
+        .raci-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+
+        .raci-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .raci-r { background: #d4edda; }
+        .raci-a { background: #f8d7da; }
+        .raci-c { background: #fff3cd; }
+        .raci-i { background: #d1ecf1; }
+
+        .workflow-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .workflow-column {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        .column-header {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .workflow-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .checklist {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .tab-navigation {
+                flex-direction: column;
+            }
+
+            .tab-nav-item {
+                min-width: auto;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .notes-section {
+                position: static;
+                width: 100%;
+                margin-top: 20px;
+                transform: none;
+            }
+
+            .framework-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow-board {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-cogs"></i> Agile Operating Model for Infrastructure Teams</h1>
+            <p>Enterprise-grade framework for Agile transformation in infrastructure organizations</p>
+        </div>
+
+        <div class="main-content">
+            <div class="tab-navigation">
+                <button class="tab-nav-item active" onclick="openTab('overview')">
+                    <i class="fas fa-chart-line"></i> Overview & Model
+                </button>
+                <button class="tab-nav-item" onclick="openTab('frameworks')">
+                    <i class="fas fa-layer-group"></i> Agile Frameworks
+                </button>
+                <button class="tab-nav-item" onclick="openTab('squads')">
+                    <i class="fas fa-users"></i> Squad Structure
+                </button>
+                <button class="tab-nav-item" onclick="openTab('planning')">
+                    <i class="fas fa-calendar-alt"></i> PI Planning
+                </button>
+                <button class="tab-nav-item" onclick="openTab('metrics')">
+                    <i class="fas fa-chart-bar"></i> Sprint Metrics
+                </button>
+                <button class="tab-nav-item" onclick="openTab('backlog')">
+                    <i class="fas fa-tasks"></i> Backlog & Workflow
+                </button>
+                <button class="tab-nav-item" onclick="openTab('definition')">
+                    <i class="fas fa-check-circle"></i> Ready/Done
+                </button>
+            </div>
+
+            <!-- Tab 1: Overview & Model Layers -->
+            <div id="overview" class="tab-content active">
+                <div class="section-header">
+                    <h2 class="section-title">Overview & Operating Model Layers</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn-primary" onclick="exportTab('overview')">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-bullseye"></i> Executive Summary
+                        </div>
+                        <div class="card-content">
+                            <p><strong>Strategic Objective:</strong> Transform infrastructure operations through Agile methodologies to achieve 40% faster delivery, 60% improved reliability, and enhanced cross-functional collaboration.</p>
+                            <br>
+                            <p><strong>Key Benefits:</strong></p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Accelerated infrastructure delivery through iterative planning</li>
+                                <li>Enhanced visibility and predictability of infrastructure changes</li>
+                                <li>Improved collaboration between infrastructure, development, and business teams</li>
+                                <li>Data-driven decision making through comprehensive metrics</li>
+                                <li>Reduced technical debt and improved system reliability</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-layer-group"></i> Operating Model Layers
+                        </div>
+                        <div class="card-content">
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; margin: 15px 0;">
+                                <h4>Strategic Layer</h4>
+                                <p>Portfolio Planning • Investment Alignment • Value Stream Mapping</p>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 12px; margin: 15px 0;">
+                                <h4>Program Layer</h4>
+                                <p>PI Planning • Solution Development • Architecture Governance</p>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 20px; border-radius: 12px; margin: 15px 0;">
+                                <h4>Team Layer</h4>
+                                <p>Sprint Execution • Daily Standups • Retrospectives</p>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 20px; border-radius: 12px; margin: 15px 0;">
+                                <h4>Operational Layer</h4>
+                                <p>Continuous Integration • Monitoring • Incident Response</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-road"></i> Transformation Roadmap
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="roadmapChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Agile Frameworks -->
+            <div id="frameworks" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Agile Frameworks for Infrastructure</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn-primary" onclick="exportTab('frameworks')">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="framework-comparison">
+                    <div class="framework-card" onclick="showFrameworkDetails('scrum')">
+                        <h4><i class="fas fa-sync-alt"></i> Scrum for Infrastructure</h4>
+                        <p><strong>Best for:</strong> Structured projects with clear deliverables</p>
+                        <p><strong>Strengths:</strong> Clear roles, time-boxed sprints, regular ceremonies</p>
+                        <p><strong>Infrastructure Use Cases:</strong> Cloud migrations, platform implementations</p>
+                    </div>
+
+                    <div class="framework-card" onclick="showFrameworkDetails('kanban')">
+                        <h4><i class="fas fa-columns"></i> Kanban for Infrastructure</h4>
+                        <p><strong>Best for:</strong> Continuous flow work, maintenance, support</p>
+                        <p><strong>Strengths:</strong> Flexible, visual workflow, WIP limits</p>
+                        <p><strong>Infrastructure Use Cases:</strong> Operations, incident response, BAU changes</p>
+                    </div>
+
+                    <div class="framework-card" onclick="showFrameworkDetails('safe')">
+                        <h4><i class="fas fa-sitemap"></i> SAFe for Infrastructure</h4>
+                        <p><strong>Best for:</strong> Large-scale enterprise transformations</p>
+                        <p><strong>Strengths:</strong> Program-level coordination, portfolio alignment</p>
+                        <p><strong>Infrastructure Use Cases:</strong> Enterprise architecture, multi-team initiatives</p>
+                    </div>
+                </div>
+
+                <div id="frameworkDetails" class="content-card" style="margin-top: 30px; display: none;">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Framework Details
+                    </div>
+                    <div id="frameworkDetailsContent" class="card-content">
+                        <!-- Dynamic content will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Squad Setup & Structure -->
+            <div id="squads" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Squad Setup & Structure</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn-primary" onclick="exportTab('squads')">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-cloud"></i> Sample Squad Structures
+                        </div>
+                        <div class="card-content">
+                            <div class="org-chart">
+                                <h4>Cloud Infrastructure Squad</h4>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px;">
+                                    <div style="background: #667eea; color: white; padding: 15px; border-radius: 8px;">
+                                        <strong>Product Owner</strong><br>
+                                        Cloud Strategy & Roadmap
+                                    </div>
+                                    <div style="background: #4facfe; color: white; padding: 15px; border-radius: 8px;">
+                                        <strong>Scrum Master</strong><br>
+                                        Process Facilitation
+                                    </div>
+                                    <div style="background: #43e97b; color: white; padding: 15px; border-radius: 8px;">
+                                        <strong>Tech Lead</strong><br>
+                                        Architecture & Standards
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px;">
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 2px solid #667eea;">
+                                        <strong>Cloud Engineer</strong><br>
+                                        AWS/Azure Specialist
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 2px solid #667eea;">
+                                        <strong>DevOps Engineer</strong><br>
+                                        CI/CD & Automation
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 2px solid #667eea;">
+                                        <strong>Security Engineer</strong><br>
+                                        Security & Compliance
+                                    </div>
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 2px solid #667eea;">
+                                        <strong>Site Reliability</strong><br>
+                                        Monitoring & Operations
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-table"></i> RACI Matrix for Infrastructure Teams
+                        </div>
+                        <div class="card-content">
+                            <div class="raci-matrix">
+                                <table class="raci-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Activity</th>
+                                            <th>Product Owner</th>
+                                            <th>Scrum Master</th>
+                                            <th>Tech Lead</th>
+                                            <th>Engineers</th>
+                                            <th>Stakeholders</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Sprint Planning</strong></td>
+                                            <td class="raci-r">R</td>
+                                            <td class="raci-a">A</td>
+                                            <td class="raci-c">C</td>
+                                            <td class="raci-c">C</td>
+                                            <td class="raci-i">I</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Architecture Decisions</strong></td>
+                                            <td class="raci-c">C</td>
+                                            <td class="raci-i">I</td>
+                                            <td class="raci-a">A</td>
+                                            <td class="raci-r">R</td>
+                                            <td class="raci-c">C</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Code Reviews</strong></td>
+                                            <td class="raci-i">I</td>
+                                            <td class="raci-i">I</td>
+                                            <td class="raci-a">A</td>
+                                            <td class="raci-r">R</td>
+                                            <td class="raci-i">I</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Deployment Approval</strong></td>
+                                            <td class="raci-a">A</td>
+                                            <td class="raci-c">C</td>
+                                            <td class="raci-c">C</td>
+                                            <td class="raci-r">R</td>
+                                            <td class="raci-i">I</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Incident Response</strong></td>
+                                            <td class="raci-i">I</td>
+                                            <td class="raci-c">C</td>
+                                            <td class="raci-c">C</td>
+                                            <td class="raci-a">A</td>
+                                            <td class="raci-i">I</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div style="margin-top: 15px; font-size: 14px;">
+                                    <strong>Legend:</strong> 
+                                    <span class="raci-r" style="padding: 2px 8px; border-radius: 4px; margin: 0 5px;">R - Responsible</span>
+                                    <span class="raci-a" style="padding: 2px 8px; border-radius: 4px; margin: 0 5px;">A - Accountable</span>
+                                    <span class="raci-c" style="padding: 2px 8px; border-radius: 4px; margin: 0 5px;">C - Consulted</span>
+                                    <span class="raci-i" style="padding: 2px 8px; border-radius: 4px; margin: 0 5px;">I - Informed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: PI Planning Model -->
+            <div id="planning" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Program Increment Planning Model</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn-primary" onclick="exportTab('planning')">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-alt"></i> PI Planning Cycle (12-week Program Increment)
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="piPlanningChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-clipboard-list"></i> PI Planning Ceremony Breakdown
+                        </div>
+                        <div class="card-content">
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                <div>
+                                    <h4 style="color: #667eea; margin-bottom: 15px;">Day 1: Vision & Planning</h4>
+                                    <ul style="line-height: 1.8;">
+                                        <li><strong>9:00-10:00:</strong> Business Context & Vision</li>
+                                        <li><strong>10:00-11:00:</strong> Architecture Runway Review</li>
+                                        <li><strong>11:00-12:00:</strong> Squad Breakouts - Planning</li>
+                                        <li><strong>13:00-15:00:</strong> Squad Planning Continues</li>
+                                        <li><strong>15:00-16:00:</strong> Draft Plan Review</li>
+                                        <li><strong>16:00-17:00:</strong> Management Review</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 style="color: #667eea; margin-bottom: 15px;">Day 2: Finalization & Commitment</h4>
+                                    <ul style="line-height: 1.8;">
+                                        <li><strong>9:00-10:00:</strong> Planning Adjustments</li>
+                                        <li><strong>10:00-11:00:</strong> Dependency Mapping</li>
+                                        <li><strong>11:00-12:00:</strong> Risk Assessment</li>
+                                        <li><strong>13:00-14:00:</strong> Final Plan Presentation</li>
+                                        <li><strong>14:00-15:00:</strong> Confidence Vote</li>
+                                        <li><strong>15:00-16:00:</strong> PI Objectives Finalization</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-project-diagram"></i> Dependency Management Board
+                        </div>
+                        <div class="card-content">
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                                        <h5 style="color: #155724; margin-bottom: 10px;">Internal Dependencies</h5>
+                                        <p style="font-size: 14px;">Between infrastructure squads</p>
+                                        <div style="background: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                                            <strong>Cloud → Network:</strong> VPC Setup required for application deployment
+                                        </div>
+                                    </div>
+                                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                                        <h5 style="color: #856404; margin-bottom: 10px;">External Dependencies</h5>
+                                        <p style="font-size: 14px;">Third-party vendors & suppliers</p>
+                                        <div style="background: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                                            <strong>Vendor X:</strong> Hardware delivery for datacenter expansion
+                                        </div>
+                                    </div>
+                                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;">
+                                        <h5 style="color: #721c24; margin-bottom: 10px;">Cross-ART Dependencies</h5>
+                                        <p style="font-size: 14px;">Dependencies with development teams</p>
+                                        <div style="background: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                                            <strong>App Team A:</strong> API endpoints for monitoring integration
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 5: Sprint Metrics -->
+            <div id="metrics" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Sprint Metrics & Performance Dashboard</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn-primary" onclick="exportTab('metrics')">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">72%</div>
+                        <div class="metric-label">Sprint Goal Achievement</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">18.5</div>
+                        <div class="metric-label">Average Story Points/Sprint</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">4.2</div>
+                        <div class="metric-label">Average Cycle Time (days)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">12</div>
+                        <div class="metric-label">Throughput (items/sprint)</div>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i> Velocity Trend
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                                <canvas id="velocityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-tachometer-alt"></i> Key Performance Indicators
+                        </div>
+                        <div class="card-content">
+                            <div style="display: grid; gap: 15px;">
+                                <div style="display: flex; justify-content: between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                    <div>
+                                        <strong>Infrastructure Deployment Frequency</strong>
+                                        <p style="color: #6c757d; font-size: 14px; margin: 5px 0;">Daily deployments to production</p>
+                                    </div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: #28a745;">2.3/day</div>
+                                </div>
+                                <div style="display: flex; justify-content: between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                    <div>
+                                        <strong>Mean Time to Recovery (MTTR)</strong>
+                                        <p style="color: #6c757d; font-size: 14px; margin: 5px 0;">Average incident resolution time</p>
+                                    </div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: #ffc107;">2.4hrs</div>
+                                </div>
+                                <div style="display: flex; justify-content: between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                    <div>
+                                        <strong>Change Success Rate</strong>
+                                        <p style="color: #6c757d; font-size: 14px; margin: 5px 0;">Successful changes without rollback</p>
+                                    </div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: #28a745;">94.2%</div>
+                                </div>
+                                <div style="display: flex; justify-content: between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                    <div>
+                                        <strong>Technical Debt Ratio</strong>
+                                        <p style="color: #6c757d; font-size: 14px; margin: 5px 0;">Percentage of effort spent on technical debt</p>
+                                    </div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: #dc3545;">23%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 6: Backlog & Workflow -->
+            <div id="backlog" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Backlog Management & Workflow Examples</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn-primary" onclick="exportTab('backlog')">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-sort-amount-down"></i> Infrastructure Backlog Prioritization Matrix
+                        </div>
+                        <div class="card-content">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                                <div style="background: linear-gradient(135deg, #dc3545, #c82333); color: white; padding: 20px; border-radius: 12px;">
+                                    <h4>High Impact, High Urgency</h4>
+                                    <p style="margin: 10px 0;">Critical security patches, production outages</p>
+                                    <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                        <strong>Example:</strong> Zero-day vulnerability patch for web servers
+                                    </div>
+                                </div>
+                                <div style="background: linear-gradient(135deg, #ffc107, #e0a800); color: white; padding: 20px; border-radius: 12px;">
+                                    <h4>High Impact, Low Urgency</h4>
+                                    <p style="margin: 10px 0;">Strategic initiatives, capacity planning</p>
+                                    <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                        <strong>Example:</strong> Cloud migration for legacy applications
+                                    </div>
+                                </div>
+                                <div style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; padding: 20px; border-radius: 12px;">
+                                    <h4>Low Impact, High Urgency</h4>
+                                    <p style="margin: 10px 0;">Quick wins, minor fixes</p>
+                                    <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                        <strong>Example:</strong> Update documentation for deployment process
+                                    </div>
+                                </div>
+                                <div style="background: linear-gradient(135deg, #6c757d, #5a6268); color: white; padding: 20px; border-radius: 12px;">
+                                    <h4>Low Impact, Low Urgency</h4>
+                                    <p style="margin: 10px 0;">Nice-to-have features, research</p>
+                                    <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                                        <strong>Example:</strong> Evaluate new monitoring tools for future use
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-columns"></i> Infrastructure Workflow Board
+                        </div>
+                        <div class="card-content">
+                            <div class="workflow-board">
+                                <div class="workflow-column">
+                                    <div class="column-header">Backlog</div>
+                                    <div class="workflow-item">
+                                        <strong>Implement Multi-AZ Setup</strong>
+                                        <p style="font-size: 12px; color: #6c757d;">Story Points: 8</p>
+                                    </div>
+                                    <div class="workflow-item">
+                                        <strong>Setup Monitoring Alerts</strong>
+                                        <p style="font-size: 12px; color: #6c757d;">Story Points: 5</p>
+                                    </div>
+                                    <div class="workflow-item">
+                                        <strong>Database Backup Strategy</strong>
+                                        <p style="font-size: 12px; color: #6c757d;">Story Points: 13</p>
+                                    </div>
+                                </div>
+                                <div class="workflow-column">
+                                    <div class="column-header">In Progress</div>
+                                    <div class="workflow-item">
+                                        <strong>Configure Load Balancer</strong>
+                                        <p style="font-size: 12px; color: #6c757d;">Assigned: John D.</p>
+                                    </div>
+                                    <div class="workflow-item">
+                                        <strong>Security Group Updates</strong>
+                                        <p style="font-size: 12px; color: #6c757d;">Assigned: Sarah M.</p>
+                                    </div>
+                                </div>
+                                <div class="workflow-column">
+                                    <div class="column-header">Testing</div>
+                                    <div class="workflow-item">
+                                        <strong>SSL Certificate Renewal</strong>
+                                        <p style="font-size: 12px; color: #6c757d;">Ready for UAT</p>
+                                    </div>
+                                    <div class="workflow-item">
+                                        <strong>CDN Configuration</strong>
+                                        <p style="font-size: 12px; color: #6c757d;">Performance testing</p>
+                                    </div>
+                                </div>
+                                <div class="workflow-column">
+                                    <div class="column-header">Done</div>
+                                    <div class="workflow-item">
+                                        <strong>VPC Network Setup</strong>
+                                        <p style="font-size: 12px; color: #28a745;">✓ Completed</p>
+                                    </div>
+                                    <div class="workflow-item">
+                                        <strong>IAM Policy Review</strong>
+                                        <p style="font-size: 12px; color: #28a745;">✓ Deployed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 7: Definition of Ready/Done -->
+            <div id="definition" class="tab-content">
+                <div class="section-header">
+                    <h2 class="section-title">Definition of Ready & Definition of Done</h2>
+                    <div class="export-buttons">
+                        <button class="btn btn-primary" onclick="exportTab('definition')">
+                            <i class="fas fa-download"></i> Export PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-clipboard-check"></i> Definition of Ready (DoR) for Infrastructure Stories
+                        </div>
+                        <div class="card-content">
+                            <div class="checklist">
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dor1">
+                                    <label for="dor1"><strong>Business Value Clearly Defined:</strong> Story articulates clear business value and impact</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dor2">
+                                    <label for="dor2"><strong>Acceptance Criteria Present:</strong> Testable and measurable acceptance criteria documented</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dor3">
+                                    <label for="dor3"><strong>Architecture Review Complete:</strong> Technical approach reviewed by architecture team</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dor4">
+                                    <label for="dor4"><strong>Security Assessment Done:</strong> Security implications identified and approved</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dor5">
+                                    <label for="dor5"><strong>Dependencies Identified:</strong> All external dependencies mapped and communicated</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dor6">
+                                    <label for="dor6"><strong>Story Sized Appropriately:</strong> Story can be completed within one sprint</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dor7">
+                                    <label for="dor7"><strong>Test Strategy Defined:</strong> Testing approach and validation criteria established</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dor8">
+                                    <label for="dor8"><strong>Resource Availability:</strong> Required infrastructure resources identified and available</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-check-circle"></i> Definition of Done (DoD) for Infrastructure Stories
+                        </div>
+                        <div class="card-content">
+                            <div class="checklist">
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod1">
+                                    <label for="dod1"><strong>Code/Configuration Complete:</strong> All infrastructure code and configurations implemented</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod2">
+                                    <label for="dod2"><strong>Peer Review Passed:</strong> Code/configuration reviewed and approved by team members</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod3">
+                                    <label for="dod3"><strong>Automated Tests Pass:</strong> All relevant automated tests execute successfully</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod4">
+                                    <label for="dod4"><strong>Security Validation:</strong> Security controls implemented and validated</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod5">
+                                    <label for="dod5"><strong>Monitoring Configured:</strong> Appropriate monitoring and alerting implemented</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod6">
+                                    <label for="dod6"><strong>Documentation Updated:</strong> Technical documentation and runbooks updated</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod7">
+                                    <label for="dod7"><strong>Deployment Successful:</strong> Changes successfully deployed to target environment</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod8">
+                                    <label for="dod8"><strong>Stakeholder Acceptance:</strong> Product Owner has accepted the completed work</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod9">
+                                    <label for="dod9"><strong>Knowledge Transfer:</strong> Team members trained on new infrastructure components</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="dod10">
+                                    <label for="dod10"><strong>Backup & Recovery Verified:</strong> Backup procedures tested and recovery validated</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <i class="fas fa-clipboard-list"></i> Assessment & Compliance Tools
+                        </div>
+                        <div class="card-content">
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                                    <h4 style="color: #667eea; margin-bottom: 15px;">Story Readiness Score</h4>
+                                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                        <div style="display: flex; justify-content: between; align-items: center;">
+                                            <span>Current Story Assessment</span>
+                                            <span style="font-weight: 700; color: #28a745;">87%</span>
+                                        </div>
+                                        <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-top: 5px;">
+                                            <div style="background: #28a745; height: 100%; width: 87%; border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 14px; color: #6c757d;">8 of 8 DoR criteria met</p>
+                                </div>
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                                    <h4 style="color: #667eea; margin-bottom: 15px;">Completion Quality Score</h4>
+                                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                        <div style="display: flex; justify-content: between; align-items: center;">
+                                            <span>Current Sprint Assessment</span>
+                                            <span style="font-weight: 700; color: #ffc107;">73%</span>
+                                        </div>
+                                        <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-top: 5px;">
+                                            <div style="background: #ffc107; height: 100%; width: 73%; border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 14px; color: #6c757d;">7 of 10 DoD criteria met</p>
+                                </div>
+                            </div>
+                            <div style="margin-top: 20px; padding: 20px; background: #e7f3ff; border-radius: 12px; border-left: 4px solid #0066cc;">
+                                <h5 style="color: #0066cc; margin-bottom: 10px;">💡 Improvement Recommendations</h5>
+                                <ul style="margin-left: 20px; color: #333;">
+                                    <li>Complete automated testing setup for infrastructure deployments</li>
+                                    <li>Enhance monitoring coverage for new cloud services</li>
+                                    <li>Update disaster recovery documentation for recent changes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div id="notesSection" class="notes-section">
+            <div class="notes-header">
+                <h4><i class="fas fa-sticky-note"></i> Notes</h4>
+                <button class="notes-toggle" onclick="toggleNotes()">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+            <textarea id="notesTextarea" class="notes-textarea" placeholder="Add your notes here..."></textarea>
+            <button class="btn btn-primary" onclick="saveNotes()" style="width: 100%; margin-top: 10px;">
+                <i class="fas fa-save"></i> Save Notes
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Tab Management
+        function openTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active from all nav items
+            const navItems = document.querySelectorAll('.tab-nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active to clicked nav item
+            event.target.classList.add('active');
+            
+            // Initialize charts if needed
+            setTimeout(() => {
+                if (tabName === 'overview') {
+                    initRoadmapChart();
+                } else if (tabName === 'planning') {
+                    initPIPlanningChart();
+                } else if (tabName === 'metrics') {
+                    initVelocityChart();
+                }
+            }, 100);
+            
+            // Load notes for current tab
+            loadNotes(tabName);
+        }
+
+        // Framework Details
+        function showFrameworkDetails(framework) {
+            const details = {
+                scrum: {
+                    title: 'Scrum for Infrastructure Teams',
+                    content: `
+                        <h4>Implementation Guidelines:</h4>
+                        <ul>
+                            <li><strong>Sprint Duration:</strong> 2-3 weeks optimal for infrastructure work</li>
+                            <li><strong>Product Owner:</strong> Infrastructure Product Manager or Senior Engineer</li>
+                            <li><strong>Scrum Master:</strong> Agile Coach or experienced team member</li>
+                            <li><strong>Development Team:</strong> 5-9 infrastructure professionals</li>
+                        </ul>
+                        <h4>Ceremonies Adaptation:</h4>
+                        <ul>
+                            <li><strong>Sprint Planning:</strong> Focus on infrastructure deliverables and dependencies</li>
+                            <li><strong>Daily Standups:</strong> Include operational status and blockers</li>
+                            <li><strong>Sprint Review:</strong> Demo infrastructure changes and metrics</li>
+                            <li><strong>Retrospectives:</strong> Continuous improvement of processes and tools</li>
+                        </ul>
+                    `
+                },
+                kanban: {
+                    title: 'Kanban for Infrastructure Operations',
+                    content: `
+                        <h4>Workflow Design:</h4>
+                        <ul>
+                            <li><strong>Columns:</strong> Backlog → Analysis → Implementation → Testing → Deploy → Done</li>
+                            <li><strong>WIP Limits:</strong> Analysis(2), Implementation(3), Testing(2), Deploy(1)</li>
+                            <li><strong>Expedite Lane:</strong> For critical incidents and urgent changes</li>
+                        </ul>
+                        <h4>Metrics & Controls:</h4>
+                        <ul>
+                            <li><strong>Lead Time:</strong> From request to deployment</li>
+                            <li><strong>Cycle Time:</strong> From start to finish of work</li>
+                            <li><strong>Throughput:</strong> Items completed per time period</li>
+                            <li><strong>Flow Efficiency:</strong> Active work time vs. total lead time</li>
+                        </ul>
+                    `
+                },
+                safe: {
+                    title: 'SAFe for Enterprise Infrastructure',
+                    content: `
+                        <h4>Program Level Structure:</h4>
+                        <ul>
+                            <li><strong>Agile Release Train (ART):</strong> Infrastructure Platform Team</li>
+                            <li><strong>Product Manager:</strong> Infrastructure Platform Owner</li>
+                            <li><strong>System Architect:</strong> Enterprise Infrastructure Architect</li>
+                            <li><strong>Release Train Engineer:</strong> Infrastructure Program Manager</li>
+                        </ul>
+                        <h4>PI Planning Focus:</h4>
+                        <ul>
+                            <li><strong>Architecture Runway:</strong> Infrastructure capabilities and technical debt</li>
+                            <li><strong>Program Increments:</strong> 8-12 week infrastructure delivery cycles</li>
+                            <li><strong>Innovation & Planning:</strong> Research, automation, and process improvement</li>
+                            <li><strong>System Demo:</strong> Showcase infrastructure capabilities and improvements</li>
+                        </ul>
+                    `
+                }
+            };
+
+            const detailsDiv = document.getElementById('frameworkDetails');
+            const contentDiv = document.getElementById('frameworkDetailsContent');
+            
+            contentDiv.innerHTML = `
+                <h3>${details[framework].title}</h3>
+                ${details[framework].content}
+            `;
+            
+            detailsDiv.style.display = 'block';
+        }
+
+        // Chart Initialization
+        function initRoadmapChart() {
+            const ctx = document.getElementById('roadmapChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Q1: Foundation', 'Q2: Implementation', 'Q3: Optimization', 'Q4: Scale'],
+                    datasets: [{
+                        label: 'Progress %',
+                        data: [85, 60, 30, 10],
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(118, 75, 162, 0.8)',
+                            'rgba(79, 172, 254, 0.8)',
+                            'rgba(67, 233, 123, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(102, 126, 234, 1)',
+                            'rgba(118, 75, 162, 1)',
+                            'rgba(79, 172, 254, 1)',
+                            'rgba(67, 233, 123, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initPIPlanningChart() {
+            const ctx = document.getElementById('piPlanningChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8', 'Week 9', 'Week 10', 'Week 11', 'Week 12'],
+                    datasets: [
+                        {
+                            label: 'Planned Features',
+                            data: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24],
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            fill: true
+                        },
+                        {
+                            label: 'Delivered Features',
+                            data: [2, 3, 5, 7, 9, 10, 12, 14, 16, 18, 19, 21],
+                            borderColor: 'rgba(67, 233, 123, 1)',
+                            backgroundColor: 'rgba(67, 233, 123, 0.1)',
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Cumulative Features'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initVelocityChart() {
+            const ctx = document.getElementById('velocityChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 4', 'Sprint 5', 'Sprint 6', 'Sprint 7', 'Sprint 8'],
+                    datasets: [
+                        {
+                            label: 'Velocity (Story Points)',
+                            data: [15, 18, 16, 22, 19, 24, 21, 25],
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Throughput (Items)',
+                            data: [8, 10, 9, 12, 11, 14, 12, 15],
+                            borderColor: 'rgba(67, 233, 123, 1)',
+                            backgroundColor: 'rgba(67, 233, 123, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    // maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Notes Management
+        function toggleNotes() {
+            const notesSection = document.getElementById('notesSection');
+            const toggleIcon = document.querySelector('.notes-toggle i');
+            
+            notesSection.classList.toggle('minimized');
+            
+            if (notesSection.classList.contains('minimized')) {
+                toggleIcon.className = 'fas fa-plus';
+            } else {
+                toggleIcon.className = 'fas fa-minus';
+            }
+        }
+
+        function saveNotes() {
+            const activeTab = document.querySelector('.tab-content.active').id;
+            const notes = document.getElementById('notesTextarea').value;
+            
+            localStorage.setItem(`agile-notes-${activeTab}`, notes);
+            
+            // Show success feedback
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Saved!';
+            button.style.backgroundColor = '#28a745';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.backgroundColor = '#667eea';
+            }, 2000);
+        }
+
+        function loadNotes(tabName) {
+            const notes = localStorage.getItem(`agile-notes-${tabName}`) || '';
+            document.getElementById('notesTextarea').value = notes;
+        }
+
+        // Export Functionality
+        function exportTab(tabName) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.text('Agile Operating Model for Infrastructure Teams', 20, 20);
+            
+            // Add tab-specific content
+            doc.setFontSize(16);
+            const tabTitles = {
+                overview: 'Overview & Model Layers',
+                frameworks: 'Agile Frameworks for Infrastructure',
+                squads: 'Squad Setup & Structure',
+                planning: 'Program Increment Planning Model',
+                metrics: 'Sprint Metrics & Performance Dashboard',
+                backlog: 'Backlog Management & Workflow Examples',
+                definition: 'Definition of Ready & Definition of Done'
+            };
+            
+            doc.text(tabTitles[tabName], 20, 40);
+            
+            // Add notes if available
+            const notes = localStorage.getItem(`agile-notes-${tabName}`);
+            if (notes) {
+                doc.setFontSize(14);
+                doc.text('Notes:', 20, 60);
+                doc.setFontSize(12);
+                const splitNotes = doc.splitTextToSize(notes, 170);
+                doc.text(splitNotes, 20, 70);
+            }
+            
+            // Add timestamp
+            doc.setFontSize(10);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, doc.internal.pageSize.height - 10);
+            
+            // Save PDF
+            doc.save(`agile-operating-model-${tabName}.pdf`);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initRoadmapChart();
+            loadNotes('overview');
+            
+            // Load saved checkbox states
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                const saved = localStorage.getItem(checkbox.id);
+                if (saved === 'true') {
+                    checkbox.checked = true;
+                }
+                
+                checkbox.addEventListener('change', function() {
+                    localStorage.setItem(this.id, this.checked);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
