@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISP Transformation Strategy - VP Technology</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-top: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem 2rem 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        /* STICKY TAB NAVIGATION */
+        .tab-navigation {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 1rem 1.5rem;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s ease;
+            border-bottom: 4px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .tab-btn i {
+            font-size: 1.3rem;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: #f8f9fa;
+            color: #667eea;
+        }
+
+        .tab-btn:hover i {
+            transform: scale(1.2);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom: 4px solid #ffd700;
+        }
+
+        .tab-btn.active i {
+            color: #ffd700;
+        }
+
+        /* CONTENT AREA */
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            margin-bottom: 2rem;
+        }
+
+        .section-heading {
+            font-size: 2rem;
+            color: #1e3c72;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .subsection-heading {
+            font-size: 1.5rem;
+            color: #2a5298;
+            margin: 2rem 0 1rem 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subsection-heading i {
+            color: #667eea;
+        }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* METRIC CARDS */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .metric-card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .metric-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .metric-card p {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        /* HIGHLIGHTED BOXES */
+        .highlight-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .highlight-box h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .highlight-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .highlight-box li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .highlight-box li::before {
+            content: '✓';
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* PHASE CARDS */
+        .phase-container {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .phase-card {
+            background: white;
+            border-left: 6px solid #667eea;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .phase-card:nth-child(2) {
+            border-left-color: #764ba2;
+        }
+
+        .phase-card:nth-child(3) {
+            border-left-color: #10b981;
+        }
+
+        .phase-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .phase-card h3 {
+            color: #1e3c72;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phase-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .phase-card li {
+            padding: 0.5rem 0;
+            color: #555;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .phase-card li::before {
+            content: '▸';
+            color: #667eea;
+            font-weight: bold;
+            margin-top: 0.2rem;
+        }
+
+        /* LIST STYLING */
+        .styled-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .styled-list li {
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .styled-list li:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .styled-list li i {
+            color: #667eea;
+        }
+
+        /* STORY SECTION */
+        .story-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .story-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .story-section p {
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-item {
+            background: rgba(255,255,255,0.15);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .result-item h4 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #ffd700;
+        }
+
+        .result-item p {
+            font-size: 0.95rem;
+        }
+
+        /* COMPONENTS GRID */
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .component-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .component-item:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .component-item i {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .component-item:hover i {
+            color: white;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .tab-btn {
+                min-width: 100px;
+                padding: 0.8rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .tab-btn i {
+                font-size: 1rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .section-heading {
+                font-size: 1.5rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ORG STRUCTURE GRID */
+        .org-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .org-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .org-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .org-item i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .org-item h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-rocket"></i> ISP Transformation Strategy</h1>
+        <p>VP Technology - Leadership Presentation</p>
+    </div>
+
+    <!-- STICKY TAB NAVIGATION -->
+    <div class="tab-navigation">
+        <button class="tab-btn active" onclick="showTab(0)">
+            <i class="fas fa-robot"></i>
+            <span>Automation</span>
+        </button>
+        <button class="tab-btn" onclick="showTab(1)">
+            <i class="fas fa-shield-alt"></i>
+            <span>Security</span>
+        </button>
+        <button class="tab-btn" onclick="showTab(2)">
+            <i class="fas fa-sitemap"></i>
+            <span>Org Structure</span>
+        </button>
+        <button class="tab-btn" onclick="showTab(3)">
+            <i class="fas fa-chart-line"></i>
+            <span>Investment</span>
+        </button>
+        <button class="tab-btn" onclick="showTab(4)">
+            <i class="fas fa-road"></i>
+            <span>Roadmap</span>
+        </button>
+        <button class="tab-btn" onclick="showTab(5)">
+            <i class="fas fa-user-tie"></i>
+            <span>Leadership</span>
+        </button>
+        <button class="tab-btn" onclick="showTab(6)">
+            <i class="fas fa-star"></i>
+            <span>Success Story</span>
+        </button>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- TAB 1: AUTOMATION -->
+        <div class="tab-content active">
+            <div class="content-card">
+                <h2 class="section-heading">Automation Enables Scale — Scale Enables Profitability.</h2>
+                
+                <h3 class="subsection-heading"><i class="fas fa-bullseye"></i> Automation Targets</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Area</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="fas fa-user-plus"></i> Subscriber provisioning</td>
+                            <td><strong>100% automated</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-server"></i> OLT onboarding</td>
+                            <td><strong>80% automated</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-cogs"></i> Config deployment</td>
+                            <td><strong>90% via IaC</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-wrench"></i> Fault healing</td>
+                            <td><strong>40% self-healed</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-map-marked-alt"></i> Field dispatch</td>
+                            <td><strong>Auto-ticket + GIS route</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-piggy-bank"></i> Example Savings</h3>
+                    <ul>
+                        <li><strong>Field ops:</strong> 20–30% reduction</li>
+                        <li><strong>Config errors:</strong> 60% reduction</li>
+                        <li><strong>Manual workload:</strong> 75% reduction</li>
+                    </ul>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>100%</h3>
+                        <p>Subscriber Provisioning Automation</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>90%</h3>
+                        <p>Infrastructure as Code Deployment</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-tools"></i>
+                        <h3>75%</h3>
+                        <p>Manual Workload Reduction</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: SECURITY -->
+        <div class="tab-content">
+            <div class="content-card">
+                <h2 class="section-heading">Security Built Into the Network, Not Added Later.</h2>
+                
+                <h3 class="subsection-heading"><i class="fas fa-lock"></i> Security Components</h3>
+                
+                <div class="components-grid">
+                    <div class="component-item">
+                        <i class="fas fa-user-shield"></i>
+                        <h4>Zero Trust AAA</h4>
+                    </div>
+                    <div class="component-item">
+                        <i class="fas fa-key"></i>
+                        <h4>Multi-factor for NMS</h4>
+                    </div>
+                    <div class="component-item">
+                        <i class="fas fa-sync-alt"></i>
+                        <h4>TACACS/RADIUS Redundancy</h4>
+                    </div>
+                    <div class="component-item">
+                        <i class="fas fa-network-wired"></i>
+                        <h4>CGNAT Security Baselines</h4>
+                    </div>
+                    <div class="component-item">
+                        <i class="fas fa-filter"></i>
+                        <h4>ACL + NetFlow Monitoring</h4>
+                    </div>
+                    <div class="component-item">
+                        <i class="fas fa-shield-virus"></i>
+                        <h4>DDoS Detection & Scrubbing</h4>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-trophy"></i> Target Outcome</h3>
+                    <p style="font-size: 1.5rem; text-align: center; margin: 1rem 0;"><strong>0 P1 Security Incidents in 12 Months</strong></p>
+                </div>
+
+                <ul class="styled-list">
+                    <li><i class="fas fa-check-double"></i> Comprehensive Zero Trust architecture across all network layers</li>
+                    <li><i class="fas fa-check-double"></i> Redundant authentication systems ensuring 99.99% uptime</li>
+                    <li><i class="fas fa-check-double"></i> Real-time threat detection and automated response</li>
+                    <li><i class="fas fa-check-double"></i> Baseline security configurations enforced via automation</li>
+                    <li><i class="fas fa-check-double"></i> Continuous monitoring and traffic analysis</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAB 3: ORG STRUCTURE -->
+        <div class="tab-content">
+            <div class="content-card">
+                <h2 class="section-heading">Structure Matters: Org Design Drives Reliability.</h2>
+                
+                <h3 class="subsection-heading"><i class="fas fa-users"></i> Functional Org Design (for a 1–2M ISP)</h3>
+                
+                <div class="org-grid">
+                    <div class="org-item">
+                        <i class="fas fa-drafting-compass"></i>
+                        <h4>Network Architecture</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-project-diagram"></i>
+                        <h4>Core & Peering Engineering</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-city"></i>
+                        <h4>Metro & Access Engineering</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-headset"></i>
+                        <h4>NOC Operations (24/7)</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-hard-hat"></i>
+                        <h4>Field Operations</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-robot"></i>
+                        <h4>Automation & Tools</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-brain"></i>
+                        <h4>AIOps & Data</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-user-secret"></i>
+                        <h4>Security Engineering</h4>
+                    </div>
+                </div>
+
+                <h3 class="subsection-heading"><i class="fas fa-chart-bar"></i> Approximate Team Size</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <i class="fas fa-users"></i>
+                        <h3>250–350</h3>
+                        <p>Total field + ops + engineering</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-code"></i>
+                        <h3>20–30</h3>
+                        <p>Automation & data specialists</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-user-graduate"></i>
+                        <h3>10–15</h3>
+                        <p>Architects & senior specialists</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-lightbulb"></i> Key Organizational Principles</h3>
+                    <ul>
+                        <li>Clear separation of duties and responsibilities</li>
+                        <li>24/7 operations coverage with skilled NOC teams</li>
+                        <li>Dedicated automation and AIOps teams for continuous improvement</li>
+                        <li>Security embedded across all functions</li>
+                        <li>Scalable structure supporting 1–2M subscribers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: INVESTMENT -->
+        <div class="tab-content">
+            <div class="content-card">
+                <h2 class="section-heading">Optimizing CapEx and OpEx while Scaling.</h2>
+                
+                <h3 class="subsection-heading"><i class="fas fa-dollar-sign"></i> CapEx Focus</h3>
+                <ul class="styled-list">
+                    <li><i class="fas fa-microchip"></i> <strong>400G core upgrades</strong> - Next-gen backbone capacity</li>
+                    <li><i class="fas fa-server"></i> <strong>OLT expansion</strong> - Support subscriber growth</li>
+                    <li><i class="fas fa-ethernet"></i> <strong>Fiber reinforcement</strong> - Infrastructure resilience</li>
+                    <li><i class="fas fa-database"></i> <strong>CDN caching nodes</strong> - Enhanced content delivery</li>
+                </ul>
+
+                <h3 class="subsection-heading"><i class="fas fa-piggy-bank"></i> OpEx Savings</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <i class="fas fa-robot"></i>
+                        <h3>20%</h3>
+                        <p>Savings through Automation</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-wrench"></i>
+                        <h3>15%</h3>
+                        <p>Predictive Maintenance</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-leaf"></i>
+                        <h3>10%</h3>
+                        <p>Energy Management</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-trophy"></i> Return on Investment</h3>
+                    <p style="font-size: 1.8rem; text-align: center; margin: 1rem 0; font-weight: 700;">
+                        Full Transformation ROI in 18–24 Months
+                    </p>
+                </div>
+
+                <h3 class="subsection-heading"><i class="fas fa-calculator"></i> Financial Impact Summary</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Investment Type</th>
+                            <th>Expected Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Infrastructure</td>
+                            <td>CapEx</td>
+                            <td>2x capacity, future-proof for 5 years</td>
+                        </tr>
+                        <tr>
+                            <td>Automation</td>
+                            <td>OpEx Reduction</td>
+                            <td>20% annual savings</td>
+                        </tr>
+                        <tr>
+                            <td>Maintenance</td>
+                            <td>OpEx Reduction</td>
+                            <td>15% through predictive approach</td>
+                        </tr>
+                        <tr>
+                            <td>Energy</td>
+                            <td>OpEx Reduction</td>
+                            <td>10% through smart management</td>
+                        </tr>
+                        <tr>
+                            <td>Overall ROI</td>
+                            <td>Combined</td>
+                            <td><strong>Positive in 18–24 months</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 5: ROADMAP -->
+        <div class="tab-content">
+            <div class="content-card">
+                <h2 class="section-heading">The 24-Month ISP Transformation Roadmap</h2>
+                
+                <div class="phase-container">
+                    <div class="phase-card">
+                        <h3><i class="fas fa-flag"></i> Phase 1 — Stabilize (0–6 months)</h3>
+                        <ul>
+                            <li>Reliability audit across all cities</li>
+                            <li>Deploy Experience Score baseline</li>
+                            <li>Start IPv6 rollout</li>
+                            <li>Auto-ticketing in NOC</li>
+                            <li>Create golden configs for OLT/BNG</li>
+                        </ul>
+                    </div>
+
+                    <div class="phase-card">
+                        <h3><i class="fas fa-rocket"></i> Phase 2 — Modernize (6–12 months)</h3>
+                        <ul>
+                            <li>Metro ring upgrades</li>
+                            <li>Core DC resilience upgrades</li>
+                            <li>AIOps deployment</li>
+                            <li>Subscriber auto-onboarding</li>
+                            <li>OTT traffic steering improvements</li>
+                        </ul>
+                    </div>
+
+                    <div class="phase-card">
+                        <h3><i class="fas fa-trophy"></i> Phase 3 — Scale & Differentiate (12–24 months)</h3>
+                        <ul>
+                            <li>Full automation (80%+)</li>
+                            <li>XGS-PON pilots</li>
+                            <li>400G backbone migration</li>
+                            <li>Smart Wi-Fi optimization for homes</li>
+                            <li>Achieve NPS 35+</li>
+                            <li>Achieve 99.99% reliability across all cities</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-bullseye"></i> Ultimate Goals by Month 24</h3>
+                    <ul>
+                        <li><strong>99.99% network reliability</strong> across all cities</li>
+                        <li><strong>NPS score of 35+</strong> - Industry-leading customer satisfaction</li>
+                        <li><strong>80%+ full automation</strong> - Operational excellence</li>
+                        <li><strong>Next-gen infrastructure</strong> - XGS-PON and 400G ready</li>
+                        <li><strong>Smart home experience</strong> - AI-optimized Wi-Fi</li>
+                    </ul>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>0-6</h3>
+                        <p>Months: Stabilize Foundation</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-tools"></i>
+                        <h3>6-12</h3>
+                        <p>Months: Modernize Infrastructure</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>12-24</h3>
+                        <p>Months: Scale & Differentiate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: LEADERSHIP -->
+        <div class="tab-content">
+            <div class="content-card">
+                <h2 class="section-heading">What I Will Bring As VP – Technology</h2>
+                
+                <h3 class="subsection-heading"><i class="fas fa-award"></i> Proven Track Record</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: #555; margin-bottom: 2rem;">
+                    I bring a proven record of building world-class technology organizations and transforming network operations at scale. My experience spans multiple domains critical to modern ISP success.
+                </p>
+
+                <div class="org-grid">
+                    <div class="org-item">
+                        <i class="fas fa-network-wired"></i>
+                        <h4>Highly Reliable Infrastructures</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-brain"></i>
+                        <h4>AI-First Operations</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-robot"></i>
+                        <h4>Automation Platforms</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-satellite-dish"></i>
+                        <h4>Next-Gen NOCs</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-users-cog"></i>
+                        <h4>Cross-Functional Leadership</h4>
+                    </div>
+                    <div class="org-item">
+                        <i class="fas fa-globe-americas"></i>
+                        <h4>City & Global Scale</h4>
+                    </div>
+                </div>
+
+                <h3 class="subsection-heading"><i class="fas fa-bullseye"></i> My Commitments to This Organization</h3>
+                
+                <div class="story-section">
+                    <h3><i class="fas fa-handshake"></i> Strategic Commitments</h3>
+                    <p><i class="fas fa-check-circle"></i> <strong>Transform us into the most reliable ISP</strong> in our market segment, setting new industry standards.</p>
+                    <p><i class="fas fa-check-circle"></i> <strong>Deliver consistent 99.99%+ reliability</strong> across all cities, ensuring customer trust and satisfaction.</p>
+                    <p><i class="fas fa-check-circle"></i> <strong>Reduce OpEx through automation</strong> by implementing intelligent systems that scale efficiently.</p>
+                    <p><i class="fas fa-check-circle"></i> <strong>Double subscriber base with linear cost</strong> growth, achieving unprecedented operational efficiency.</p>
+                    <p><i class="fas fa-check-circle"></i> <strong>Build a network the customer can trust every day</strong>, creating lasting competitive advantage.</p>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <i class="fas fa-medal"></i>
+                        <h3>99.99%</h3>
+                        <p>Target Reliability Across All Cities</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-users"></i>
+                        <h3>2x</h3>
+                        <p>Subscriber Growth with Linear Costs</p>
+                    </div>
+                    <div class="metric-card">
+                        <i class="fas fa-heart"></i>
+                        <h3>35+</h3>
+                        <p>Net Promoter Score Target</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-lightbulb"></i> Leadership Philosophy</h3>
+                    <ul>
+                        <li>Lead with data and metrics, not assumptions</li>
+                        <li>Build empowered, cross-functional teams</li>
+                        <li>Automate relentlessly, optimize continuously</li>
+                        <li>Customer experience drives every technical decision</li>
+                        <li>Foster innovation culture with calculated risk-taking</li>
+                        <li>Transparent communication across all levels</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 7: SUCCESS STORY -->
+        <div class="tab-content">
+            <div class="content-card">
+                <h2 class="section-heading">How Smart Strategy Eliminated Chronic Complaints in City A</h2>
+                
+                <div class="story-section">
+                    <h3><i class="fas fa-exclamation-triangle"></i> The Challenge</h3>
+                    <p>
+                        <strong>3 areas in City A had chronic buffering complaints for 2 years.</strong>
+                    </p>
+                    <p>
+                        Customers were frustrated, NPS was declining, and traditional troubleshooting approaches had failed repeatedly. The situation was impacting brand reputation and customer retention in a key market.
+                    </p>
+                </div>
+
+                <h3 class="subsection-heading"><i class="fas fa-chess"></i> Your Strategy Applied</h3>
+                
+                <ul class="styled-list">
+                    <li><i class="fas fa-project-diagram"></i> <strong>Core Traffic Engineering (TE)</strong> - Optimized routing and load balancing</li>
+                    <li><i class="fas fa-ring"></i> <strong>Metro ring upgrades</strong> - Eliminated bandwidth bottlenecks</li>
+                    <li><i class="fas fa-chart-area"></i> <strong>ONT replacement prediction</strong> - Proactively identified failing equipment</li>
+                    <li><i class="fas fa-wifi"></i> <strong>Wi-Fi optimization algorithms</strong> - Improved in-home experience</li>
+                </ul>
+
+                <h3 class="subsection-heading"><i class="fas fa-trophy"></i> Results</h3>
+                
+                <div class="results-grid">
+                    <div class="result-item">
+                        <h4>92%</h4>
+                        <p>Complaints Dropped</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">In just 8 weeks</p>
+                    </div>
+                    <div class="result-item">
+                        <h4>+14</h4>
+                        <p>NPS Increase</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">Points gained</p>
+                    </div>
+                    <div class="result-item">
+                        <h4>0</h4>
+                        <p>Chronic Users</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">For 3+ months</p>
+                    </div>
+                    <div class="result-item">
+                        <h4>8 Weeks</h4>
+                        <p>Time to Resolution</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">After 2 years of issues</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3><i class="fas fa-key"></i> Key Success Factors</h3>
+                    <ul>
+                        <li><strong>Data-driven approach</strong> - Used analytics to identify root causes</li>
+                        <li><strong>Multi-layer strategy</strong> - Addressed issues from core to customer premises</li>
+                        <li><strong>Predictive maintenance</strong> - Prevented failures before they impacted customers</li>
+                        <li><strong>Rapid execution</strong> - Transformed situation in just 8 weeks</li>
+                        <li><strong>Sustainable solution</strong> - Zero chronic complaints for 3+ months and counting</li>
+                    </ul>
+                </div>
+
+                <h3 class="subsection-heading"><i class="fas fa-lightbulb"></i> Lessons Learned</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Challenge</th>
+                            <th>Solution Applied</th>
+                            <th>Outcome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chronic buffering in 3 areas</td>
+                            <td>Core TE optimization</td>
+                            <td>Eliminated routing bottlenecks</td>
+                        </tr>
+                        <tr>
+                            <td>Bandwidth constraints</td>
+                            <td>Metro ring upgrades</td>
+                            <td>Increased capacity 3x</td>
+                        </tr>
+                        <tr>
+                            <td>Failing ONT devices</td>
+                            <td>Predictive replacement</td>
+                            <td>Proactive resolution before failures</td>
+                        </tr>
+                        <tr>
+                            <td>Poor in-home Wi-Fi</td>
+                            <td>AI-based optimization</td>
+                            <td>Improved signal quality 40%</td>
+                        </tr>
+                        <tr>
+                            <td>Low customer satisfaction</td>
+                            <td>Comprehensive approach</td>
+                            <td>NPS improved +14 points</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="story-section">
+                    <h3><i class="fas fa-quote-left"></i> The Impact</h3>
+                    <p>
+                        This transformation demonstrates the power of strategic, data-driven network optimization combined with modern engineering practices. What seemed like an intractable problem for 2 years was resolved in 8 weeks with the right approach.
+                    </p>
+                    <p>
+                        <strong>This is the kind of transformation I will bring to every aspect of our network operations.</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(index) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab content
+            contents[index].classList.add('active');
+            buttons[index].classList.add('active');
+
+            // Smooth scroll to top of content
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Add smooth scrolling behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial animation
+            document.querySelector('.tab-content.active').style.opacity = '1';
+            
+            // Add intersection observer for fade-in effects
+            const cards = document.querySelectorAll('.content-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+
+      <script>
+        const createFloatingBall = ()=>{let a=document.createElement("style");a.textContent=`
+          .fellou-floating-ball {
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background: #fff;
+              border-radius: 50%;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+              display: flex;
+              gap: 8px;
+              flex-direction: row;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              transition: all 0.15s ease;
+              z-index: 100000;
+              width: 28px;
+              height: 28px;
+              text-align: center;
+              border: 2px solid #f4f4f4;
+          }
+
+          .fellou-floating-ball:hover {
+              width: 140px;
+              border-radius: 99px;
+          }
+
+          .fellou-floating-ball svg {
+              width: 16px;
+              height: 16px;
+          }
+
+          .fellou-floating-ball-text {
+              display: none;
+              width: 0px;
+              transition: width 0.3s ease;
+              color: #595561;
+              font-size: 12px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 20px;
+              white-space: nowrap;
+              overflow: hidden;
+           
+          }
+
+          .fellou-floating-ball:hover .fellou-floating-ball-text {
+              display: block;
+              width: 100px;
+          }
+      `,document.head.appendChild(a);let b=document.createElement("div");b.className="fellou-floating-ball",b.addEventListener("click",()=>{window.open("https://fellou.ai","_blank")}),b.innerHTML=`
+          <svg width="16" height="16" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path opacity="0.72" d="M108.71 15.909C133.671 36.8541 134.337 77.1554 110.197 105.924C86.0565 134.694 46.2518 141.036 21.2904 120.091C-3.67096 99.1459 -4.33674 58.8446 19.8034 30.0755C43.9435 1.30644 83.7482 -5.03614 108.71 15.909ZM102.282 23.5694C81.8118 6.39315 48.2407 11.7425 27.4638 36.5034C6.68694 61.2643 7.24845 95.2543 27.7183 112.431C48.1882 129.607 81.7593 124.258 102.536 99.4966C123.313 74.7357 122.752 40.7457 102.282 23.5694Z" fill="url(#paint0_linear_34_1408)"/>
+              <path d="M116.986 29.3811C141.525 49.9712 143.286 88.2698 120.921 114.924C98.5561 141.577 60.5333 146.493 35.995 125.903C11.4567 105.313 9.69493 67.0139 32.06 40.3602C54.4252 13.7065 92.4479 8.79095 116.986 29.3811ZM110.558 37.0415C90.3987 20.1255 58.6488 24.2301 39.7205 46.788C20.7921 69.346 22.2632 101.326 42.4229 118.242C62.5825 135.158 94.3324 131.054 113.261 108.496C132.189 85.9377 130.718 53.9574 110.558 37.0415Z" fill="url(#paint1_linear_34_1408)"/>
+              <path d="M131.544 35.0694C155.71 55.3471 155.731 95.1074 131.591 123.876C107.451 152.646 68.291 159.529 44.1249 139.251C19.9589 118.974 19.9379 79.2135 44.078 50.4444C68.2182 21.6753 107.378 14.7917 131.544 35.0694ZM125.116 42.7299C105.505 26.2745 72.5526 32.067 51.7385 56.8723C30.9244 81.6776 30.9421 115.136 50.5528 131.591C70.1636 148.046 103.116 142.254 123.931 117.449C144.745 92.6433 144.727 59.1852 125.116 42.7299Z" fill="url(#paint2_linear_34_1408)"/>
+              <defs>
+                  <linearGradient id="paint0_linear_34_1408" x1="108.71" y1="15.909" x2="21.2904" y2="120.091" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint1_linear_34_1408" x1="116.986" y1="29.381" x2="35.995" y2="125.903" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint2_linear_34_1408" x1="131.544" y1="35.0694" x2="44.1249" y2="139.251" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8"/>
+                      <stop offset="0.5" stop-color="#FF9000"/>
+                      <stop offset="1" stop-color="#33B3FF"/>
+                  </linearGradient>
+              </defs>
+          </svg>
+      `;let c=document.createElement("div");c.className="fellou-floating-ball-text",c.textContent="powered by fellou",b.appendChild(c),document.body.appendChild(b)};
+        // Call createFloatingBall when the page loads
+        window.addEventListener('load', createFloatingBall);
+      </script>
+    </body>
+</html>

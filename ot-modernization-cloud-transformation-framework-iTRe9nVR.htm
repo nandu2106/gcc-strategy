@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OT Modernization & Cloud Transformation Framework</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0066cc;
+            --dark-blue: #003d7a;
+            --light-blue: #4da6ff;
+            --orange: #ff6b35;
+            --dark-gray: #2c3e50;
+            --medium-gray: #546e7a;
+            --light-gray: #eceff1;
+            --white: #ffffff;
+            --success-green: #28a745;
+            --warning-orange: #ff9800;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+            color: var(--white);
+            padding: 2rem 2rem 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        /* Sticky Tab Navigation */
+        .tab-navigation {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
+        }
+
+        .tab-button {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem 1.5rem;
+            background: var(--white);
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--medium-gray);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-button i {
+            font-size: 1.5rem;
+        }
+
+        .tab-button:hover {
+            background: var(--light-gray);
+            color: var(--primary-blue);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            color: var(--white);
+            border-bottom: 3px solid var(--orange);
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-blue) 100%);
+            color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--orange);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subsection {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .subsection-title {
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .checkmark-list {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checkmark-list li:before {
+            content: "✔ ";
+            color: var(--success-green);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 5px solid var(--orange);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box strong {
+            color: var(--orange);
+            font-size: 1.1rem;
+        }
+
+        .outcome-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 5px solid var(--success-green);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .outcome-box strong {
+            color: var(--success-green);
+            font-size: 1.1rem;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, var(--primary-blue) 100%);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        tr:hover {
+            background: var(--light-gray);
+        }
+
+        /* Maturity Levels */
+        .maturity-level {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 6px solid var(--primary-blue);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .maturity-level.level-1 {
+            border-left-color: #e74c3c;
+        }
+
+        .maturity-level.level-2 {
+            border-left-color: #e67e22;
+        }
+
+        .maturity-level.level-3 {
+            border-left-color: #f39c12;
+        }
+
+        .maturity-level.level-4 {
+            border-left-color: #3498db;
+        }
+
+        .maturity-level.level-5 {
+            border-left-color: #27ae60;
+        }
+
+        .maturity-level h3 {
+            color: var(--dark-blue);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-primary {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .badge-warning {
+            background: var(--warning-orange);
+            color: var(--white);
+        }
+
+        .badge-success {
+            background: var(--success-green);
+            color: var(--white);
+        }
+
+        /* Grid Layout for Cards */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .mini-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--primary-blue);
+        }
+
+        .mini-card h4 {
+            color: var(--dark-blue);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        /* Tech Stack Styling */
+        .tech-item {
+            background: linear-gradient(135deg, var(--light-gray) 0%, #b0bec5 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .tech-item strong {
+            color: var(--dark-blue);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .tab-button {
+                min-width: 120px;
+                padding: 0.8rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .tab-button i {
+                font-size: 1.2rem;
+            }
+
+            .content-container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .subsection {
+                margin-left: 0.5rem;
+            }
+        }
+
+        /* Icons Color Coding */
+        .icon-discovery { color: #3498db; }
+        .icon-maturity { color: #9b59b6; }
+        .icon-roadmap { color: #e67e22; }
+        .icon-operating { color: #1abc9c; }
+        .icon-kpi { color: #e74c3c; }
+        .icon-technical { color: #34495e; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>OT Modernization & Cloud Transformation Framework</h1>
+        <p>From Legacy SCADA to Cloud-Native Industrial Operations</p>
+    </div>
+
+    <!-- Sticky Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-button active" onclick="switchTab(0)">
+            <i class="fas fa-search icon-discovery"></i>
+            <span>Phase 1: Discovery</span>
+        </button>
+        <button class="tab-button" onclick="switchTab(1)">
+            <i class="fas fa-chart-line icon-maturity"></i>
+            <span>Phase 2: Maturity</span>
+        </button>
+        <button class="tab-button" onclick="switchTab(2)">
+            <i class="fas fa-cloud icon-roadmap"></i>
+            <span>Phase 3: Roadmap</span>
+        </button>
+        <button class="tab-button" onclick="switchTab(3)">
+            <i class="fas fa-users-cog icon-operating"></i>
+            <span>Phase 4: Operating Model</span>
+        </button>
+        <button class="tab-button" onclick="switchTab(4)">
+            <i class="fas fa-chart-bar icon-kpi"></i>
+            <span>Phase 5: KPIs</span>
+        </button>
+        <button class="tab-button" onclick="switchTab(5)">
+            <i class="fas fa-book icon-technical"></i>
+            <span>Phase 6: Tech Reference</span>
+        </button>
+    </div>
+
+    <!-- Content Container -->
+    <div class="content-container">
+        
+        <!-- TAB 1: PHASE 1 — OT Discovery & Assessment -->
+        <div class="tab-content active" id="tab-0">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-search"></i> PHASE 1 — OT Discovery & Assessment</h2>
+                    <p><strong>Goal:</strong> Get a complete picture of all current OT assets, systems, dependencies, risks, and gaps.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Critical Context:</strong>
+                    <p>This phase is critical because OT environments are hardened, legacy-heavy, and often undocumented.</p>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-calendar-alt"></i> 1.1 Create an OT Visibility Program (First 30–60 Days)</h3>
+                    
+                    <div class="subsection">
+                        <h4 class="subsection-title">✔ Step 1 — OT Asset Baseline</h4>
+                        <p><strong>Build a full inventory of:</strong></p>
+                        <ul>
+                            <li>PLCs, RTUs, SCADA servers</li>
+                            <li>Chillers, HVAC units, compressors</li>
+                            <li>Sensors, controllers</li>
+                            <li>Industrial gateways</li>
+                            <li>OT firewalls & switches</li>
+                            <li>BMS systems</li>
+                            <li>Vendor connections (OEM access)</li>
+                            <li>Existing IoT platforms (if any)</li>
+                        </ul>
+
+                        <div class="grid-2">
+                            <div class="mini-card">
+                                <h4><i class="fas fa-tools"></i> Methods</h4>
+                                <ul class="checkmark-list">
+                                    <li>Use network discovery tools (Claroty, Nozomi, Armis)</li>
+                                    <li>Passive scanning only (no active scanning due to OT safety)</li>
+                                    <li>Coordinate with plant engineers</li>
+                                    <li>Map every device with: model, firmware, vendor, protocol</li>
+                                </ul>
+                            </div>
+                            <div class="mini-card">
+                                <h4><i class="fas fa-layer-group"></i> Device Mapping</h4>
+                                <p>Every device must be documented with:</p>
+                                <ul>
+                                    <li><span class="badge badge-primary">Model</span></li>
+                                    <li><span class="badge badge-primary">Firmware</span></li>
+                                    <li><span class="badge badge-primary">Vendor</span></li>
+                                    <li><span class="badge badge-primary">Protocol</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-network-wired"></i> 1.2 Map All OT Networks & Data Flows</h3>
+                    
+                    <div class="subsection">
+                        <p><strong>Create a blueprint of:</strong></p>
+                        <ul>
+                            <li>Layer 0/1 devices</li>
+                            <li>Control networks</li>
+                            <li>Segmentation boundaries</li>
+                            <li>OT VLANs</li>
+                            <li>Connections to IT networks</li>
+                            <li>Remote vendor access</li>
+                            <li>Cloud or external connectivity (if any)</li>
+                        </ul>
+
+                        <div class="grid-3">
+                            <div class="mini-card">
+                                <h4><i class="fas fa-cog"></i> Tools</h4>
+                                <ul>
+                                    <li>Nozomi Guardian</li>
+                                    <li>Claroty Continuous Threat Detection</li>
+                                    <li>Manual network diagrams from plant teams</li>
+                                </ul>
+                            </div>
+                            <div class="mini-card">
+                                <h4><i class="fas fa-file-alt"></i> Deliverable</h4>
+                                <p>A single "OT Network Topology Map" per site <strong>AND</strong> global.</p>
+                            </div>
+                            <div class="mini-card">
+                                <h4><i class="fas fa-shield-alt"></i> Safety First</h4>
+                                <p>Use passive monitoring only to avoid disrupting critical OT operations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-server"></i> 1.3 OT Application & SCADA Assessment</h3>
+                    
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-search-plus"></i> Scan</h4>
+                            <ul>
+                                <li>SCADA software versions</li>
+                                <li>Historian servers</li>
+                                <li>BMS software versions</li>
+                                <li>Protocols used (Modbus, BACnet, OPC-UA)</li>
+                                <li>Interfaces to ERP or analytics systems</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-clipboard-check"></i> Assess</h4>
+                            <ul>
+                                <li>Patch levels</li>
+                                <li>Proprietary vendor systems</li>
+                                <li>Custom scripts</li>
+                                <li>Hard-coded logic that prevents modernization</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-lock"></i> 1.4 Security Posture Assessment</h3>
+                    
+                    <p><strong>Evaluate:</strong></p>
+                    <div class="grid-3">
+                        <div class="mini-card">
+                            <span class="badge badge-warning">Network</span>
+                            <ul>
+                                <li>Segmentation gaps</li>
+                                <li>Shared credentials</li>
+                                <li>Unmonitored vendor access</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <span class="badge badge-warning">Access Control</span>
+                            <ul>
+                                <li>Lack of MFA/JIT access</li>
+                                <li>Legacy OS in SCADA (Windows 7/XP)</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <span class="badge badge-warning">Monitoring</span>
+                            <ul>
+                                <li>Missing SIEM visibility</li>
+                                <li>No Zero Trust adoption</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-database"></i> 1.5 OT Data Assessment</h3>
+                    
+                    <p><strong>Identify:</strong></p>
+                    <ul>
+                        <li><strong>What data is generated:</strong> Sensor readings, equipment status, operational metrics</li>
+                        <li><strong>Where it is stored:</strong> On-prem historian or cloud</li>
+                        <li><strong>Format:</strong> Time-series, sensor readings, logs</li>
+                        <li><strong>Quality of data:</strong> Accuracy, completeness, consistency</li>
+                        <li><strong>Frequency:</strong> Every second/minute/hour</li>
+                        <li><strong>Existing predictive models:</strong> If any</li>
+                    </ul>
+                </div>
+
+                <div class="outcome-box">
+                    <strong><i class="fas fa-bullseye"></i> Outcome of Phase 1:</strong>
+                    <p>You now have the baseline, which fuels the maturity model. Complete visibility into OT assets, networks, applications, security posture, and data landscape.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: PHASE 2 — OT Maturity Model -->
+        <div class="tab-content" id="tab-1">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-line"></i> PHASE 2 — OT Maturity Model (5 Levels)</h2>
+                    <p>This model shows the current state vs desired state across all factories/global business units.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <strong><i class="fas fa-info-circle"></i> OT Modernization Maturity Framework (VP-Level)</strong>
+                    <p>Assess your organization's current maturity level and define the target state for digital transformation.</p>
+                </div>
+
+                <div class="maturity-level level-1">
+                    <h3><i class="fas fa-exclamation-circle"></i> Level 1 — Fragmented & Reactive</h3>
+                    <div class="grid-2">
+                        <div>
+                            <h4>Asset & Operations:</h4>
+                            <ul>
+                                <li>No asset inventory</li>
+                                <li>Proprietary SCADA everywhere</li>
+                                <li>Manual maintenance</li>
+                                <li>No predictive maintenance</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Integration & Security:</h4>
+                            <ul>
+                                <li>Zero cloud integration</li>
+                                <li>No data standardization</li>
+                                <li>Security is perimeter-based, no segmentation</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="badge badge-warning">High Risk</span>
+                    <span class="badge badge-warning">Limited Visibility</span>
+                </div>
+
+                <div class="maturity-level level-2">
+                    <h3><i class="fas fa-eye"></i> Level 2 — Basic Visibility & Standardization</h3>
+                    <div class="grid-2">
+                        <div>
+                            <h4>Asset & Operations:</h4>
+                            <ul>
+                                <li>OT asset inventory started</li>
+                                <li>Some unified protocols (OPC-UA)</li>
+                                <li>Basic dashboards</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Integration & Security:</h4>
+                            <ul>
+                                <li>Few IoT gateways used</li>
+                                <li>Vendor-specific cloud tools (partial)</li>
+                                <li>Basic security controls</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="badge badge-warning">Emerging</span>
+                    <span class="badge badge-primary">Initial Standards</span>
+                </div>
+
+                <div class="maturity-level level-3">
+                    <h3><i class="fas fa-plug"></i> Level 3 — Connected OT + Cloud Integration</h3>
+                    <div class="grid-2">
+                        <div>
+                            <h4>Asset & Operations:</h4>
+                            <ul>
+                                <li>Industrial Edge gateways installed</li>
+                                <li>Data ingested into cloud data lake</li>
+                                <li>Unified telemetry pipelines</li>
+                                <li>Central analytics dashboards</li>
+                                <li>Basic ML models</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Integration & Security:</h4>
+                            <ul>
+                                <li>Network segmentation implemented</li>
+                                <li>Vendor access controlled</li>
+                                <li>Cloud connectivity established</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="badge badge-primary">Connected</span>
+                    <span class="badge badge-primary">Cloud-Enabled</span>
+                </div>
+
+                <div class="maturity-level level-4">
+                    <h3><i class="fas fa-brain"></i> Level 4 — Proactive OT with AI Automation</h3>
+                    <div class="grid-2">
+                        <div>
+                            <h4>Asset & Operations:</h4>
+                            <ul>
+                                <li>Predictive maintenance across major equipment</li>
+                                <li>Digital twins for chillers/HVAC</li>
+                                <li>Model inference at edge</li>
+                                <li>Automated RCA & runbooks</li>
+                                <li>Cloud-scale observability</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Integration & Security:</h4>
+                            <ul>
+                                <li>OT SIEM/SOAR with behavior detection</li>
+                                <li>80–90% deployments via IaC</li>
+                                <li>Advanced threat detection</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="badge badge-success">Advanced</span>
+                    <span class="badge badge-success">AI-Driven</span>
+                </div>
+
+                <div class="maturity-level level-5">
+                    <h3><i class="fas fa-trophy"></i> Level 5 — Autonomous OT Ops (Industry 4.0)</h3>
+                    <div class="grid-2">
+                        <div>
+                            <h4>Asset & Operations:</h4>
+                            <ul>
+                                <li>Self-healing industrial systems</li>
+                                <li>Automated AI-driven maintenance</li>
+                                <li>AI-assisted operator consoles</li>
+                                <li>Multi-site global OT control tower</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Integration & Security:</h4>
+                            <ul>
+                                <li>Full Zero Trust enforcement</li>
+                                <li>100% cloud/edge-based architectures</li>
+                                <li>Standardized edge deployment blueprint worldwide</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="badge badge-success">World-Class</span>
+                    <span class="badge badge-success">Autonomous</span>
+                    <span class="badge badge-success">Industry 4.0</span>
+                </div>
+
+                <div class="outcome-box">
+                    <strong><i class="fas fa-bullseye"></i> Outcome:</strong>
+                    <p>You determine where your organization is today (usually L2–L3) and define the target (L4–L5). This assessment drives the transformation roadmap and investment priorities.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PHASE 3 — OT Transformation Roadmap -->
+        <div class="tab-content" id="tab-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-cloud"></i> PHASE 3 — OT Transformation Roadmap (Cloud + AI)</h2>
+                    <p>Shift OT from legacy → modern cloud + automated predictive systems</p>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-project-diagram"></i> 3.1 Modernize OT Architecture (OT → Edge → Cloud)</h3>
+                    
+                    <div class="grid-3">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-cogs"></i> ✔ OT Layer</h4>
+                            <ul>
+                                <li>Upgrade controllers to support OPC-UA</li>
+                                <li>Standardize protocols</li>
+                                <li>Define safe integration points</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-microchip"></i> ✔ Industrial Edge Layer</h4>
+                            <p><strong>Deploy standard edge appliances:</strong></p>
+                            <ul>
+                                <li>Azure IoT Edge</li>
+                                <li>AWS Greengrass</li>
+                                <li>Dell/Wise industrial gateways</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-cloud-upload-alt"></i> ✔ Cloud Layer</h4>
+                            <p><strong>Build global OT services</strong></p>
+                            <span class="badge badge-primary">AWS IoT Core</span>
+                            <span class="badge badge-primary">Azure IoT Hub</span>
+                        </div>
+                    </div>
+
+                    <div class="tech-item">
+                        <strong><i class="fas fa-microchip"></i> Edge Capabilities:</strong>
+                        <ul>
+                            <li>Local filtering and data processing</li>
+                            <li>Lightweight ML inference</li>
+                            <li>Protocol translation (Modbus, BACnet → MQTT)</li>
+                            <li>Secure connectivity with TLS/certificates</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-item">
+                        <strong><i class="fas fa-cloud"></i> Cloud Services Stack:</strong>
+                        <div class="grid-2">
+                            <div>
+                                <ul>
+                                    <li><strong>IoT Connectivity:</strong> AWS IoT Core / Azure IoT Hub</li>
+                                    <li><strong>Time-Series DB:</strong> Timestream / Data Explorer</li>
+                                    <li><strong>Data Lake:</strong> S3 / ADLS for raw OT data</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li><strong>Digital Twins:</strong> TwinMaker / Azure Digital Twins</li>
+                                    <li><strong>ML Platform:</strong> SageMaker / Azure ML</li>
+                                    <li><strong>Visualization:</strong> Grafana / Power BI dashboards</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-database"></i> 3.2 Create OT Data Lake & AI Factory</h3>
+                    
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-water"></i> OT Data Lake</h4>
+                            <ul class="checkmark-list">
+                                <li>Unified schema</li>
+                                <li>Metadata tagging</li>
+                                <li>IoT ingestion pipelines</li>
+                                <li>Data quality rules</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-robot"></i> AI Factory</h4>
+                            <ul class="checkmark-list">
+                                <li>Predictive maintenance models</li>
+                                <li>Failure forecasting</li>
+                                <li>Energy optimization models</li>
+                                <li>Vibration anomaly detection</li>
+                                <li>Drift detection</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong><i class="fas fa-lightbulb"></i> Model Deployment Strategy:</strong>
+                        <ul>
+                            <li><strong>Train in Cloud:</strong> Use full compute power and historical data</li>
+                            <li><strong>Run inference at Edge:</strong> Real-time predictions with low latency</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-copy"></i> 3.3 Digital Twin Rollout</h3>
+                    
+                    <div class="subsection">
+                        <ul class="checkmark-list">
+                            <li>Build asset twins: chiller, compressor, HVAC unit</li>
+                            <li>Integrate real-time telemetry</li>
+                            <li>Visualize states, performance, anomalies</li>
+                            <li>Run "what-if" simulations</li>
+                        </ul>
+                    </div>
+
+                    <div class="outcome-box">
+                        <strong><i class="fas fa-check-circle"></i> Outcome:</strong>
+                        <p>Operators can predict failures before they occur, optimize operations, and simulate scenarios before implementing changes.</p>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-shield-alt"></i> 3.4 Zero Trust OT Security Program</h3>
+                    
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-user-shield"></i> Identity & Access</h4>
+                            <ul>
+                                <li>Identity-based access for all OT technicians</li>
+                                <li>JIT vendor access + session recording</li>
+                                <li>MFA enforcement</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-network-wired"></i> Network & Monitoring</h4>
+                            <ul>
+                                <li>Micro-segmentation for every PLC/SCADA</li>
+                                <li>OT SIEM monitoring Modbus/BACnet</li>
+                                <li>Automated incident isolation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-code"></i> 3.5 Standardization Through IaC</h3>
+                    
+                    <p><strong>Everything deploys via Terraform/Bicep:</strong></p>
+                    <div class="grid-3">
+                        <div class="mini-card">
+                            <h4>Infrastructure</h4>
+                            <ul>
+                                <li>Edge provisioning</li>
+                                <li>IoT registration</li>
+                                <li>Data lake</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4>Security & Monitoring</h4>
+                            <ul>
+                                <li>SIEM integrations</li>
+                                <li>Network segmentation policies</li>
+                                <li>Access controls</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4>Analytics & Visualization</h4>
+                            <ul>
+                                <li>ML pipelines</li>
+                                <li>Dashboards</li>
+                                <li>Alerting rules</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="outcome-box">
+                        <strong><i class="fas fa-rocket"></i> Result:</strong>
+                        <p>Global scale + zero manual errors. Consistent deployments across all sites with version control and automated testing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: PHASE 4 — Operating Model & Governance -->
+        <div class="tab-content" id="tab-3">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users-cog"></i> PHASE 4 — Operating Model & Governance</h2>
+                    <p>Establish organizational structure and governance for sustainable OT transformation</p>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-building"></i> Create a Global OT Cloud Engineering CoE</h3>
+                    <p>Center of Excellence (CoE) structure to drive standardization, innovation, and operational excellence across all OT environments.</p>
+                </div>
+
+                <div class="grid-3">
+                    <div class="mini-card" style="border-top-color: #3498db;">
+                        <h4><i class="fas fa-cloud"></i> Team 1 — OT Cloud Platform</h4>
+                        <p><strong>Responsibilities:</strong></p>
+                        <ul>
+                            <li>Edge blueprint development</li>
+                            <li>IoT onboarding processes</li>
+                            <li>Cloud architecture standards</li>
+                            <li>Infrastructure as Code templates</li>
+                            <li>Network connectivity & segmentation</li>
+                            <li>Platform governance & compliance</li>
+                        </ul>
+                        <span class="badge badge-primary">Platform Engineering</span>
+                    </div>
+
+                    <div class="mini-card" style="border-top-color: #e67e22;">
+                        <h4><i class="fas fa-robot"></i> Team 2 — OT Data & AI Engineering</h4>
+                        <p><strong>Responsibilities:</strong></p>
+                        <ul>
+                            <li>Data lake pipelines</li>
+                            <li>AI/ML model development</li>
+                            <li>Digital twins creation & maintenance</li>
+                            <li>Predictive analytics</li>
+                            <li>Data quality & governance</li>
+                            <li>Model lifecycle management</li>
+                        </ul>
+                        <span class="badge badge-warning">Data & AI</span>
+                    </div>
+
+                    <div class="mini-card" style="border-top-color: #27ae60;">
+                        <h4><i class="fas fa-shield-alt"></i> Team 3 — OT Cyber Defense</h4>
+                        <p><strong>Responsibilities:</strong></p>
+                        <ul>
+                            <li>Zero Trust implementation</li>
+                            <li>OT SIEM/SOAR operations</li>
+                            <li>Vulnerability management</li>
+                            <li>Threat hunting & response</li>
+                            <li>Security policy enforcement</li>
+                            <li>Compliance & audit</li>
+                        </ul>
+                        <span class="badge badge-success">Security</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-clipboard-list"></i> Governance Framework</h3>
+                    
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-tasks"></i> Operational Governance</h4>
+                            <ul>
+                                <li>Change management process</li>
+                                <li>Deployment approval workflows</li>
+                                <li>Incident response procedures</li>
+                                <li>SLA/SLO definitions</li>
+                                <li>Escalation paths</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-balance-scale"></i> Strategic Governance</h4>
+                            <ul>
+                                <li>Technology standards</li>
+                                <li>Vendor management</li>
+                                <li>Budget allocation</li>
+                                <li>Roadmap prioritization</li>
+                                <li>Risk management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-sync-alt"></i> Operating Rhythms</h3>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Cadence</th>
+                                    <th>Forum</th>
+                                    <th>Participants</th>
+                                    <th>Focus Areas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Daily</strong></td>
+                                    <td>Platform Operations Standup</td>
+                                    <td>CoE Team Leads</td>
+                                    <td>Incidents, deployments, blockers</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Weekly</strong></td>
+                                    <td>Technical Review</td>
+                                    <td>Engineering Teams</td>
+                                    <td>Architecture, design reviews, technical debt</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bi-Weekly</strong></td>
+                                    <td>Security Review</td>
+                                    <td>Security Team + Stakeholders</td>
+                                    <td>Vulnerabilities, threats, compliance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Monthly</strong></td>
+                                    <td>Transformation Steering</td>
+                                    <td>VP-level + CoE Leaders</td>
+                                    <td>Progress, KPIs, roadmap adjustments</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Quarterly</strong></td>
+                                    <td>Executive Business Review</td>
+                                    <td>C-Suite + Business Leaders</td>
+                                    <td>Strategic alignment, investment, outcomes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-graduation-cap"></i> Skills & Training Program</h3>
+                    
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-chalkboard-teacher"></i> Core Competencies</h4>
+                            <ul>
+                                <li>Cloud platforms (AWS/Azure)</li>
+                                <li>IaC (Terraform/Bicep)</li>
+                                <li>Container orchestration</li>
+                                <li>OT protocols & systems</li>
+                                <li>Data engineering & ML</li>
+                                <li>Zero Trust security</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-certificate"></i> Certification Paths</h4>
+                            <ul>
+                                <li>AWS Certified Solutions Architect</li>
+                                <li>Azure IoT Developer</li>
+                                <li>Certified Industrial IoT Professional</li>
+                                <li>OT Security certifications (GICSP)</li>
+                                <li>Data Science certifications</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="outcome-box">
+                    <strong><i class="fas fa-bullseye"></i> Outcome:</strong>
+                    <p>A sustainable operating model with clear roles, responsibilities, governance, and continuous improvement processes that scale across the global organization.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: PHASE 5 — KPIs & Success Metrics -->
+        <div class="tab-content" id="tab-4">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-bar"></i> PHASE 5 — KPIs & Success Metrics</h2>
+                    <p>Measurable outcomes and success criteria for OT transformation</p>
+                </div>
+
+                <div class="highlight-box">
+                    <strong><i class="fas fa-bullseye"></i> Key Performance Indicators:</strong>
+                    <p>Track progress across reliability, efficiency, security, and operational excellence dimensions.</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Domain</th>
+                                <th style="width: 35%;">KPI</th>
+                                <th style="width: 20%;">Target</th>
+                                <th style="width: 20%;">Business Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong><i class="fas fa-heartbeat"></i> Reliability</strong></td>
+                                <td>OT System Uptime</td>
+                                <td><span class="badge badge-success">99.99%</span></td>
+                                <td>Reduced downtime costs</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-robot"></i> Predictive Maintenance</strong></td>
+                                <td>ML Model Accuracy</td>
+                                <td><span class="badge badge-success">> 92%</span></td>
+                                <td>Early failure detection</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-robot"></i> Predictive Maintenance</strong></td>
+                                <td>Mean Time to Failure (MTTF)</td>
+                                <td><span class="badge badge-success">+35%</span></td>
+                                <td>Extended asset lifespan</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-bolt"></i> Efficiency</strong></td>
+                                <td>Energy Savings</td>
+                                <td><span class="badge badge-success">15–20%</span></td>
+                                <td>Cost reduction & sustainability</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-bolt"></i> Efficiency</strong></td>
+                                <td>Equipment Overall Effectiveness (OEE)</td>
+                                <td><span class="badge badge-success">+25%</span></td>
+                                <td>Improved productivity</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-shield-alt"></i> Security</strong></td>
+                                <td>Zero Trust Coverage</td>
+                                <td><span class="badge badge-success">100%</span></td>
+                                <td>Reduced security incidents</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-shield-alt"></i> Security</strong></td>
+                                <td>Mean Time to Detect (MTTD)</td>
+                                <td><span class="badge badge-success">< 15 min</span></td>
+                                <td>Faster threat response</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-shield-alt"></i> Security</strong></td>
+                                <td>Critical Vulnerabilities Patched</td>
+                                <td><span class="badge badge-success">< 30 days</span></td>
+                                <td>Reduced attack surface</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-cogs"></i> Automation</strong></td>
+                                <td>Manual Work Eliminated</td>
+                                <td><span class="badge badge-success">40–50%</span></td>
+                                <td>Operational efficiency gains</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-cogs"></i> Automation</strong></td>
+                                <td>Automated Incident Resolution</td>
+                                <td><span class="badge badge-success">60%</span></td>
+                                <td>Faster recovery times</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-code"></i> Standardization</strong></td>
+                                <td>IaC Deployment Coverage</td>
+                                <td><span class="badge badge-success">90%</span></td>
+                                <td>Consistency & scalability</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-code"></i> Standardization</strong></td>
+                                <td>Deployment Success Rate</td>
+                                <td><span class="badge badge-success">> 95%</span></td>
+                                <td>Reduced deployment errors</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-clock"></i> Speed</strong></td>
+                                <td>Time to Deploy New Site</td>
+                                <td><span class="badge badge-success">< 2 weeks</span></td>
+                                <td>Faster expansion capability</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-dollar-sign"></i> Cost</strong></td>
+                                <td>Operational Cost Reduction</td>
+                                <td><span class="badge badge-success">20–30%</span></td>
+                                <td>Direct bottom-line impact</td>
+                            </tr>
+                            <tr>
+                                <td><strong><i class="fas fa-leaf"></i> Sustainability</strong></td>
+                                <td>Carbon Footprint Reduction</td>
+                                <td><span class="badge badge-success">15%</span></td>
+                                <td>ESG compliance & goals</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-chart-line"></i> Leading vs Lagging Indicators</h3>
+                    
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-forward"></i> Leading Indicators</h4>
+                            <p><em>Predictive metrics that indicate future performance</em></p>
+                            <ul>
+                                <li>Number of assets with predictive models deployed</li>
+                                <li>Edge gateway deployment rate</li>
+                                <li>Data quality score trending</li>
+                                <li>Security posture assessments completed</li>
+                                <li>Team training completion rates</li>
+                                <li>IaC template adoption rate</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-backward"></i> Lagging Indicators</h4>
+                            <p><em>Historical metrics that show results achieved</em></p>
+                            <ul>
+                                <li>Actual equipment uptime achieved</li>
+                                <li>Total cost savings realized</li>
+                                <li>Energy consumption reduction</li>
+                                <li>Security incidents occurred</li>
+                                <li>Unplanned downtime hours</li>
+                                <li>ROI on transformation investment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-trophy"></i> Success Milestones</h3>
+                    
+                    <div class="grid-3">
+                        <div class="mini-card">
+                            <h4>6 Months</h4>
+                            <ul class="checkmark-list">
+                                <li>Complete OT discovery</li>
+                                <li>Deploy first 5 edge sites</li>
+                                <li>Establish CoE structure</li>
+                                <li>Implement basic security controls</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4>12 Months</h4>
+                            <ul class="checkmark-list">
+                                <li>50% of sites on cloud platform</li>
+                                <li>First predictive models in production</li>
+                                <li>Zero Trust pilot complete</li>
+                                <li>Data lake operational</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4>24 Months</h4>
+                            <ul class="checkmark-list">
+                                <li>100% sites cloud-connected</li>
+                                <li>Full Zero Trust enforcement</li>
+                                <li>Digital twins operational</li>
+                                <li>Achieve target KPIs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-dollar-sign"></i> Financial Metrics & ROI</h3>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Financial Metric</th>
+                                    <th>Description</th>
+                                    <th>Expected Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Total Cost of Ownership (TCO)</strong></td>
+                                    <td>Comprehensive cost of OT operations</td>
+                                    <td><span class="badge badge-success">-25%</span> over 3 years</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Return on Investment (ROI)</strong></td>
+                                    <td>Financial return vs investment</td>
+                                    <td><span class="badge badge-success">250%</span> over 3 years</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Payback Period</strong></td>
+                                    <td>Time to recover initial investment</td>
+                                    <td><span class="badge badge-success">18-24 months</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cost Avoidance</strong></td>
+                                    <td>Prevented costs through predictive maintenance</td>
+                                    <td><span class="badge badge-success">$5-10M</span> annually</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="outcome-box">
+                    <strong><i class="fas fa-bullseye"></i> Expected Outcomes:</strong>
+                    <p>Comprehensive measurement framework that demonstrates tangible business value, operational improvements, and strategic transformation success across all dimensions of OT modernization.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: PHASE 6 — Technical Reference Guide -->
+        <div class="tab-content" id="tab-5">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-book"></i> PHASE 6 — Technical Reference Guide</h2>
+                    <p>Comprehensive technical reference for OT hardware, protocols, and cloud architecture</p>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-microchip"></i> OT Hardware & Controllers</h3>
+                    
+                    <div class="tech-item">
+                        <strong><i class="fas fa-cog"></i> PLC (Programmable Logic Controller)</strong>
+                        <ul>
+                            <li><strong>Allen Bradley</strong> - Rockwell Automation</li>
+                            <li><strong>Siemens PLCs</strong> - S7-1200, S7-1500 series</li>
+                            <li><strong>Function:</strong> Control hardware sensors, actuators, and industrial processes</li>
+                            <li><strong>Use Cases:</strong> Assembly lines, HVAC control, manufacturing automation</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-item">
+                        <strong><i class="fas fa-broadcast-tower"></i> RTU (Remote Terminal Unit)</strong>
+                        <ul>
+                            <li>Remote monitoring and control of field devices</li>
+                            <li>Typically used in distributed systems (oil & gas, utilities)</li>
+                            <li>Ruggedized for harsh environments</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-item">
+                        <strong><i class="fas fa-server"></i> SCADA (Supervisory Control and Data Acquisition)</strong>
+                        <ul>
+                            <li>Central monitoring and control system</li>
+                            <li>Integrates with PLCs, RTUs, and other field devices</li>
+                            <li>Provides HMI (Human-Machine Interface)</li>
+                            <li>Integration with IoT platforms for predictive analytics</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-network-wired"></i> Communication Protocols</h3>
+                    
+                    <div class="grid-3">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-exchange-alt"></i> OPC UA</h4>
+                            <p><strong>Open Platform Communications Unified Architecture</strong></p>
+                            <ul>
+                                <li>Modern, secure protocol</li>
+                                <li>Platform-independent</li>
+                                <li>Built-in security</li>
+                                <li>Semantic data modeling</li>
+                            </ul>
+                            <span class="badge badge-success">Recommended</span>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-exchange-alt"></i> Modbus</h4>
+                            <ul>
+                                <li>Legacy serial protocol</li>
+                                <li>Modbus TCP/IP variant</li>
+                                <li>Widely supported</li>
+                                <li>Simple master-slave</li>
+                            </ul>
+                            <span class="badge badge-warning">Legacy</span>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-exchange-alt"></i> BACnet</h4>
+                            <ul>
+                                <li>Building automation standard</li>
+                                <li>HVAC systems</li>
+                                <li>BMS integration</li>
+                                <li>IP-based</li>
+                            </ul>
+                            <span class="badge badge-primary">Building Automation</span>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-exchange-alt"></i> MQTT</h4>
+                            <ul>
+                                <li>Lightweight pub/sub protocol</li>
+                                <li>IoT-optimized</li>
+                                <li>Low bandwidth</li>
+                                <li>Cloud-native</li>
+                            </ul>
+                            <span class="badge badge-success">IoT Standard</span>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-plug"></i> Ethernet</h4>
+                            <ul>
+                                <li>Physical layer connectivity</li>
+                                <li>Industrial Ethernet variants</li>
+                                <li>High-speed, reliable</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-plug"></i> RS-485 / RS-232</h4>
+                            <ul>
+                                <li>Serial communication</li>
+                                <li>Legacy protocol support</li>
+                                <li>Fieldbus connectivity</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-server"></i> Computing Infrastructure</h3>
+                    
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-desktop"></i> 1. PC's & Industrial PC's</h4>
+                            <ul>
+                                <li>Standard computing interfaces</li>
+                                <li>Ruggedized for industrial environments</li>
+                                <li>Fanless designs</li>
+                                <li>Wide temperature range operation</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-server"></i> 2. Servers</h4>
+                            <ul>
+                                <li>On-premises SCADA servers</li>
+                                <li>Historian servers (time-series data)</li>
+                                <li>BMS servers</li>
+                                <li>Edge computing servers</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-gateway"></i> 3. IoT Gateways</h4>
+                            <p><strong>Function:</strong> Data aggregation and protocol translation</p>
+                            <ul>
+                                <li>Siemens IoT Gateways</li>
+                                <li>Dell Edge Gateways</li>
+                                <li>Cisco Industrial Routers</li>
+                                <li>Advantech IoT Gateways</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-microchip"></i> 4. Edge Controllers</h4>
+                            <ul>
+                                <li>Control logic and decision making</li>
+                                <li>Local processing and filtering</li>
+                                <li>Real-time response capabilities</li>
+                                <li>ML inference at edge</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-microchip"></i> 5. Microcontrollers</h4>
+                            <ul>
+                                <li>Simple low-level tasks</li>
+                                <li>Direct sensor interfacing</li>
+                                <li>Embedded control systems</li>
+                                <li>Cost-effective solutions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fab fa-aws"></i> AWS IoT Core Architecture</h3>
+                    
+                    <div class="highlight-box">
+                        <strong><i class="fas fa-info-circle"></i> Core Components:</strong>
+                        <div class="grid-2">
+                            <ul>
+                                <li><strong>Device Gateway:</strong> Manages device connections (MQTT, HTTPS, WebSockets)</li>
+                                <li><strong>Message Broker:</strong> Handles pub/sub messaging between devices and applications</li>
+                            </ul>
+                            <ul>
+                                <li><strong>Rules Engine:</strong> Routes and processes messages to AWS services</li>
+                                <li><strong>Registry:</strong> Stores device metadata, certificates, and policies</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-database"></i> Storage & Analytics</h4>
+                            <ul>
+                                <li><strong>S3:</strong> Raw data storage (scalable object storage)</li>
+                                <li><strong>Timestream:</strong> Time-series database for IoT data</li>
+                                <li><strong>IoT Analytics:</strong> Data processing pipelines</li>
+                                <li><strong>Athena:</strong> Query data in S3 using SQL</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-cogs"></i> Processing & ML</h4>
+                            <ul>
+                                <li><strong>Lambda:</strong> Serverless event-driven processing</li>
+                                <li><strong>SageMaker:</strong> Build, train, deploy ML models</li>
+                                <li><strong>Lookout for Equipment:</strong> Anomaly detection</li>
+                                <li><strong>Kinesis:</strong> Real-time data streaming</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-tasks"></i> AWS IoT Use Cases</h3>
+                    
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-copy"></i> 1. Digital Twin - AWS IoT TwinMaker</h4>
+                            <ul>
+                                <li>Visualization with Timestream</li>
+                                <li>Virtual disaster recovery scenarios</li>
+                                <li>Real-time asset modeling</li>
+                                <li>3D spatial representation</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-chart-line"></i> 2. Predictive Analytics</h4>
+                            <ul>
+                                <li><strong>Data:</strong> S3, Databases, Timestream</li>
+                                <li><strong>ML Platform:</strong> SageMaker</li>
+                                <li>Predict failures before occurrence</li>
+                                <li>Optimize maintenance schedules</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-eye"></i> 3. Monitoring - Real-time Observations</h4>
+                            <ul>
+                                <li><strong>AWS IoT Analytics:</strong> Pipeline processing</li>
+                                <li><strong>CloudWatch:</strong> Metrics and alarms</li>
+                                <li><strong>Third-party:</strong> DataDog, New Relic</li>
+                                <li>Custom dashboards with Grafana</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-cogs"></i> 4. Process Optimization</h4>
+                            <ul>
+                                <li><strong>Monitor:</strong> Temperature, Vibration, Pressure</li>
+                                <li><strong>Platform:</strong> SageMaker for ML models</li>
+                                <li><strong>Triggers:</strong> Automated alerts and actions</li>
+                                <li><strong>Goal:</strong> Maximize efficiency, effectiveness, reliability</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-check-circle"></i> 5. Quality Control</h4>
+                            <ul>
+                                <li>Automated inspections</li>
+                                <li>Real-time quality metrics</li>
+                                <li>Defect detection with ML</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-tools"></i> 6. Asset Management</h4>
+                            <ul>
+                                <li>Lifecycle tracking</li>
+                                <li>Maintenance scheduling</li>
+                                <li>Performance history</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-exclamation-triangle"></i> 7. Anomaly Detection</h4>
+                            <ul>
+                                <li>AWS Lookout for Equipment</li>
+                                <li>Pattern recognition</li>
+                                <li>Deviation alerts</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fab fa-aws"></i> AWS Greengrass</h3>
+                    
+                    <div class="tech-item">
+                        <strong><i class="fas fa-microchip"></i> Edge Computing Platform</strong>
+                        <ul>
+                            <li><strong>Local compute, messaging, and sync</strong> for edge devices</li>
+                            <li><strong>ML inference at the edge</strong> - Run SageMaker models locally</li>
+                            <li><strong>Offline operation capability</strong> - Continue functioning without cloud connectivity</li>
+                            <li><strong>Lambda functions at edge</strong> - Run serverless code locally</li>
+                            <li><strong>Local resource access</strong> - Interact with connected devices and sensors</li>
+                            <li><strong>Secure connectivity</strong> - Encrypted communication with AWS Cloud</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-sitemap"></i> Cloud Architecture Pattern</h3>
+                    
+                    <div class="highlight-box">
+                        <strong><i class="fas fa-cloud"></i> AWS IoT in Modern Cloud Architecture:</strong>
+                        <p>AWS IoT fits into cloud architecture as part of a <strong>serverless or microserviced setup</strong> - NOT monolithic.</p>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="mini-card">
+                            <h4><i class="fas fa-project-diagram"></i> Architecture Style</h4>
+                            <ul class="checkmark-list">
+                                <li>Distributed, event-driven architecture</li>
+                                <li>Microservices-based</li>
+                                <li>Loosely coupled components</li>
+                                <li>Scalable and flexible</li>
+                            </ul>
+                        </div>
+                        <div class="mini-card">
+                            <h4><i class="fas fa-puzzle-piece"></i> Works Alongside</h4>
+                            <ul>
+                                <li><strong>Lambda:</strong> Serverless functions</li>
+                                <li><strong>S3:</strong> Object storage</li>
+                                <li><strong>SageMaker:</strong> Machine learning</li>
+                                <li><strong>API Gateway:</strong> RESTful APIs</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tech-item">
+                        <strong><i class="fas fa-layer-group"></i> Serverless Components:</strong>
+                        <div class="grid-3">
+                            <div>
+                                <ul>
+                                    <li><strong>IAM:</strong> Identity and Access Management (BaaS)</li>
+                                    <li><strong>App Engine:</strong> Platform as a Service</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li><strong>Event-driven processing:</strong> React to IoT events</li>
+                                    <li><strong>Auto-scaling:</strong> Dynamic resource allocation</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li><strong>Pay-per-use:</strong> Cost-effective pricing</li>
+                                    <li><strong>No infrastructure management</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title"><i class="fas fa-layer-group"></i> Reference Architecture Layers</h3>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Layer</th>
+                                    <th>Components</th>
+                                    <th>Purpose</th>
+                                    <th>Technologies</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>OT/Edge Layer</strong></td>
+                                    <td>PLCs, Sensors, Gateways</td>
+                                    <td>Data collection, protocol translation</td>
+                                    <td>OPC-UA, Modbus, AWS Greengrass</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Connectivity Layer</strong></td>
+                                    <td>Device Gateway, Message Broker</td>
+                                    <td>Secure device-to-cloud communication</td>
+                                    <td>AWS IoT Core, MQTT, HTTPS</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Processing Layer</strong></td>
+                                    <td>Rules Engine, Lambda, Stream Processing</td>
+                                    <td>Data transformation, routing, enrichment</td>
+                                    <td>AWS Lambda, Kinesis, IoT Analytics</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Storage Layer</strong></td>
+                                    <td>Data Lake, Time-Series DB, Databases</td>
+                                    <td>Persistent storage, historical data</td>
+                                    <td>S3, Timestream, DynamoDB, RDS</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Analytics & ML Layer</strong></td>
+                                    <td>ML Models, Digital Twins, Analytics</td>
+                                    <td>Insights, predictions, optimization</td>
+                                    <td>SageMaker, TwinMaker, Lookout</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Application Layer</strong></td>
+                                    <td>Dashboards, APIs, Mobile Apps</td>
+                                    <td>User interfaces, integrations</td>
+                                    <td>Grafana, API Gateway, QuickSight</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="outcome-box">
+                    <strong><i class="fas fa-check-circle"></i> Technical Foundation:</strong>
+                    <p>This comprehensive technical reference provides the foundation for designing, implementing, and operating a modern OT cloud architecture with AWS services, enabling digital transformation at scale.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(tabIndex) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(`tab-${tabIndex}`).classList.add('active');
+            
+            // Add active class to clicked button
+            tabButtons[tabIndex].classList.add('active');
+
+            // Scroll to top of content
+            window.scrollTo({
+                top: document.querySelector('.tab-navigation').offsetTop,
+                behavior: 'smooth'
+            });
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            const activeTab = document.querySelector('.tab-button.active');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const currentIndex = Array.from(tabButtons).indexOf(activeTab);
+
+            if (e.key === 'ArrowRight' && currentIndex < tabButtons.length - 1) {
+                switchTab(currentIndex + 1);
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                switchTab(currentIndex - 1);
+            }
+        });
+
+        // Smooth scroll behavior for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+
+      <script>
+        const createFloatingBall = ()=>{let a=document.createElement("style");a.textContent=`
+          .fellou-floating-ball {
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background: #fff;
+              border-radius: 50%;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+              display: flex;
+              gap: 8px;
+              flex-direction: row;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              transition: all 0.15s ease;
+              z-index: 100000;
+              width: 28px;
+              height: 28px;
+              text-align: center;
+              border: 2px solid #f4f4f4;
+          }
+
+          .fellou-floating-ball:hover {
+              width: 140px;
+              border-radius: 99px;
+          }
+
+          .fellou-floating-ball svg {
+              width: 16px;
+              height: 16px;
+          }
+
+          .fellou-floating-ball-text {
+              display: none;
+              width: 0px;
+              transition: width 0.3s ease;
+              color: #595561;
+              font-size: 12px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 20px;
+              white-space: nowrap;
+              overflow: hidden;
+           
+          }
+
+          .fellou-floating-ball:hover .fellou-floating-ball-text {
+              display: block;
+              width: 100px;
+          }
+      `,document.head.appendChild(a);let b=document.createElement("div");b.className="fellou-floating-ball",b.addEventListener("click",()=>{window.open("https://fellou.ai","_blank")}),b.innerHTML=`
+          <svg width="16" height="16" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path opacity="0.72" d="M108.71 15.909C133.671 36.8541 134.337 77.1554 110.197 105.924C86.0565 134.694 46.2518 141.036 21.2904 120.091C-3.67096 99.1459 -4.33674 58.8446 19.8034 30.0755C43.9435 1.30644 83.7482 -5.03614 108.71 15.909ZM102.282 23.5694C81.8118 6.39315 48.2407 11.7425 27.4638 36.5034C6.68694 61.2643 7.24845 95.2543 27.7183 112.431C48.1882 129.607 81.7593 124.258 102.536 99.4966C123.313 74.7357 122.752 40.7457 102.282 23.5694Z" fill="url(#paint0_linear_34_1408)"/>
+              <path d="M116.986 29.3811C141.525 49.9712 143.286 88.2698 120.921 114.924C98.5561 141.577 60.5333 146.493 35.995 125.903C11.4567 105.313 9.69493 67.0139 32.06 40.3602C54.4252 13.7065 92.4479 8.79095 116.986 29.3811ZM110.558 37.0415C90.3987 20.1255 58.6488 24.2301 39.7205 46.788C20.7921 69.346 22.2632 101.326 42.4229 118.242C62.5825 135.158 94.3324 131.054 113.261 108.496C132.189 85.9377 130.718 53.9574 110.558 37.0415Z" fill="url(#paint1_linear_34_1408)"/>
+              <path d="M131.544 35.0694C155.71 55.3471 155.731 95.1074 131.591 123.876C107.451 152.646 68.291 159.529 44.1249 139.251C19.9589 118.974 19.9379 79.2135 44.078 50.4444C68.2182 21.6753 107.378 14.7917 131.544 35.0694ZM125.116 42.7299C105.505 26.2745 72.5526 32.067 51.7385 56.8723C30.9244 81.6776 30.9421 115.136 50.5528 131.591C70.1636 148.046 103.116 142.254 123.931 117.449C144.745 92.6433 144.727 59.1852 125.116 42.7299Z" fill="url(#paint2_linear_34_1408)"/>
+              <defs>
+                  <linearGradient id="paint0_linear_34_1408" x1="108.71" y1="15.909" x2="21.2904" y2="120.091" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint1_linear_34_1408" x1="116.986" y1="29.381" x2="35.995" y2="125.903" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint2_linear_34_1408" x1="131.544" y1="35.0694" x2="44.1249" y2="139.251" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8"/>
+                      <stop offset="0.5" stop-color="#FF9000"/>
+                      <stop offset="1" stop-color="#33B3FF"/>
+                  </linearGradient>
+              </defs>
+          </svg>
+      `;let c=document.createElement("div");c.className="fellou-floating-ball-text",c.textContent="powered by fellou",b.appendChild(c),document.body.appendChild(b)};
+        // Call createFloatingBall when the page loads
+        window.addEventListener('load', createFloatingBall);
+      </script>
+    </body>
+</html>

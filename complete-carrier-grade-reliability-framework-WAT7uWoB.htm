@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Carrier-Grade Reliability Framework</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem 1rem 1rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* FIXED/STICKY TAB BAR */
+        .tab-container {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(135deg, #0f4c75 0%, #1b6ca8 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-nav {
+            display: flex;
+            min-width: max-content;
+            padding: 0;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-bottom-color: #00d4ff;
+        }
+
+        .tab-btn i {
+            font-size: 1rem;
+        }
+
+        /* CONTENT AREA */
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .content-card h2 {
+            color: #1e3c72;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-card h3 {
+            color: #0f4c75;
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-card h4 {
+            color: #2a5298;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.75rem 0;
+        }
+
+        /* METRICS CARDS */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-card h4 {
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .metric-blue {
+            background: linear-gradient(135deg, #2e3192 0%, #1bffff 100%);
+        }
+
+        .metric-teal {
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+        }
+
+        .metric-purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* FEATURE BOXES */
+        .feature-box {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-left: 4px solid #00acc1;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+
+        .feature-box ul {
+            margin: 0.75rem 0 0 1.5rem;
+        }
+
+        .feature-box li {
+            margin: 0.5rem 0;
+            color: #01579b;
+        }
+
+        /* TABLES */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ROADMAP PHASES */
+        .phase-card {
+            background: white;
+            border-left: 5px solid #00d4ff;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .phase-card h4 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        .phase-card ul {
+            margin-left: 1.5rem;
+        }
+
+        .phase-card li {
+            margin: 0.5rem 0;
+            color: #555;
+        }
+
+        /* STORY CARD */
+        .story-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .story-card h3 {
+            color: #d84315;
+        }
+
+        .story-card p {
+            color: #4e342e;
+            font-size: 1.1rem;
+            margin: 0.75rem 0;
+            line-height: 1.8;
+        }
+
+        .highlight-success {
+            background: #c8e6c9;
+            padding: 1rem;
+            border-left: 4px solid #4caf50;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        /* ICONS */
+        .icon-large {
+            font-size: 2.5rem;
+            color: #00d4ff;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .tab-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .content-card h2 {
+                font-size: 1.5rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* SCROLLBAR STYLING */
+        .tab-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .tab-container::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .tab-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        .tab-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-network-wired"></i> The Complete Carrier-Grade Reliability Framework</h1>
+        <p>A Comprehensive Guide to Building and Maintaining World-Class ISP Infrastructure</p>
+    </div>
+
+    <!-- FIXED/STICKY TAB NAVIGATION -->
+    <div class="tab-container">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'tab1')">
+                <i class="fas fa-server"></i> Backbone Resilience
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab2')">
+                <i class="fas fa-ring"></i> Metro Ring
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab3')">
+                <i class="fas fa-signal"></i> Access Layer
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab4')">
+                <i class="fas fa-bolt"></i> POP/DC Power
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab5')">
+                <i class="fas fa-cogs"></i> Operations
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab6')">
+                <i class="fas fa-chart-line"></i> Maturity Model
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab7')">
+                <i class="fas fa-shield-alt"></i> Core Resilience
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab8')">
+                <i class="fas fa-city"></i> Metro & Access
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab9')">
+                <i class="fas fa-lightbulb"></i> Optical
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab10')">
+                <i class="fas fa-plug"></i> Service Resilience
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab11')">
+                <i class="fas fa-tasks"></i> Change Mgmt
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab12')">
+                <i class="fas fa-brain"></i> AIOps
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab13')">
+                <i class="fas fa-tachometer-alt"></i> KPIs
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab14')">
+                <i class="fas fa-road"></i> Roadmap
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'tab15')">
+                <i class="fas fa-book-open"></i> Real Story
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTENT AREA -->
+    <div class="content-wrapper">
+        
+        <!-- TAB 1 - BACKBONE RESILIENCE -->
+        <div id="tab1" class="tab-content active">
+            <div class="content-card">
+                <h2><i class="fas fa-server"></i> Pillar 1 — Backbone Resilience (Core + Peering)</h2>
+                
+                <h3><i class="fas fa-bullseye"></i> Key Focus Areas</h3>
+                <div class="feature-box">
+                    <ul>
+                        <li><strong>Dual-core DCs (active-active)</strong> — Redundant data centers operating simultaneously</li>
+                        <li><strong>ECMP routing across all core paths</strong> — Equal-Cost Multi-Path for load distribution</li>
+                        <li><strong>MPLS TE + FRR for sub-50ms failover</strong> — Traffic Engineering with Fast Reroute</li>
+                        <li><strong>Redundant upstream ISPs + IX peering</strong> — Multiple connectivity providers</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-chart-bar"></i> Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card metric-green">
+                        <h4>Backbone Availability</h4>
+                        <div class="value">99.995%</div>
+                        <p>Industry-leading uptime</p>
+                    </div>
+                    <div class="metric-card metric-blue">
+                        <h4>Core Link Utilization</h4>
+                        <div class="value">≤60%</div>
+                        <p>At peak traffic times</p>
+                    </div>
+                    <div class="metric-card metric-teal">
+                        <h4>Peering Capacity Headroom</h4>
+                        <div class="value">1.5-2×</div>
+                        <p>Projected peak capacity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2 - METRO RING -->
+        <div id="tab2" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-ring"></i> Pillar 2 — Metro Ring Reliability</h2>
+                
+                <h3><i class="fas fa-check-circle"></i> What Makes Rings Reliable</h3>
+                <div class="feature-box">
+                    <ul>
+                        <li><strong>Each ring runs 10–40 Gbps bandwidth</strong> — High-capacity infrastructure</li>
+                        <li><strong>Every OLT is connected in a protected design</strong> — No single point of failure</li>
+                        <li><strong>Fiber cuts reroute traffic instantly</strong> — Automatic failover mechanisms</li>
+                        <li><strong>Multiple POPs per city for redundancy</strong> — Geographic diversity</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-chart-bar"></i> Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card metric-green">
+                        <h4>Metro Ring Failover</h4>
+                        <div class="value">&lt;50 ms</div>
+                        <p>Lightning-fast recovery</p>
+                    </div>
+                    <div class="metric-card metric-blue">
+                        <h4>Metro Ring Uptime</h4>
+                        <div class="value">99.98%</div>
+                        <p>Exceptional reliability</p>
+                    </div>
+                    <div class="metric-card metric-teal">
+                        <h4>Fiber Cut Detection</h4>
+                        <div class="value">&lt;60 sec</div>
+                        <p>Rapid fault identification</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3 - ACCESS LAYER -->
+        <div id="tab3" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-signal"></i> Pillar 3 — Access Layer Stability (GPON/FTTH)</h2>
+                
+                <h3><i class="fas fa-wrench"></i> Reliability Drivers</h3>
+                <div class="feature-box">
+                    <ul>
+                        <li><strong>Clean optical budgets (&lt;28 dB)</strong> — Optimal signal strength maintenance</li>
+                        <li><strong>ONT power level monitoring</strong> — Real-time device health tracking</li>
+                        <li><strong>Split ratio governance</strong> — 1:16 premium, 1:32 standard, 1:64 dense</li>
+                        <li><strong>Auto-heal for ONT resets + PON LOS events</strong> — Automated recovery systems</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-chart-bar"></i> Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card metric-purple">
+                        <h4>ONT Signal Drift Alarm Rate</h4>
+                        <div class="value">&lt;2%</div>
+                        <p>Per month</p>
+                    </div>
+                    <div class="metric-card metric-green">
+                        <h4>ONT Auto-Recovery Success</h4>
+                        <div class="value">60-70%</div>
+                        <p>Automatic healing rate</p>
+                    </div>
+                    <div class="metric-card metric-blue">
+                        <h4>Access-Layer Packet Loss</h4>
+                        <div class="value">&lt;0.3%</div>
+                        <p>Minimal data loss</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4 - POP/DC POWER -->
+        <div id="tab4" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-bolt"></i> Pillar 4 — POP/DC Power, Cooling & Physical Availability</h2>
+                
+                <h3><i class="fas fa-shield-alt"></i> Critical Reliability Components</h3>
+                <div class="feature-box">
+                    <ul>
+                        <li><strong>N+1 UPS + DG backups</strong> — Redundant uninterruptible power systems with diesel generators</li>
+                        <li><strong>Redundant AC/DC power feeds</strong> — Multiple power sources</li>
+                        <li><strong>Temperature-controlled racks</strong> — Optimal cooling management</li>
+                        <li><strong>Redundant fiber entry routes</strong> — Diverse physical paths</li>
+                        <li><strong>24×7 environmental monitoring</strong> — Continuous surveillance</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-chart-bar"></i> Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card metric-green">
+                        <h4>DC/POP Uptime</h4>
+                        <div class="value">&gt;99.99%</div>
+                        <p>Four nines availability</p>
+                    </div>
+                    <div class="metric-card metric-blue">
+                        <h4>Power Switchover Time</h4>
+                        <div class="value">&lt;30 sec</div>
+                        <p>Seamless transition</p>
+                    </div>
+                    <div class="metric-card metric-teal">
+                        <h4>Cooling Threshold Deviation</h4>
+                        <div class="value">&lt;3%</div>
+                        <p>Events per month</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5 - OPERATIONS -->
+        <div id="tab5" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-cogs"></i> Pillar 5 — End-to-End Operational Reliability</h2>
+                
+                <h3><i class="fas fa-list-check"></i> Core Elements</h3>
+                <div class="feature-box">
+                    <ul>
+                        <li><strong>Fault detection speed</strong> — Rapid identification of issues</li>
+                        <li><strong>SOP adherence</strong> — Standard Operating Procedures compliance</li>
+                        <li><strong>Predictive AIOps models</strong> — AI-driven operational intelligence</li>
+                        <li><strong>RCA governance</strong> — Root Cause Analysis framework</li>
+                        <li><strong>Change management safety checks</strong> — Controlled deployment processes</li>
+                        <li><strong>Automation-first recovery</strong> — Minimize manual intervention</li>
+                        <li><strong>Experience Score (Deck 3)</strong> — Customer-centric metrics</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-chart-bar"></i> Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card metric-green">
+                        <h4>Time to Detect (TTD)</h4>
+                        <div class="value">&lt;5 min</div>
+                        <p>Rapid fault detection</p>
+                    </div>
+                    <div class="metric-card metric-blue">
+                        <h4>Mean Time To Repair (P1)</h4>
+                        <div class="value">30-45 min</div>
+                        <p>Critical incident resolution</p>
+                    </div>
+                    <div class="metric-card metric-teal">
+                        <h4>Change Failure Rate</h4>
+                        <div class="value">&lt;1%</div>
+                        <p>Deployment safety</p>
+                    </div>
+                    <div class="metric-card metric-purple">
+                        <h4>Proactive vs Reactive</h4>
+                        <div class="value">60:40</div>
+                        <p>Incident ratio</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6 - MATURITY MODEL -->
+        <div id="tab6" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-chart-line"></i> Reliability Maturity Model</h2>
+                <h3>Where Are We Today? Where Must We Get To?</h3>
+                <p style="margin: 1rem 0;">A 4-level maturity model defining the evolution from reactive to experience-driven operations:</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Name</th>
+                                <th>Characteristics</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1</strong></td>
+                                <td><strong>Reactive NOC</strong></td>
+                                <td>Users call first; manual SOPs; limited automation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2</strong></td>
+                                <td><strong>Event-Driven Ops</strong></td>
+                                <td>Monitoring + alarms, some automation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3</strong></td>
+                                <td><strong>Proactive + Predictive (AIOps)</strong></td>
+                                <td>AI predicts failures; auto-ticket and auto-heal</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4</strong></td>
+                                <td><strong>Experience-Driven ISP</strong></td>
+                                <td>Reliability measured by Experience Score; fully automated</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="highlight-success">
+                    <h4><i class="fas fa-flag-checkered"></i> Target for Modern ISP</h4>
+                    <p style="font-size: 1.2rem; margin-top: 0.5rem;"><strong>Level 3.5 → Level 4</strong></p>
+                    <p>Moving from proactive/predictive operations to fully experience-driven infrastructure</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 7 - CORE RESILIENCE DESIGN -->
+        <div id="tab7" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-shield-alt"></i> Core Resilience Design</h2>
+                <h3>How Core Failures Are Handled</h3>
+
+                <h4><i class="fas fa-database"></i> 1. Dual Core DCs</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>Active-active operation</li>
+                        <li>Traffic shared across both</li>
+                        <li>BGP/route-reflector redundancy</li>
+                    </ul>
+                </div>
+
+                <h4><i class="fas fa-link"></i> 2. Redundant Core Links</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>2×100G each side</li>
+                        <li>Expanding to 400G</li>
+                    </ul>
+                </div>
+
+                <h4><i class="fas fa-route"></i> 3. MPLS FRR / IP FRR</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>Pre-computed backup paths</li>
+                        <li>Failover &lt; 50 ms</li>
+                    </ul>
+                </div>
+
+                <h4><i class="fas fa-globe"></i> 4. Peering Resilience</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>3–5 upstream ISPs</li>
+                        <li>2 IXPs</li>
+                        <li>Automatic path shifting</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-clock"></i> Example Failover Times</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Failure Type</th>
+                                <th>Target</th>
+                                <th>Actual (Realistic)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Core link cut</td>
+                                <td>&lt;50 ms</td>
+                                <td>30–45 ms</td>
+                            </tr>
+                            <tr>
+                                <td>IXP/peer failure</td>
+                                <td>&lt;60 sec</td>
+                                <td>20–40 sec</td>
+                            </tr>
+                            <tr>
+                                <td>BNG down</td>
+                                <td>&lt;30 sec</td>
+                                <td>~20 sec</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 8 - METRO & ACCESS RESILIENCE -->
+        <div id="tab8" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-city"></i> Metro & Access Resilience</h2>
+                <h3>Surviving Fiber Cuts and Local Disruptions</h3>
+
+                <h4><i class="fas fa-exchange-alt"></i> Metro Failover Logic</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>Every OLT must be reachable via two fiber paths</li>
+                        <li>Use ring protection switching for instant failover</li>
+                        <li>Use GIS tagging to instantly map probable cut location</li>
+                        <li>Auto-ticket & field dispatch (Deck 2 automation)</li>
+                    </ul>
+                </div>
+
+                <h4><i class="fas fa-cut"></i> Typical Fiber Cut Impact</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li><strong>70–300 meters</strong> of last-mile fiber damaged</li>
+                        <li><strong>Impacts 500–3000 subscribers</strong> depending on area</li>
+                        <li><strong>Recovery time: 2–4 hours</strong> unless arterial route damaged</li>
+                    </ul>
+                </div>
+
+                <h4><i class="fas fa-tools"></i> Reduction Methods</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>Pre-lay reserve fiber</li>
+                        <li>Armored fiber in critical zones</li>
+                        <li>Partner with municipal bodies for dig-alerts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 9 - OPTICAL RELIABILITY -->
+        <div id="tab9" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-lightbulb"></i> Access Optical Reliability</h2>
+                <h3>Optical Power, PON Stability & ONT Reliability</h3>
+
+                <h4><i class="fas fa-ruler"></i> Optical Budget Control</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li><strong>Design target:</strong> ≤28 dB</li>
+                        <li><strong>Action:</strong> Auto-flag drifts beyond 2–3 dBm</li>
+                    </ul>
+                </div>
+
+                <h4><i class="fas fa-exclamation-triangle"></i> Frequent Causes of Signal Loss</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>Microbends</li>
+                        <li>Junction box moisture</li>
+                        <li>Poor splicing</li>
+                    </ul>
+                </div>
+
+                <h4><i class="fas fa-brain"></i> Proactive AI (Deck 3)</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>Predict ONT replacement</li>
+                        <li>Identify multi-home Wi-Fi interference</li>
+                        <li>Detect weakening splitters</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-signal"></i> Realistic Optical Thresholds</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Device</th>
+                                <th>Optimal</th>
+                                <th>Warning</th>
+                                <th>Critical</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ONT Rx</strong></td>
+                                <td>–15 dBm</td>
+                                <td>–18 dBm</td>
+                                <td>&lt; –24 dBm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 10 - SERVICE RESILIENCE -->
+        <div id="tab10" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-plug"></i> Service Resilience — PPPoE/IPoE/BNG</h2>
+                <h3>Session Stability = Customer Perceived Stability</h3>
+
+                <h4><i class="fas fa-network-wired"></i> Session Reliability Elements</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>BNG redundancy (active–active preferred)</li>
+                        <li>AAA redundancy (RADIUS clusters)</li>
+                        <li>CGNAT cluster redundancy</li>
+                        <li>Session sync across BNGs</li>
+                        <li>Load-balancing new sessions</li>
+                        <li>Auto-restart logic for session drops</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-chart-bar"></i> Metrics</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Session Metric</th>
+                                <th>Target</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PPPoE drop rate</td>
+                                <td>&lt;0.3%</td>
+                            </tr>
+                            <tr>
+                                <td>BNG CPU utilization</td>
+                                <td>&lt;65%</td>
+                            </tr>
+                            <tr>
+                                <td>Peak sessions per BNG cluster</td>
+                                <td>150k–200k</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 11 - CHANGE MANAGEMENT -->
+        <div id="tab11" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-tasks"></i> Change Management & Deployment Safety</h2>
+                <h3>Preventing Outages Caused by Human Error</h3>
+
+                <h4><i class="fas fa-lock"></i> Safety Mechanisms</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>Mandatory pre-checks (config validation, reachability)</li>
+                        <li>Dry-run diffs (IaC) before deployment</li>
+                        <li>Policy enforcement (no wrong AS number, no mgmt exposure)</li>
+                        <li>Automated back-out plans</li>
+                        <li>24×7 post-change monitoring</li>
+                    </ul>
+                </div>
+
+                <h3><i class="fas fa-chart-bar"></i> Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card metric-green">
+                        <h4>Change Failure Rate</h4>
+                        <div class="value">&lt;1%</div>
+                        <p>Industry-leading safety</p>
+                    </div>
+                    <div class="metric-card metric-blue">
+                        <h4>Unauthorized Changes</h4>
+                        <div class="value">0</div>
+                        <p>Zero tolerance policy</p>
+                    </div>
+                    <div class="metric-card metric-teal">
+                        <h4>Rollback Time</h4>
+                        <div class="value">&lt;5 min</div>
+                        <p>Rapid recovery capability</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 12 - AIOPS -->
+        <div id="tab12" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-brain"></i> Predictive Reliability (AIOps)</h2>
+                <h3>From Reactive to Predictive Reliability</h3>
+
+                <h4><i class="fas fa-crystal-ball"></i> AI Predicts:</h4>
+                <div class="feature-box">
+                    <ul>
+                        <li>Fiber cuts (based on dig history, weather, cable age)</li>
+                        <li>OLT port degradation</li>
+                        <li>ONT death probability</li>
+                        <li>Metro hotspot congestion</li>
+                        <li>Power failures at POPs</li>
+                        <li>OTT quality drops</li>
+                    </ul>
+                </div>
+
+                <h4><i class="fas fa-bullseye"></i> AI Goals:</h4>
+                <div class="metrics-grid">
+                    <div class="metric-card metric-purple">
+                        <h4>Pre-Impact Detection</h4>
+                        <div class="value">60%</div>
+                        <p>Detect before subscriber impact</p>
+                    </div>
+                    <div class="metric-card metric-green">
+                        <h4>Chronic Issue Reduction</h4>
+                        <div class="value">70%</div>
+                        <p>Reduction in recurring problems</p>
+                    </div>
+                    <div class="metric-card metric-blue">
+                        <h4>Experience Score Improvement</h4>
+                        <div class="value">8-10%</div>
+                        <p>Customer satisfaction gain</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 13 - KPIs -->
+        <div id="tab13" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-tachometer-alt"></i> Reliability KPIs</h2>
+                <h3>The Reliability Scorecard</h3>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>KPI Category</th>
+                                <th>Metric</th>
+                                <th>Target</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Availability</strong></td>
+                                <td>Core uptime</td>
+                                <td>99.995%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Availability</strong></td>
+                                <td>Metro uptime</td>
+                                <td>99.98%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td>Access packet loss</td>
+                                <td>&lt;0.3%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance</strong></td>
+                                <td>Core packet loss</td>
+                                <td>&lt;0.1%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Operational</strong></td>
+                                <td>MTTR P1</td>
+                                <td>30–45 mins</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Proactive Ops</strong></td>
+                                <td>Proactive detection</td>
+                                <td>60%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Customer</strong></td>
+                                <td>Chronic users</td>
+                                <td>&lt;0.1%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 14 - ROADMAP -->
+        <div id="tab14" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-road"></i> Reliability Roadmap — 18 Months</h2>
+
+                <div class="phase-card" style="border-left-color: #4caf50;">
+                    <h4><i class="fas fa-flag"></i> Phase 1 — Foundations (0–6 months)</h4>
+                    <ul>
+                        <li>Implement dual-core DC routing improvements</li>
+                        <li>Validate optical budgets across all cities</li>
+                        <li>Standardize metro ring redundancy</li>
+                        <li>Start AIOps ingestion for optical power & BNG metrics</li>
+                        <li>Build reliability dashboards</li>
+                    </ul>
+                </div>
+
+                <div class="phase-card" style="border-left-color: #2196f3;">
+                    <h4><i class="fas fa-flag"></i> Phase 2 — Automation & Predictive (6–12 months)</h4>
+                    <ul>
+                        <li>Auto-detect fiber cuts</li>
+                        <li>Auto-recover sessions on overloaded BNGs</li>
+                        <li>Deploy fast reroute enhancements</li>
+                        <li>Introduce predictive maintenance for OLT/ONT</li>
+                        <li>Lower MTTR by 30%</li>
+                    </ul>
+                </div>
+
+                <div class="phase-card" style="border-left-color: #9c27b0;">
+                    <h4><i class="fas fa-flag"></i> Phase 3 — Experience-Centric Reliability (12–18 months)</h4>
+                    <ul>
+                        <li>Reliability → Feed into Experience Score (Deck 3)</li>
+                        <li>Improve chronic-area remediation</li>
+                        <li>Implement city-level reliability indices</li>
+                        <li>Achieve 99.99%+ city-wide reliability</li>
+                        <li>Automate all RCA data collection</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 15 - REAL STORY -->
+        <div id="tab15" class="tab-content">
+            <div class="content-card">
+                <h2><i class="fas fa-book-open"></i> Real-Life Scenario / Story</h2>
+                
+                <div class="story-card">
+                    <h3><i class="fas fa-trophy"></i> How Reliability Saved 18,000 Subscribers from an Outage</h3>
+                    
+                    <p><i class="fas fa-cloud-rain"></i> <strong>Heavy rains in City C caused a major fiber duct failure at 8:47 PM.</strong></p>
+                    
+                    <p><i class="fas fa-shield-alt"></i> <strong>Ring protection kicked in: failover in ~42 ms.</strong></p>
+                    
+                    <p><i class="fas fa-brain"></i> <strong>AIOps detected increasing optical drift 24 hours earlier.</strong></p>
+                    
+                    <p><i class="fas fa-ticket-alt"></i> <strong>A preventive ticket had been created but field team was delayed due to weather.</strong></p>
+                    
+                    <div class="highlight-success">
+                        <h4><i class="fas fa-check-circle"></i> The Result:</h4>
+                        <p><strong>Because redundancy worked perfectly, 18,000 subscribers experienced no outage.</strong></p>
+                        <p><strong>OTT complaints remained &lt;1%.</strong></p>
+                        <p><strong>Field team repaired the duct the next morning without service impact.</strong></p>
+                    </div>
+                    
+                    <p style="margin-top: 1.5rem; font-size: 1.2rem; color: #1b5e20; font-weight: bold;">
+                        <i class="fas fa-star"></i> This is what carrier-grade reliability looks like in action!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            // Hide all tab contents
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            // Remove active class from all tab buttons
+            var tabButtons = document.getElementsByClassName("tab-btn");
+            for (var i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            // Show the selected tab content and mark button as active
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            
+            // Scroll to top of content area smoothly
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
+      <script>
+        const createFloatingBall = ()=>{let a=document.createElement("style");a.textContent=`
+          .fellou-floating-ball {
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background: #fff;
+              border-radius: 50%;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+              display: flex;
+              gap: 8px;
+              flex-direction: row;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              transition: all 0.15s ease;
+              z-index: 100000;
+              width: 28px;
+              height: 28px;
+              text-align: center;
+              border: 2px solid #f4f4f4;
+          }
+
+          .fellou-floating-ball:hover {
+              width: 140px;
+              border-radius: 99px;
+          }
+
+          .fellou-floating-ball svg {
+              width: 16px;
+              height: 16px;
+          }
+
+          .fellou-floating-ball-text {
+              display: none;
+              width: 0px;
+              transition: width 0.3s ease;
+              color: #595561;
+              font-size: 12px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 20px;
+              white-space: nowrap;
+              overflow: hidden;
+           
+          }
+
+          .fellou-floating-ball:hover .fellou-floating-ball-text {
+              display: block;
+              width: 100px;
+          }
+      `,document.head.appendChild(a);let b=document.createElement("div");b.className="fellou-floating-ball",b.addEventListener("click",()=>{window.open("https://fellou.ai","_blank")}),b.innerHTML=`
+          <svg width="16" height="16" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path opacity="0.72" d="M108.71 15.909C133.671 36.8541 134.337 77.1554 110.197 105.924C86.0565 134.694 46.2518 141.036 21.2904 120.091C-3.67096 99.1459 -4.33674 58.8446 19.8034 30.0755C43.9435 1.30644 83.7482 -5.03614 108.71 15.909ZM102.282 23.5694C81.8118 6.39315 48.2407 11.7425 27.4638 36.5034C6.68694 61.2643 7.24845 95.2543 27.7183 112.431C48.1882 129.607 81.7593 124.258 102.536 99.4966C123.313 74.7357 122.752 40.7457 102.282 23.5694Z" fill="url(#paint0_linear_34_1408)"/>
+              <path d="M116.986 29.3811C141.525 49.9712 143.286 88.2698 120.921 114.924C98.5561 141.577 60.5333 146.493 35.995 125.903C11.4567 105.313 9.69493 67.0139 32.06 40.3602C54.4252 13.7065 92.4479 8.79095 116.986 29.3811ZM110.558 37.0415C90.3987 20.1255 58.6488 24.2301 39.7205 46.788C20.7921 69.346 22.2632 101.326 42.4229 118.242C62.5825 135.158 94.3324 131.054 113.261 108.496C132.189 85.9377 130.718 53.9574 110.558 37.0415Z" fill="url(#paint1_linear_34_1408)"/>
+              <path d="M131.544 35.0694C155.71 55.3471 155.731 95.1074 131.591 123.876C107.451 152.646 68.291 159.529 44.1249 139.251C19.9589 118.974 19.9379 79.2135 44.078 50.4444C68.2182 21.6753 107.378 14.7917 131.544 35.0694ZM125.116 42.7299C105.505 26.2745 72.5526 32.067 51.7385 56.8723C30.9244 81.6776 30.9421 115.136 50.5528 131.591C70.1636 148.046 103.116 142.254 123.931 117.449C144.745 92.6433 144.727 59.1852 125.116 42.7299Z" fill="url(#paint2_linear_34_1408)"/>
+              <defs>
+                  <linearGradient id="paint0_linear_34_1408" x1="108.71" y1="15.909" x2="21.2904" y2="120.091" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint1_linear_34_1408" x1="116.986" y1="29.381" x2="35.995" y2="125.903" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint2_linear_34_1408" x1="131.544" y1="35.0694" x2="44.1249" y2="139.251" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8"/>
+                      <stop offset="0.5" stop-color="#FF9000"/>
+                      <stop offset="1" stop-color="#33B3FF"/>
+                  </linearGradient>
+              </defs>
+          </svg>
+      `;let c=document.createElement("div");c.className="fellou-floating-ball-text",c.textContent="powered by fellou",b.appendChild(c),document.body.appendChild(b)};
+        // Call createFloatingBall when the page loads
+        window.addEventListener('load', createFloatingBall);
+      </script>
+    </body>
+</html>
