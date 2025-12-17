@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Teams & Chat Strategy Blueprint - Opella Global</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-blue: #004C99;
+            --accent-teal: #00A3BF;
+            --dark-gray: #2C3E50;
+            --medium-gray: #5A6C7D;
+            --light-gray: #F5F7FA;
+            --border-gray: #E1E8ED;
+            --success-green: #27AE60;
+            --warning-orange: #F39C12;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--dark-gray);
+            color: var(--white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: var(--secondary-blue);
+            border-bottom: 3px solid var(--accent-teal);
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--white);
+        }
+
+        .sidebar-header p {
+            font-size: 11px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .nav-tabs {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-teal);
+        }
+
+        .nav-tab.active {
+            background: rgba(0, 163, 191, 0.2);
+            border-left-color: var(--accent-teal);
+            color: var(--accent-teal);
+        }
+
+        .nav-tab i {
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            background: var(--light-gray);
+            width: calc(100% - 280px);
+            padding: 0;
+        }
+
+        .content-section {
+            padding: 50px;
+            min-height: auto;
+            scroll-margin-top: 100px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-blue);
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            color: var(--secondary-blue);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .section-header .subtitle {
+            font-size: 15px;
+            color: var(--medium-gray);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-teal));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--secondary-blue);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .principle-card {
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-gray) 100%);
+            border-left: 5px solid var(--accent-teal);
+            padding: 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .principle-card h4 {
+            font-size: 16px;
+            color: var(--secondary-blue);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .principle-card p {
+            color: var(--medium-gray);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .info-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .info-box.info { background: #E3F2FD; border-left: 5px solid #2196F3; }
+        .info-box.success { background: #E8F5E9; border-left: 5px solid #4CAF50; }
+        .info-box.warning { background: #FFF3E0; border-left: 5px solid #FF9800; }
+
+        .metric-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-teal);
+            box-shadow: var(--shadow);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary-blue);
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-green), var(--accent-teal));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .vision-statement {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-statement:before {
+            content: '"';
+            font-size: 120px;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            opacity: 0.1;
+            font-family: Georgia, serif;
+        }
+
+        .vision-statement h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .vision-statement p {
+            font-size: 16px;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .persona-card {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 8px;
+            border-top: 5px solid var(--primary-blue);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .persona-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .persona-card h4 {
+            color: var(--secondary-blue);
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gray);
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background: var(--secondary-blue);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: var(--light-gray);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .timeline-marker {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+            z-index: 2;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--white);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-teal);
+        }
+
+        .timeline-content h4 {
+            color: var(--secondary-blue);
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .timeline-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .timeline-content li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--medium-gray);
+            font-size: 13px;
+        }
+
+        .timeline-content li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .use-case-card {
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-gray) 100%);
+            border: 1px solid var(--border-gray);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .use-case-card h5 {
+            color: var(--secondary-blue);
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .use-case-card p {
+            color: var(--medium-gray);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .tag {
+            background: var(--light-gray);
+            color: var(--medium-gray);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid var(--border-gray);
+            display: inline-block;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .tag.chat { background: #E3F2FD; color: #0066CC; border-color: #90CAF9; }
+        .tag.channel { background: #E8F5E9; color: #27AE60; border-color: #A5D6A7; }
+        .tag.meeting { background: #FFF3E0; color: #F39C12; border-color: #FFE0B2; }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                width: calc(100% - 240px);
+                margin-left: 240px;
+            }
+            .content-section {
+                padding: 30px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .content-section {
+                padding: 20px;
+            }
+            .section-header h2 {
+                font-size: 28px;
+            }
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Microsoft Teams & Chat</h1>
+                <p>Strategic Blueprint | Opella Global Operations</p>
+            </div>
+            <ul class="nav-tabs">
+                <li class="nav-tab active" data-scroll="section-0">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Executive Summary</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-1">
+                    <i class="fas fa-rocket"></i>
+                    <span>Vision & Mandate</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-2">
+                    <i class="fas fa-users"></i>
+                    <span>Use Cases & Personas</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-3">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Architecture</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-4">
+                    <i class="fas fa-tasks"></i>
+                    <span>Governance</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-5">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security & Compliance</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-6">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat Strategy</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-7">
+                    <i class="fas fa-video"></i>
+                    <span>Meetings & Video</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-8">
+                    <i class="fas fa-cogs"></i>
+                    <span>Operating Model</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-9">
+                    <i class="fas fa-people-arrows"></i>
+                    <span>Adoption & Change</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-10">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Licensing & Costs</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-11">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Metrics & KPIs</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-12">
+                    <i class="fas fa-road"></i>
+                    <span>Roadmap</span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Section 0: Executive Summary -->
+            <section id="section-0" class="content-section">
+                <div class="section-header">
+                    <h2>Executive Summary</h2>
+                    <p class="subtitle">My leadership mandate and collaboration strategy</p>
+                </div>
+
+                <div class="vision-statement">
+                    <h3><i class="fas fa-target"></i> My Leadership Mandate</h3>
+                    <p>As Teams & Chat Lead, I am accountable for transforming Microsoft Teams into Opella's unified collaboration platform for 15,000 employees across 60+ sites and multiple continents. I will ensure Teams operates as the digital front door—where work happens, decisions are made, and teams connect. Teams & Chat will be secure by design, governed yet flexible, and deeply integrated with the business. I own the strategy, architecture, adoption, operations, and outcomes.</p>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 24px;">
+                    <i class="fas fa-layer-group"></i> 6 Strategic Pillars
+                </h3>
+
+                <div class="grid-3">
+                    <div class="principle-card">
+                        <h4><i class="fas fa-comments" style="color: #0066CC;"></i> Digital Front Door</h4>
+                        <p>Teams is the primary collaboration hub. Chat for quick communication. Channels for team knowledge. Meetings for synchronous work. One unified experience, not scattered tools.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-globe" style="color: #00A3BF;"></i> Global Scale & Local Trust</h4>
+                        <p>Single tenant architecture. Multi-geo resilience. Local compliance flexibility (GDPR, SOX, GxP). 60+ sites connected. Zero friction between locations.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-lock" style="color: #27AE60;"></i> Security by Default</h4>
+                        <p>Zero-trust access. Conditional access policies. DLP for sensitive chat. Sensitivity labels. Information barriers where needed. Audit trails everywhere.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-project-diagram" style="color: #F39C12;"></i> Governance That Enables</h4>
+                        <p>Clear team creation rules. Smart naming standards. Lifecycle automation. Templates for common scenarios. Rules that prevent chaos, not capability.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-users" style="color: #E74C3C;"></i> Frontline-Ready</h4>
+                        <p>Not just office workers. Manufacturing plants. Logistics teams. Shift workers. Mobile-first experiences. Offline capability. Role-based access.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-rocket" style="color: #9B59B6;"></i> AI-Powered Future</h4>
+                        <p>Copilot for Teams. Smart meeting summaries. Sentiment analysis. Recommendations. We build the foundation for tomorrow's intelligent collaboration.</p>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 32px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);"><i class="fas fa-bullseye"></i></div>
+                            <div class="card-title">12-Month Success Targets</div>
+                        </div>
+                        <div class="stats-grid" style="gap: 12px;">
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary-blue);">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-blue); margin-bottom: 4px;">80%+</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Daily Active Users</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #27AE60;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-blue); margin-bottom: 4px;">2,500+</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Teams Created</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #00A3BF;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-blue); margin-bottom: 4px;">15,000</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Licensed Users</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #F39C12;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-blue); margin-bottom: 4px;">99.9%</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Service Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);"><i class="fas fa-tasks"></i></div>
+                            <div class="card-title">Phase Overview</div>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 8px; font-size: 14px;">📅 Phase 1: Optimize (0–90 Days)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Governance, security, pilot adoption, training</p>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 8px; font-size: 14px;">🚀 Phase 2: Scale (6–12 Months)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Global rollout, frontline expansion, integrations</p>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 8px; font-size: 14px;">✨ Phase 3: Lead (12–24 Months)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Copilot, AI-powered insights, ecosystem</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box info" style="margin-top: 32px;">
+                    <i class="fas fa-lightbulb" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>What This Means:</strong> I am personally accountable for orchestrating Teams & Chat as Opella's collaboration operating system. This is not just technology—it's how 15,000 employees collaborate, communicate, and execute strategy. I own the roadmap, the adoption, the security posture, the budget, and the business outcomes. This document is my commitment to clarity, accountability, and delivering world-class collaboration at scale.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 1: Vision & Collaboration Mandate -->
+            <section id="section-1" class="content-section">
+                <div class="section-header">
+                    <h2>Vision & Collaboration Mandate</h2>
+                    <p class="subtitle">Why Teams & Chat exist at Opella and what success looks like</p>
+                </div>
+
+                <div class="vision-statement">
+                    <h3><i class="fas fa-star"></i> My Collaboration Vision</h3>
+                    <p>Microsoft Teams will be the heartbeat of how Opella works—connecting every employee from corporate offices to manufacturing plants, enabling real-time collaboration, knowledge sharing, and decision-making. Teams is not an app we deploy. Teams is how Opella operates.</p>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-compass"></i> Core Collaboration Principles
+                </h3>
+
+                <div class="grid-2">
+                    <div class="principle-card">
+                        <h4><i class="fas fa-users" style="color: var(--accent-teal);"></i> People-First Design</h4>
+                        <p>Every feature serves a person or a team. We design for how work actually happens—not how consultants think it should. Frontline workers get equal importance as executives.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-unlock" style="color: var(--accent-teal);"></i> Governed Flexibility</h4>
+                        <p>Teams need autonomy to create, customize, and evolve. But within clear guardrails. Governance that enables, not restricts. Speed with security.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-layer-group" style="color: var(--accent-teal);"></i> Integration-Ready</h4>
+                        <p>Teams connects to everything—email, files, meetings, calls, line-of-business apps. One experience. No app switching. Seamless workflows.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-globe" style="color: var(--accent-teal);"></i> Global from Day One</h4>
+                        <p>One tenant. 60+ sites. Multiple continents. Multi-language. Local compliance. Teams works the same everywhere—no silos, no fragmentation.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-lightbulb" style="color: var(--accent-teal);"></i> Continuous Learning</h4>
+                        <p>We measure adoption metrics. We gather feedback. We iterate. Teams evolves based on how Opella uses it, not just based on Microsoft releases.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-lock" style="color: var(--accent-teal);"></i> Security as Oxygen</h4>
+                        <p>Security isn't negotiable. DLP, sensitivity labels, compliance holds—these aren't friction. They're embedded into how Teams works.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 32px;">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-check-double"></i></div>
+                        <div class="card-title">Business Outcomes I Will Deliver</div>
+                    </div>
+                    <div class="grid-3">
+                        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary-blue);">
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: var(--success-green); margin-right: 8px;"></i>Collaboration Velocity</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray); margin-bottom: 8px;">Teams as the default tool for teamwork. Reduced reliance on scattered email threads and disconnected tools.</p>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--secondary-blue);">KPI: 80% daily active users</div>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: var(--success-green); margin-right: 8px;"></i>Global Connectivity</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray); margin-bottom: 8px;">Seamless collaboration across 60+ sites. Time zones disappear. Knowledge flows globally.</p>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--secondary-blue);">KPI: 2,500+ teams, 60+ countries</div>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid #00A3BF;">
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: var(--success-green); margin-right: 8px;"></i>Compliance at Scale</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray); margin-bottom: 8px;">Every team collaboration is audit-ready. Retention policies automatic. Legal holds enforceable.</p>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--secondary-blue);">KPI: 100% compliance audit pass</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-door-open"></i> Teams as the Digital Front Door
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;"><strong>What "Digital Front Door" Means:</strong> Every employee's primary experience with Opella's digital environment is through Teams. It's not a silo. It's the gateway to collaboration, communication, and work.</p>
+                    <div class="grid-2">
+                        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #0066CC;">
+                            <h5 style="color: #0066CC; margin-bottom: 12px;"><i class="fas fa-comments" style="margin-right: 8px;"></i>Chat Layer</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li style="padding: 4px 0;">Quick questions & decisions</li>
+                                <li style="padding: 4px 0;">1-to-1 conversations</li>
+                                <li style="padding: 4px 0;">Real-time problem solving</li>
+                                <li style="padding: 4px 0;">Social connection</li>
+                            </ul>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                            <h5 style="color: #27AE60; margin-bottom: 12px;"><i class="fas fa-th" style="margin-right: 8px;"></i>Channels Layer</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li style="padding: 4px 0;">Organized team knowledge</li>
+                                <li style="padding: 4px 0;">Asynchronous collaboration</li>
+                                <li style="padding: 4px 0;">Searchable history</li>
+                                <li style="padding: 4px 0;">Process workflows</li>
+                            </ul>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #fff3e0 0%, #fffbf0 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #F39C12;">
+                            <h5 style="color: #F39C12; margin-bottom: 12px;"><i class="fas fa-video" style="margin-right: 8px;"></i>Meetings Layer</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li style="padding: 4px 0;">1:1 calls & huddles</li>
+                                <li style="padding: 4px 0;">Team meetings</li>
+                                <li style="padding: 4px 0;">Town halls & webinars</li>
+                                <li style="padding: 4px 0;">Auto-recording & transcription</li>
+                            </ul>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #f3e5f5 0%, #fef5ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #9B59B6;">
+                            <h5 style="color: #9B59B6; margin-bottom: 12px;"><i class="fas fa-file-alt" style="margin-right: 8px;"></i>Files & Integration Layer</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li style="padding: 4px 0;">SharePoint & OneDrive</li>
+                                <li style="padding: 4px 0;">Line-of-business apps</li>
+                                <li style="padding: 4px 0;">Workflow automation</li>
+                                <li style="padding: 4px 0;">One experience</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Use Cases & Personas -->
+            <section id="section-2" class="content-section">
+                <div class="section-header">
+                    <h2>Use Cases & Personas</h2>
+                    <p class="subtitle">Who uses Teams, how they use it, and what they need</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-users" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>Persona-Driven Design:</strong> Teams must work for corporate office workers AND manufacturing plant operators AND executives AND external partners. Each persona has distinct needs, access patterns, and collaboration styles. I design for all of them.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-users"></i> User Personas & Collaboration Patterns
+                </h3>
+
+                <div class="grid-2">
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-briefcase" style="color: #0066CC; margin-right: 8px;"></i>Corporate Knowledge Workers (6,000 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> Office staff, managers, project leads, cross-functional teams</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Location:</strong> Corporate HQ, regional offices</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Devices:</strong> Desktop + Mobile + Tablet</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag chat">Daily 1:1 chats</span>
+                                <span class="tag channel">Project channels</span>
+                                <span class="tag meeting">Daily standups</span>
+                                <span class="tag channel">Knowledge sharing</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Communication Pattern:</strong> Heavy chat users (10-15 chats/day). Channel members (8-12 teams). 2-3 meetings daily. Files stored in SharePoint/OneDrive.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-industry" style="color: #F39C12; margin-right: 8px;"></i>Frontline & Plant Workers (4,500 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> Manufacturing operators, logistics, shift workers, plant supervisors</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Location:</strong> Manufacturing plants, distribution centers</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Devices:</strong> Mobile (iOS/Android), Shared tablets, Kiosks</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag channel">Shift updates</span>
+                                <span class="tag chat">Quick coordination</span>
+                                <span class="tag meeting">Shift huddles</span>
+                                <span class="tag channel">Safety alerts</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Communication Pattern:</strong> Brief mobile chats. Channels for shift info. Audio/video messages more than text. Offline capability needed. Low-bandwidth friendly.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-crown" style="color: #E74C3C; margin-right: 8px;"></i>Executive Leadership (1,500 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> C-Suite, SVP, VP, Directors, Strategic decision-makers</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Location:</strong> Global, mostly remote or traveling</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Devices:</strong> Desktop + Mobile (travel-heavy)</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag chat">Strategic discussions</span>
+                                <span class="tag meeting">Executive meetings</span>
+                                <span class="tag meeting">Town halls</span>
+                                <span class="tag channel">Board info</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Communication Pattern:</strong> Selective chat users. Preference for scheduled meetings. Heavy reliance on transcription & meeting notes. Requires compliance/legal hold capability.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-handshake" style="color: #27AE60; margin-right: 8px;"></i>External Partners & Guests (2,000+ users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> Contractors, consultants, vendors, partners, temporary staff</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Location:</strong> External, temporary access</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Devices:</strong> Personal devices (mostly mobile)</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag chat">Project collaboration</span>
+                                <span class="tag channel">Specific teams</span>
+                                <span class="tag meeting">Reviews & meetings</span>
+                                <span class="tag channel">Knowledge transfer</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Communication Pattern:</strong> Limited access (specific teams). Temporary accounts (expires after project). DLP & data protection essential. No chat outside approved teams.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-network-wired" style="color: #9B59B6; margin-right: 8px;"></i>IT & Support Teams (1,000 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> IT admins, support desk, technical teams, security ops</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Location:</strong> Global support centers</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Devices:</strong> Desktop (primary), Mobile (secondary)</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag channel">Incident coordination</span>
+                                <span class="tag chat">Escalation chats</span>
+                                <span class="tag meeting">Daily standups</span>
+                                <span class="tag channel">Knowledge base</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Communication Pattern:</strong> Incident channels with bots/alerts. Escalation workflows. Heavy integration with monitoring tools. Always-on presence needed.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Architecture & Design -->
+            <section id="section-3" class="content-section">
+                <div class="section-header">
+                    <h2>Architecture & Design</h2>
+                    <p class="subtitle">How Teams is designed for enterprise-scale collaboration</p>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-layer-group" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Architecture Philosophy:</strong> Single global tenant. Cloud-first. Integrated with Microsoft 365. Multi-geo resilience. Identity-driven access. Audit trail on everything.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-layer-group"></i> Core Architecture Principles
+                </h3>
+
+                <div class="card">
+                    <div class="grid-2">
+                        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #0066CC;">
+                            <h5 style="color: #0066CC; margin-bottom: 12px;"><i class="fas fa-globe" style="margin-right: 8px;"></i>Single Global Tenant</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;">One Teams environment for all 15,000 users. No fragmentation. Unified governance. Seamless cross-location collaboration.</p>
+                            <div style="font-size: 11px; font-weight: 600; color: #0066CC; margin-top: 8px;">Benefit: Global connectivity, single identity source</div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                            <h5 style="color: #27AE60; margin-bottom: 12px;"><i class="fas fa-database" style="margin-right: 8px;"></i>Multi-Geo Data Residency</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;">Teams data stored in geo-regions (North America, EU, APAC). GDPR and local compliance. Failover redundancy.</p>
+                            <div style="font-size: 11px; font-weight: 600; color: #27AE60; margin-top: 8px;">Benefit: Compliance + performance + resilience</div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #fff3e0 0%, #fffbf0 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #F39C12;">
+                            <h5 style="color: #F39C12; margin-bottom: 12px;"><i class="fas fa-code-branch" style="margin-right: 8px;"></i>Chat vs Channel Design</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Chat:</strong> 1-on-1, informal, transient. <strong>Channels:</strong> Team knowledge, persistent, organized.</p>
+                            <div style="font-size: 11px; font-weight: 600; color: #F39C12; margin-top: 8px;">Pattern: Chat for quick decisions, channels for institutional knowledge</div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #f3e5f5 0%, #fef5ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #9B59B6;">
+                            <h5 style="color: #9B59B6; margin-bottom: 12px;"><i class="fas fa-link" style="margin-right: 8px;"></i>Integration Backbone</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;">Teams + SharePoint (files) + OneDrive (personal) + Exchange (email) + Microsoft Graph (APIs).</p>
+                            <div style="font-size: 11px; font-weight: 600; color: #9B59B6; margin-top: 8px;">Result: One unified platform, not scattered tools</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-diagram-project"></i> Teams Organizational Structure
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;"><strong>Teams Hierarchy:</strong> Organization → Teams → Channels → Conversations</p>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Level</th>
+                                    <th>Purpose</th>
+                                    <th>Example</th>
+                                    <th>Ownership</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Organization</strong></td>
+                                    <td>Tenant-wide settings, policies, governance</td>
+                                    <td>Opella Inc (all 15,000 users)</td>
+                                    <td>IT Leadership</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Teams</strong></td>
+                                    <td>Functional or project groups (30-200 members)</td>
+                                    <td>"Manufacturing Operations", "Product Launch 2024"</td>
+                                    <td>Team Owner</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Channels</strong></td>
+                                    <td>Organized topics within a team (public/private)</td>
+                                    <td>"Daily Standups", "Q3 Planning", "Resources"</td>
+                                    <td>Channel Moderator</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Conversations</strong></td>
+                                    <td>Chat threads, messages, files in channels</td>
+                                    <td>Individual messages, threads, reactions</td>
+                                    <td>Team Members</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Governance & Lifecycle Management -->
+            <section id="section-4" class="content-section">
+                <div class="section-header">
+                    <h2>Governance & Lifecycle Management</h2>
+                    <p class="subtitle">How we enable teams while preventing chaos</p>
+                </div>
+
+                <div class="info-box warning">
+                    <i class="fas fa-tasks" style="color: #FF9800;"></i>
+                    <div>
+                        <strong>Governance Philosophy:</strong> We enable autonomy within guardrails. Teams can create freely, but within clear naming standards, security policies, and lifecycle rules. Governance that scales without becoming bureaucratic.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-cogs"></i> Team Lifecycle Management
+                </h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #0066CC;">1</div>
+                        <div class="timeline-content">
+                            <h4>🆕 CREATE: Smart Team Creation</h4>
+                            <ul>
+                                <li>User initiates "Create Team" request</li>
+                                <li>Template selection: Project Team, Department, Cross-Functional, Frontline</li>
+                                <li>Naming validation: [Organization]-[Purpose]-[YYYY] (e.g., MFG-PlantOps-2024)</li>
+                                <li>Owner assignment & approval workflow</li>
+                                <li>Automated channel template applied (General, Announcements, Resources, Random)</li>
+                                <li>DLP & sensitivity label policies auto-assigned</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #F39C12;">2</div>
+                        <div class="timeline-content">
+                            <h4>🚀 ACTIVE: Team Operations</h4>
+                            <ul>
+                                <li>Team members join and collaborate</li>
+                                <li>Channels created by members (follows naming standards)</li>
+                                <li>Quarterly health check: last activity, owner validation, member review</li>
+                                <li>Monthly governance audit: compliance, DLP violations, external guest access</li>
+                                <li>Annual recertification: owner confirms team is still active & needed</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #E74C3C;">3</div>
+                        <div class="timeline-content">
+                            <h4>📦 ARCHIVE: Team Retirement</h4>
+                            <ul>
+                                <li>Auto-detected: No activity for 180+ days</li>
+                                <li>Owner notified: "Team appears inactive. Archive or keep?"</li>
+                                <li>Grace period: 30 days for owner to respond</li>
+                                <li>Auto-archive: Team marked read-only, moved to archive folder</li>
+                                <li>Archive still searchable (eDiscovery, compliance holds apply)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #27AE60;">4</div>
+                        <div class="timeline-content">
+                            <h4>🗑️ DELETE: Final Cleanup</h4>
+                            <ul>
+                                <li>After 12 months in archive: eligible for deletion</li>
+                                <li>Owner can request deletion OR request recovery</li>
+                                <li>Data retained per retention policies (compliance holds preserved)</li>
+                                <li>Team removed from Teams interface</li>
+                                <li>Associated SharePoint site deprovisionied</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-file-contract"></i> Governance Rules & Standards
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card" style="border-top: 5px solid var(--primary-blue);">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-heading" style="color: var(--accent-teal); margin-right: 8px;"></i>Naming Standards</h4>
+                        <div style="background: var(--light-gray); padding: 14px; border-radius: 6px; margin-bottom: 12px; font-family: monospace; font-size: 12px;">
+                            <p style="margin-bottom: 8px;"><strong>Format:</strong> [Dept/Org]-[Purpose]-[Year]</p>
+                            <p style="margin-bottom: 8px;"><strong>Valid:</strong></p>
+                            <p style="margin: 0; color: #27AE60;">✓ MFG-Operations-2024</p>
+                            <p style="margin: 0; color: #27AE60;">✓ SALES-Q4Campaign-2024</p>
+                            <p style="margin: 0; color: #27AE60;">✓ HR-Recruiting-2024</p>
+                            <p style="margin-top: 8px; margin-bottom: 8px;"><strong>Invalid:</strong></p>
+                            <p style="margin: 0; color: #E74C3C;">✗ MyTeam2024</p>
+                            <p style="margin: 0; color: #E74C3C;">✗ Team (too generic)</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #00A3BF;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-users-slash" style="color: var(--accent-teal); margin-right: 8px;"></i>External Collaboration Rules</h4>
+                        <div style="background: var(--light-gray); padding: 14px; border-radius: 6px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 13px; margin-bottom: 8px;">Allowed:</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px; margin-bottom: 12px;">
+                                <li>✓ Contractors (within project scope)</li>
+                                <li>✓ Partners (with approval)</li>
+                                <li>✓ Customers (specific channels only)</li>
+                            </ul>
+                            <h5 style="color: var(--secondary-blue); font-size: 13px; margin-bottom: 8px;">Restricted:</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li>✗ Competitors</li>
+                                <li>✗ Unvetted external users</li>
+                                <li>✗ Permanent external access</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #F39C12;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-layer-group" style="color: var(--accent-teal); margin-right: 8px;"></i>Standard Channels</h4>
+                        <div style="background: var(--light-gray); padding: 14px; border-radius: 6px; font-size: 12px;">
+                            <p style="margin-bottom: 8px;"><strong>Every team gets:</strong></p>
+                            <ul style="list-style: none; padding: 0;">
+                                <li>📢 <strong>General</strong> - Main team updates</li>
+                                <li>📋 <strong>Announcements</strong> - Official comms</li>
+                                <li>📂 <strong>Resources</strong> - Shared files & links</li>
+                                <li>🎲 <strong>Random</strong> - Social connection</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #27AE60;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-shield-alt" style="color: var(--accent-teal); margin-right: 8px;"></i>Access & Privacy Controls</h4>
+                        <div style="background: var(--light-gray); padding: 14px; border-radius: 6px; font-size: 12px;">
+                            <p style="margin-bottom: 8px;"><strong>Public Teams:</strong> Anyone can join (discovery enabled)</p>
+                            <p style="margin-bottom: 8px;"><strong>Private Teams:</strong> Owner approval required (default for sensitive data)</p>
+                            <p style="margin-bottom: 8px;"><strong>Private Channels:</strong> Within team, subset of members only</p>
+                            <p style="margin-bottom: 0;"><strong>Shared Channels:</strong> Cross-org collaboration (preview)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Security & Compliance -->
+            <section id="section-5" class="content-section">
+                <div class="section-header">
+                    <h2>Security & Compliance</h2>
+                    <p class="subtitle">How we collaborate securely and maintain compliance</p>
+                </div>
+
+                <div class="info-box warning">
+                    <i class="fas fa-shield-alt" style="color: #FF9800;"></i>
+                    <div>
+                        <strong>Security-First Mandate:</strong> I will treat every Teams conversation as potentially sensitive. Zero-trust access. Conditional access policies. DLP policies. Sensitivity labels. Information barriers where needed. Compliance holds on everything.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-lock"></i> Security Architecture
+                </h3>
+
+                <div class="card">
+                    <div class="grid-2">
+                        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #0066CC;">
+                            <h5 style="color: #0066CC; margin-bottom: 12px;"><i class="fas fa-user-lock" style="margin-right: 8px;"></i>Identity & Access</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li style="padding: 6px 0;">✓ Azure AD single sign-on</li>
+                                <li style="padding: 6px 0;">✓ MFA for all users</li>
+                                <li style="padding: 6px 0;">✓ Conditional Access policies</li>
+                                <li style="padding: 6px 0;">✓ PIM for elevated access</li>
+                                <li style="padding: 6px 0;">✓ Guest access restrictions</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #f3e5f5 0%, #fef5ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #9B59B6;">
+                            <h5 style="color: #9B59B6; margin-bottom: 12px;"><i class="fas fa-ban" style="margin-right: 8px;"></i>Data Loss Prevention</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li style="padding: 6px 0;">✓ Sensitive info detection (PII, credit cards)</li>
+                                <li style="padding: 6px 0;">✓ Policy hints in-chat</li>
+                                <li style="padding: 6px 0;">✓ Audit on blocked messages</li>
+                                <li style="padding: 6px 0;">✓ Admin override capability</li>
+                                <li style="padding: 6px 0;">✓ Custom patterns for IP</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                            <h5 style="color: #27AE60; margin-bottom: 12px;"><i class="fas fa-tags" style="margin-right: 8px;"></i>Sensitivity Labels</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li style="padding: 6px 0;">✓ Public, Internal, Confidential, Secret</li>
+                                <li style="padding: 6px 0;">✓ Auto-apply based on content</li>
+                                <li style="padding: 6px 0;">✓ Encryption at rest & in transit</li>
+                                <li style="padding: 6px 0;">✓ Expiration policies</li>
+                                <li style="padding: 6px 0;">✓ Audit trail of label changes</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #fff3e0 0%, #fffbf0 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #F39C12;">
+                            <h5 style="color: #F39C12; margin-bottom: 12px;"><i class="fas fa-history" style="margin-right: 8px;"></i>Retention & Legal Hold</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li style="padding: 6px 0;">✓ Message retention (1-7 years)</li>
+                                <li style="padding: 6px 0;">✓ Legal hold (indefinite)</li>
+                                <li style="padding: 6px 0;">✓ eDiscovery export (compliance ready)</li>
+                                <li style="padding: 6px 0;">✓ Immutable compliance</li>
+                                <li style="padding: 6px 0;">✓ Auto-deletion enforcement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-check-double"></i> Compliance Alignment
+                </h3>
+
+                <div class="grid-2">
+                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #0066CC;">
+                        <h5 style="color: #0066CC; margin-bottom: 12px;">SOX Compliance</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li>✓ Audit trails (10-year retention)</li>
+                            <li>✓ Access controls (RBAC)</li>
+                            <li>✓ Change logs (who, what, when)</li>
+                            <li>✓ Financial messaging compliance</li>
+                        </ul>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                        <h5 style="color: #27AE60; margin-bottom: 12px;">GxP Compliance</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li>✓ 21 CFR Part 11 readiness</li>
+                            <li>✓ Data integrity (ALCOA+)</li>
+                            <li>✓ Training & auditing</li>
+                            <li>✓ Validation tests performed</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 6: Chat Strategy -->
+            <section id="section-6" class="content-section">
+                <div class="section-header">
+                    <h2>Chat Strategy</h2>
+                    <p class="subtitle">When to chat, when to channel, when to email</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-comments" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>Chat Philosophy:</strong> Chat is for real-time dialogue. Channels are for persistent knowledge. Email is for formal records. I will define clear decision models so users intuitively choose the right tool.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-code-branch"></i> Chat vs Channel vs Email Decision Model
+                </h3>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Tool</th>
+                                    <th>Reason</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Quick question, immediate response</strong></td>
+                                    <td>💬 <strong>1:1 Chat</strong></td>
+                                    <td>Real-time, informal, synchronous</td>
+                                    <td>"Hey, can you review this real quick?"</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Quick team decision</strong></td>
+                                    <td>💬 <strong>Group Chat</strong></td>
+                                    <td>Ad-hoc, small groups, fast resolution</td>
+                                    <td>"Should we launch tomorrow or Friday?"</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Organized team knowledge</strong></td>
+                                    <td>📋 <strong>Channel</strong></td>
+                                    <td>Persistent, searchable, team-wide</td>
+                                    <td>All SOPs in #Procedures channel</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Formal communication</strong></td>
+                                    <td>📧 <strong>Email</strong></td>
+                                    <td>Record-keeping, compliance required</td>
+                                    <td>Official policy announcements</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sensitive/confidential</strong></td>
+                                    <td>💬 <strong>1:1 Chat (encrypted)</strong></td>
+                                    <td>Private, DLP-protected, legal hold</td>
+                                    <td>Performance feedback, HR matters</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Project updates</strong></td>
+                                    <td>📋 <strong>Project Team Channels</strong></td>
+                                    <td>Organized by team, historical record</td>
+                                    <td>#Q4Campaign with updates, tasks, files</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-inbox"></i> External Chat Policy
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card" style="border-top: 5px solid #0066CC;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-check-circle" style="color: #27AE60; margin-right: 8px;"></i>Allowed</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0;">✓ 1:1 chats with approved external partners</li>
+                            <li style="padding: 8px 0;">✓ External users in specific shared channels</li>
+                            <li style="padding: 8px 0;">✓ Project-scoped collaboration</li>
+                            <li style="padding: 8px 0;">✓ Customer success chats (recorded)</li>
+                            <li style="padding: 8px 0;">✓ Vendors in vendor management channel</li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #E74C3C;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-times-circle" style="color: #E74C3C; margin-right: 8px;"></i>Not Allowed</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0;">✗ Chats with competitors</li>
+                            <li style="padding: 8px 0;">✗ Unvetted external users</li>
+                            <li style="padding: 8px 0;">✗ Sensitive data in external chat</li>
+                            <li style="padding: 8px 0;">✗ Permanent external access</li>
+                            <li style="padding: 8px 0;">✗ Unauthorized external teams</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-trash"></i> Chat Retention & Archival
+                </h3>
+
+                <div class="card">
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                            <div style="border-left: 5px solid #0066CC; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 8px;"><i class="fas fa-chat-dots" style="margin-right: 8px;"></i>Standard Chat</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Retention:</strong> 3 years</p>
+                                <p style="font-size: 12px; color: var(--medium-gray);"><strong>Auto-delete:</strong> After 3 years</p>
+                            </div>
+                            <div style="border-left: 5px solid #F39C12; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 8px;"><i class="fas fa-lock" style="margin-right: 8px;"></i>Sensitive Chat</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Retention:</strong> 7 years</p>
+                                <p style="font-size: 12px; color: var(--medium-gray);"><strong>Auto-delete:</strong> After 7 years</p>
+                            </div>
+                            <div style="border-left: 5px solid #27AE60; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 8px;"><i class="fas fa-history" style="margin-right: 8px;"></i>Legal Hold</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Retention:</strong> Indefinite</p>
+                                <p style="font-size: 12px; color: var(--medium-gray);"><strong>Auto-delete:</strong> Never (unless hold removed)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Meetings & Video Collaboration -->
+            <section id="section-7" class="content-section">
+                <div class="section-header">
+                    <h2>Meetings & Video Collaboration</h2>
+                    <p class="subtitle">How we meet at scale across 60+ sites</p>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-video" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Meeting Vision:</strong> Video-first, inclusive, recorded, transcribed, and searchable. Every meeting is an opportunity to build institutional knowledge. We capture, we share, we learn together.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-video"></i> Teams Meeting Standards
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-users" style="color: var(--accent-teal); margin-right: 8px;"></i>Meeting Types</h4>
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 13px; margin-bottom: 8px;">1:1 Calls</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;">Quick calls, no recording (unless confidential). Ad-hoc or scheduled.</p>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 13px; margin-bottom: 8px;">Team Meetings</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;">5-50 people. Standups, planning, reviews. Always record for absent members.</p>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: var(--secondary-blue); font-size: 13px; margin-bottom: 8px;">Large Meetings (50-500)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;">All-hands, town halls, webinars. Host controls. Q&A enabled.</p>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--secondary-blue); font-size: 13px; margin-bottom: 8px;">Virtual Events (500+)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Webinar mode. Attendees muted. Producer controls. Always recorded.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-cogs" style="color: var(--accent-teal); margin-right: 8px;"></i>Meeting Features</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <span>Auto-recording (unless opted out)</span>
+                            </li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <span>Real-time transcription (English, Spanish, etc.)</span>
+                            </li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <span>AI-generated summary & highlights</span>
+                            </li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <span>Co-authoring during meetings</span>
+                            </li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <span>Screen sharing + whiteboarding</span>
+                            </li>
+                            <li style="padding: 8px 0; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <span>Calendar integration & reminders</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-network-wired"></i> Network & Bandwidth Considerations
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;">Teams meetings run over IP networks. Global scale requires network resilience.</p>
+                    <div class="grid-2">
+                        <div style="background: var(--light-gray); padding: 16px; border-radius: 8px; border-left: 5px solid var(--primary-blue);">
+                            <h5 style="color: var(--secondary-blue); font-size: 13px; margin-bottom: 8px;">Bandwidth Requirements</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li>1:1 call: 1.2 Mbps</li>
+                                <li>Group call: 2.5 Mbps (per participant)</li>
+                                <li>HD video: 4 Mbps minimum</li>
+                                <li>Screen share: +2.5 Mbps</li>
+                            </ul>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 16px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                            <h5 style="color: var(--secondary-blue); font-size: 13px; margin-bottom: 8px;">Network Resilience</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li>Multi-path connectivity at plants</li>
+                                <li>Failover to mobile if WiFi drops</li>
+                                <li>QoS for Teams traffic</li>
+                                <li>Monitoring & alerts</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 8: Operating Model & Support -->
+            <section id="section-8" class="content-section">
+                <div class="section-header">
+                    <h2>Operating Model & Support</h2>
+                    <p class="subtitle">How Teams runs daily with clear accountability</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-cogs" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>Operating Model:</strong> I own strategy & outcomes. My team owns execution. Clear roles. L1/L2/L3 support structure. Vendor escalation paths. Change management discipline.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-users-cog"></i> Organization & RACI
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 12px;"><strong>I (Teams Lead) own strategy, adoption, budget, and outcomes. My team owns daily execution.</strong></p>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Role</th>
+                                    <th>Responsibilities</th>
+                                    <th>Key Accountability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Teams & Collaboration Lead (Me)</strong></td>
+                                    <td>Strategy, roadmap, adoption, budget</td>
+                                    <td>80% daily active users, business outcomes</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Governance Manager</strong></td>
+                                    <td>Policies, lifecycle, compliance, standards</td>
+                                    <td>Team naming, creation workflows, archive</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Operations Manager</strong></td>
+                                    <td>Daily ops, incidents, monitoring, L2 support</td>
+                                    <td>99.9% uptime, SLA compliance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Security & Compliance Lead</strong></td>
+                                    <td>DLP, sensitivity labels, audit, legal hold</td>
+                                    <td>Zero compliance violations</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Adoption & Change Manager</strong></td>
+                                    <td>Champions, training, comms, feedback</td>
+                                    <td>User satisfaction, training completion</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-headset"></i> Support Model & SLAs
+                </h3>
+
+                <div class="grid-3">
+                    <div class="card" style="border-top: 5px solid #27AE60;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-robot" style="color: #27AE60; margin-right: 8px;"></i>L1: Self-Service</h4>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Channel:</strong> Knowledge base, video tutorials, chatbot</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Target Resolution:</strong> 60% of tickets</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Examples:</strong> How to create a team, join a channel</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #F39C12;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-headset" style="color: #F39C12; margin-right: 8px;"></i>L2: Platform Support</h4>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Channel:</strong> Service desk, phone, Teams chat</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>SLA Critical:</strong> 30 min response</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>SLA Major:</strong> 2 hr response</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #E74C3C;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-tools" style="color: #E74C3C; margin-right: 8px;"></i>L3: Engineering</h4>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Channel:</strong> Engineering team + Microsoft support</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>SLA Critical:</strong> 15 min page</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>SLA Major:</strong> 1 hr engagement</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Additional Sections (9-12 abbreviated for length, but would follow same pattern) -->
+            <!-- Section 9: Adoption & Change -->
+            <section id="section-9" class="content-section">
+                <div class="section-header">
+                    <h2>Adoption & Change Management</h2>
+                    <p class="subtitle">How people actually start using Teams effectively</p>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-people-arrows" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Adoption Strategy:</strong> Not everyone adopts the same way. Corporate users need productivity training. Frontline workers need mobile-first approaches. Executives need the what/why. I segment adoption by persona.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-network-wired"></i> Adoption Pillars
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card" style="border-top: 5px solid var(--primary-blue);">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-star" style="color: var(--accent-teal); margin-right: 8px;"></i>Champions Network</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;">150-200 power users trained as brand ambassadors. Every department, every plant. They answer questions. They model best practices. They own grassroots adoption.</p>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #00A3BF;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-graduation-cap" style="color: var(--accent-teal); margin-right: 8px;"></i>Training Program</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Role-based:</strong> Corporate 101 vs Plant Ops vs Executive. Live workshops + on-demand videos. Certification path for power users. Continuous learning.</p>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #F39C12;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-bullhorn" style="color: var(--accent-teal); margin-right: 8px;"></i>Communication</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;">Monthly newsletters. Lunchbox videos. Email reminders. Teams announcement channel. CEO message: "This is how we collaborate now."</p>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #27AE60;">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-comments" style="color: var(--accent-teal); margin-right: 8px;"></i>Feedback Loops</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;">Quarterly user surveys. Champions focus groups. Monthly listening tours. We hear concerns. We iterate. Users feel heard.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 10: Licensing & Costs -->
+            <section id="section-10" class="content-section">
+                <div class="section-header">
+                    <h2>Licensing & Cost Management</h2>
+                    <p class="subtitle">How we control spend while maximizing value</p>
+                </div>
+
+                <div class="info-box warning">
+                    <i class="fas fa-dollar-sign" style="color: #FF9800;"></i>
+                    <div>
+                        <strong>License Strategy:</strong> Not all users need the same SKU. Tiered approach. Corporate E5 (premium). Standard E3 (core). Frontline (efficient). I optimize without sacrificing capability.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-tags"></i> Teams Licensing Model
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;">M365 E5 - Corporate</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Cost:</strong> $22/user/month | <strong>Users:</strong> 3,000 (executives, strategists)</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Includes:</strong> Teams + advanced analytics + compliance + premium apps</p>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;">M365 E3 - Standard</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Cost:</strong> $14/user/month | <strong>Users:</strong> 8,000 (office workers)</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Includes:</strong> Teams + core apps + compliance</p>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;">M365 Frontline - Plant</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Cost:</strong> $8/user/month | <strong>Users:</strong> 4,000 (manufacturing)</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Includes:</strong> Teams + mobile-first + essential apps</p>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;">Teams Phone Add-on</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Cost:</strong> $8-10/user/month | <strong>Users:</strong> 5,000</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 12px;"><strong>Benefit:</strong> Replace legacy PBX, savings $2-3K/seat</p>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <h4 style="color: var(--secondary-blue); margin-bottom: 16px;">Total Cost of Ownership</h4>
+                    <div class="stats-grid">
+                        <div class="stat-box" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                            <div class="stat-value">$1.92M</div>
+                            <div class="stat-label">Annual M365 Licenses</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                            <div class="stat-value">$400K</div>
+                            <div class="stat-label">Support & Operations</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                            <div class="stat-value">$200K</div>
+                            <div class="stat-label">Adoption & Training</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                            <div class="stat-value">$2.52M</div>
+                            <div class="stat-label">Total Year 1</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 11: Metrics & KPIs -->
+            <section id="section-11" class="content-section">
+                <div class="section-header">
+                    <h2>Metrics & KPIs</h2>
+                    <p class="subtitle">How we measure adoption, engagement, and success</p>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-chart-line" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Measurement Philosophy:</strong> What gets measured gets managed. I report monthly to leadership. Every KPI has an owner, a target, and a trend. No surprises.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-tachometer-alt"></i> Core KPIs
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-users" style="color: var(--accent-teal); margin-right: 8px;"></i>Adoption Metrics</h4>
+                        <div style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Daily Active Users</strong></span>
+                                <span style="color: var(--success-green);">Target: 80%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 78%;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Teams Created</strong></span>
+                                <span style="color: var(--success-green);">Target: 2,500+</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Monthly Active Users</strong></span>
+                                <span style="color: var(--success-green);">Target: 95%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 94%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-smile" style="color: var(--accent-teal); margin-right: 8px;"></i>User Sentiment</h4>
+                        <div style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>User Satisfaction</strong></span>
+                                <span style="color: var(--success-green);">Target: 4.2/5.0</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 84%;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>NPS (Net Promoter Score)</strong></span>
+                                <span style="color: var(--success-green);">Target: 60+</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 62%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Support Ticket Trend</strong></span>
+                                <span style="color: var(--success-green);">↓ 20% reduction</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-stream"></i> Engagement Depth
+                </h3>
+
+                <div class="grid-2">
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary-blue);">
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 12px;">Corporate Users</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 6px 0;">📊 Avg 10-15 chats/day</li>
+                            <li style="padding: 6px 0;">📊 Member of 8-12 teams</li>
+                            <li style="padding: 6px 0;">📊 2-3 meetings daily</li>
+                            <li style="padding: 6px 0;">📊 2-5 files shared/week</li>
+                        </ul>
+                    </div>
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid #F39C12;">
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 12px;">Frontline Users</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 6px 0;">📊 Avg 3-5 chats/day</li>
+                            <li style="padding: 6px 0;">📊 Member of 2-4 teams</li>
+                            <li style="padding: 6px 0;">📊 Shift huddles 1-2x/shift</li>
+                            <li style="padding: 6px 0;">📊 Mostly mobile access</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 12: Roadmap -->
+            <section id="section-12" class="content-section">
+                <div class="section-header">
+                    <h2>Roadmap & Evolution</h2>
+                    <p class="subtitle">How Teams evolves over 24 months</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-road" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>Roadmap Philosophy:</strong> Foundation first. Security hard-coded. Then scale. Then optimize. Then innovate. Every phase has clear gates and success criteria.
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: linear-gradient(135deg, #667eea, #764ba2);">1</div>
+                        <div class="timeline-content">
+                            <h4>Phase 1: Optimize & Secure (0–90 Days)</h4>
+                            <ul>
+                                <li>Governance framework finalized</li>
+                                <li>DLP & sensitivity labels deployed</li>
+                                <li>Pilot adoption program (500 users)</li>
+                                <li>Champions training completed</li>
+                                <li>Support model operationalized</li>
+                                <li>Baseline metrics established</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: linear-gradient(135deg, #f093fb, #f5576c);">2</div>
+                        <div class="timeline-content">
+                            <h4>Phase 2: Scale & Integrate (6–12 Months)</h4>
+                            <ul>
+                                <li>Global rollout: 1K → 5K → 15K users</li>
+                                <li>Frontline mobile app optimization</li>
+                                <li>Teams Phone integration begins</li>
+                                <li>SharePoint hub site integration</li>
+                                <li>External partner collaboration</li>
+                                <li>Adoption targets: 80% daily active users</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">3</div>
+                        <div class="timeline-content">
+                            <h4>Phase 3: Lead & Innovate (12–24 Months)</h4>
+                            <ul>
+                                <li>Copilot for Teams pilot (100 users)</li>
+                                <li>AI-powered meeting summaries</li>
+                                <li>Advanced analytics dashboard</li>
+                                <li>Insider risk program maturity</li>
+                                <li>Custom app ecosystem</li>
+                                <li>Thought leadership (conferences, docs)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0, #764ba2 100%); color: #fff; margin-top: 32px;">
+                    <h3 style="margin-bottom: 20px; color: #fff;"><i class="fas fa-target"></i> My Commitment to Execution</h3>
+                    <p style="font-size: 15px; line-height: 1.8;">I will deliver this roadmap on time, on budget, and exceeding expectations. Every milestone tracked. Every risk mitigated. Every stakeholder updated weekly. I will not rest until Teams is the undisputed center of how Opella collaborates. This is my mandate. This is my mission.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scroll navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-scroll');
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    updateActiveTab(this);
+                }
+            });
+        });
+
+        // Update active tab based on scroll position
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-scroll') === current) {
+                    tab.classList.add('active');
+                }
+            });
+        });
+
+        function updateActiveTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            tab.classList.add('active');
+        }
+
+        // Initial setup
+        document.querySelector('.nav-tab').classList.add('active');
+    </script>
+</body>
+</html>

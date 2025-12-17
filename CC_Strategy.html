@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaboration & Communication Strategy - Opella M365 Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0066CC;
+            --secondary-blue: #004C99;
+            --accent-teal: #00A3BF;
+            --dark-gray: #2C3E50;
+            --medium-gray: #5A6C7D;
+            --light-gray: #F5F7FA;
+            --border-gray: #E1E8ED;
+            --success-green: #27AE60;
+            --warning-orange: #F39C12;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        /* Sticky Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--dark-gray);
+            color: var(--white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: var(--secondary-blue);
+            border-bottom: 3px solid var(--accent-teal);
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--white);
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .nav-tabs {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .nav-tab {
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-teal);
+        }
+
+        .nav-tab.active {
+            background: rgba(0, 163, 191, 0.2);
+            border-left-color: var(--accent-teal);
+            color: var(--accent-teal);
+        }
+
+        .nav-tab i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            background: var(--light-gray);
+            width: calc(100% - 280px);
+            padding: 0;
+        }
+
+        .content-section {
+            padding: 60px;
+            min-height: auto;
+            scroll-margin-top: 100px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-blue);
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            color: var(--secondary-blue);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .section-header .subtitle {
+            font-size: 18px;
+            color: var(--medium-gray);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-teal));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--secondary-blue);
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-gray) 100%);
+            border-left: 5px solid var(--accent-teal);
+            padding: 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .principle-card h4 {
+            font-size: 18px;
+            color: var(--secondary-blue);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .principle-card p {
+            color: var(--medium-gray);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Accordion */
+        .accordion {
+            margin-bottom: 16px;
+        }
+
+        .accordion-header {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 18px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .accordion-header:hover {
+            background: var(--secondary-blue);
+            transform: translateX(5px);
+        }
+
+        .accordion-header i {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active i {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: var(--white);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .accordion-content.active {
+            max-height: 2000px;
+            border: 2px solid var(--border-gray);
+            border-top: none;
+        }
+
+        .accordion-body {
+            padding: 24px;
+        }
+
+        /* Maturity Model */
+        .maturity-track {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            align-items: center;
+        }
+
+        .maturity-level {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            border-radius: 8px;
+            background: var(--light-gray);
+            border: 2px solid var(--border-gray);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .maturity-level.active {
+            background: linear-gradient(135deg, var(--success-green), #2ECC71);
+            color: var(--white);
+            border-color: var(--success-green);
+            font-weight: 600;
+            transform: scale(1.05);
+        }
+
+        .maturity-level.completed {
+            background: var(--success-green);
+            color: var(--white);
+            border-color: var(--success-green);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .timeline-marker {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+            z-index: 2;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--white);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-teal);
+        }
+
+        .timeline-content h4 {
+            color: var(--secondary-blue);
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .timeline-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .timeline-content li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--medium-gray);
+        }
+
+        .timeline-content li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        /* Architecture */
+        .architecture-layer {
+            background: var(--white);
+            padding: 20px;
+            margin: 12px 0;
+            border-radius: 8px;
+            border-left: 6px solid var(--primary-blue);
+            box-shadow: var(--shadow);
+        }
+
+        .architecture-layer h4 {
+            color: var(--secondary-blue);
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .architecture-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .architecture-item {
+            background: var(--light-gray);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--medium-gray);
+        }
+
+        /* RACI Matrix */
+        .raci-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .raci-table th,
+        .raci-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .raci-table th {
+            background: var(--secondary-blue);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .raci-table tr:hover {
+            background: var(--light-gray);
+        }
+
+        .raci-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 2px;
+        }
+
+        .raci-r { background: #E74C3C; color: white; }
+        .raci-a { background: #3498DB; color: white; }
+        .raci-c { background: #F39C12; color: white; }
+        .raci-i { background: #95A5A6; color: white; }
+
+        /* Roadmap */
+        .roadmap-phase {
+            background: var(--white);
+            padding: 24px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-top: 5px solid var(--primary-blue);
+            box-shadow: var(--shadow);
+        }
+
+        .roadmap-phase h4 {
+            color: var(--secondary-blue);
+            font-size: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .phase-badge {
+            background: var(--accent-teal);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Tags */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .tag {
+            background: var(--light-gray);
+            color: var(--medium-gray);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid var(--border-gray);
+        }
+
+        .tag.priority-high { background: #FFEBEE; color: #C62828; border-color: #EF9A9A; }
+        .tag.priority-medium { background: #FFF3E0; color: #E65100; border-color: #FFCC80; }
+        .tag.priority-low { background: #E8F5E9; color: #2E7D32; border-color: #A5D6A7; }
+
+        /* Info Boxes */
+        .info-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .info-box.info { background: #E3F2FD; border-left: 5px solid #2196F3; }
+        .info-box.success { background: #E8F5E9; border-left: 5px solid #4CAF50; }
+        .info-box.warning { background: #FFF3E0; border-left: 5px solid #FF9800; }
+
+        .info-box i {
+            font-size: 24px;
+            margin-top: 2px;
+        }
+
+        /* Capability Detail */
+        .capability-detail {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .detail-section {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .detail-section h5 {
+            color: var(--secondary-blue);
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .detail-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detail-section li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--medium-gray);
+            font-size: 14px;
+        }
+
+        .detail-section li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--accent-teal);
+            font-weight: bold;
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-teal);
+            box-shadow: var(--shadow);
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary-blue);
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 13px;
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-green), var(--accent-teal));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Org Chart */
+        .org-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .org-level {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .org-box {
+            background: var(--white);
+            padding: 16px 24px;
+            border-radius: 8px;
+            border: 2px solid var(--primary-blue);
+            min-width: 200px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .org-box .title {
+            font-weight: 600;
+            color: var(--secondary-blue);
+            margin-bottom: 4px;
+        }
+
+        .org-box .name {
+            font-size: 13px;
+            color: var(--medium-gray);
+        }
+
+        /* Vision Statement */
+        .vision-statement {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-statement:before {
+            content: '"';
+            font-size: 120px;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            opacity: 0.1;
+            font-family: Georgia, serif;
+        }
+
+        .vision-statement h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .vision-statement p {
+            font-size: 18px;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .content-section {
+                padding: 30px 40px;
+            }
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .content-section {
+                padding: 20px;
+            }
+            .section-header h2 {
+                font-size: 28px;
+            }
+            .capability-detail {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Collaboration & Communication Strategy</h1>
+                <p>M365 Platform Leadership | Opella Global Operations</p>
+            </div>
+            <ul class="nav-tabs">
+                <li class="nav-tab active" data-scroll="section-0">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Executive Summary</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-1">
+                    <i class="fas fa-rocket"></i>
+                    <span>Vision Principles</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-2">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Capability Landscape</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-3">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Target Architecture</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-4">
+                    <i class="fas fa-cogs"></i>
+                    <span>Operating Model</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-5">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Governance Security</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-6">
+                    <i class="fas fa-road"></i>
+                    <span>Roadmap Dependencies</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-7">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Program Project Delivery</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-8">
+                    <i class="fas fa-users"></i>
+                    <span>Adoption Change</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-9">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Financials Vendors</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-10">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Metrics Improvement</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-11">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Communication</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-12">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>First 90 Days</span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Section 0: Executive Summary -->
+            <section id="section-0" class="content-section">
+                <div class="section-header">
+                    <h2>Executive Summary</h2>
+                    <p class="subtitle">Strategic overview for leadership alignment</p>
+                </div>
+
+                <div class="vision-statement">
+                    <h3><i class="fas fa-target"></i> My Leadership Mandate</h3>
+                    <p>As Collaboration & Communication Lead, I am accountable for transforming Opella's M365 platform into a world-class collaboration experience. I will drive adoption across 15,000 employees in 45 countries, ensuring that every team has the tools to communicate effectively, collaborate securely, and innovate together.</p>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 24px;">
+                    <i class="fas fa-layer-group"></i> The 6 Core Capabilities I Own
+                </h3>
+
+                <div class="grid-3">
+                    <div class="card" style="background: linear-gradient(135deg, #667eea15, #764ba215); border-left: 5px solid #0066CC;">
+                        <h4 style="color: #0066CC; margin-bottom: 8px;"><i class="fas fa-envelope" style="margin-right: 8px;"></i>Email</h4>
+                        <p style="font-size: 13px; margin-bottom: 8px; color: var(--medium-gray);">Exchange Online</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);">15,000 mailboxes | 99.9% SLA | Trusted backbone</p>
+                        <div class="progress-bar" style="margin-top: 10px;">
+                            <div class="progress-fill" style="width: 100%; background: #0066CC;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #667eea15, #764ba215); border-left: 5px solid #00A3BF;">
+                        <h4 style="color: #00A3BF; margin-bottom: 8px;"><i class="fas fa-comments" style="margin-right: 8px;"></i>Collaboration</h4>
+                        <p style="font-size: 13px; margin-bottom: 8px; color: var(--medium-gray);">Teams & Chat</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);">12,500 active users | 78% daily adoption | Primary hub</p>
+                        <div class="progress-bar" style="margin-top: 10px;">
+                            <div class="progress-fill" style="width: 78%; background: #00A3BF;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #667eea15, #764ba215); border-left: 5px solid #27AE60;">
+                        <h4 style="color: #27AE60; margin-bottom: 8px;"><i class="fas fa-folder-open" style="margin-right: 8px;"></i>Knowledge</h4>
+                        <p style="font-size: 13px; margin-bottom: 8px; color: var(--medium-gray);">SharePoint & OneDrive</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);">850 sites | 125TB storage | Unified knowledge system</p>
+                        <div class="progress-bar" style="margin-top: 10px;">
+                            <div class="progress-fill" style="width: 85%; background: #27AE60;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #667eea15, #764ba215); border-left: 5px solid #F39C12;">
+                        <h4 style="color: #F39C12; margin-bottom: 8px;"><i class="fas fa-globe" style="margin-right: 8px;"></i>Engagement</h4>
+                        <p style="font-size: 13px; margin-bottom: 8px; color: var(--medium-gray);">Viva Engage & Intranet</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);">8,200 members | 55% engagement | Company voice</p>
+                        <div class="progress-bar" style="margin-top: 10px;">
+                            <div class="progress-fill" style="width: 55%; background: #F39C12;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #667eea15, #764ba215); border-left: 5px solid #E74C3C;">
+                        <h4 style="color: #E74C3C; margin-bottom: 8px;"><i class="fas fa-phone-alt" style="margin-right: 8px;"></i>Telephony</h4>
+                        <p style="font-size: 13px; margin-bottom: 8px; color: var(--medium-gray);">Teams Phone & Meetings</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);">8,500 users | 180 meeting rooms | Replace legacy PBX</p>
+                        <div class="progress-bar" style="margin-top: 10px;">
+                            <div class="progress-fill" style="width: 65%; background: #E74C3C;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="background: linear-gradient(135deg, #667eea15, #764ba215); border-left: 5px solid #9B59B6;">
+                        <h4 style="color: #9B59B6; margin-bottom: 8px;"><i class="fas fa-tv" style="margin-right: 8px;"></i>Digital Signage</h4>
+                        <p style="font-size: 13px; margin-bottom: 8px; color: var(--medium-gray);">IP-TV & Broadcasts</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);">320 displays | 85 locations | Real-time communications</p>
+                        <div class="progress-bar" style="margin-top: 10px;">
+                            <div class="progress-fill" style="width: 72%; background: #9B59B6;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 32px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);"><i class="fas fa-road"></i></div>
+                            <div class="card-title">12-Month Roadmap</div>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="background: linear-gradient(90deg, rgba(0, 102, 204, 0.1), rgba(0, 163, 191, 0.1)); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #0066CC;">
+                                <h5 style="color: var(--secondary-blue); margin: 0 0 4px 0; font-size: 14px;"><strong>Phase 1: Foundation (Q1)</strong></h5>
+                                <p style="margin: 0; font-size: 12px; color: var(--medium-gray);">Executive alignment, governance setup, champion network, pilot launch</p>
+                            </div>
+                            <div style="background: linear-gradient(90deg, rgba(39, 174, 96, 0.1), rgba(46, 204, 113, 0.1)); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #27AE60;">
+                                <h5 style="color: var(--secondary-blue); margin: 0 0 4px 0; font-size: 14px;"><strong>Phase 2: Build & Scale (Q2-Q3)</strong></h5>
+                                <p style="margin: 0; font-size: 12px; color: var(--medium-gray);">Phased rollout, capability expansion, adoption campaigns, support scaling</p>
+                            </div>
+                            <div style="background: linear-gradient(90deg, rgba(243, 156, 18, 0.1), rgba(255, 193, 7, 0.1)); padding: 16px; border-radius: 8px; border-left: 4px solid #F39C12;">
+                                <h5 style="color: var(--secondary-blue); margin: 0 0 4px 0; font-size: 14px;"><strong>Phase 3: Optimize & Lead (Q4)</strong></h5>
+                                <p style="margin: 0; font-size: 12px; color: var(--medium-gray);">Advanced features, global standardization, next-gen capabilities, 2026 planning</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);"><i class="fas fa-bullseye"></i></div>
+                            <div class="card-title">Success Metrics</div>
+                        </div>
+                        <div class="stats-grid" style="gap: 12px;">
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary-blue);">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-blue); margin-bottom: 4px;">85%</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">User Satisfaction</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #27AE60;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-blue); margin-bottom: 4px;">80%+</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Adoption Rate</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #00A3BF;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-blue); margin-bottom: 4px;">$2.5M</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Cost Optimization</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #F39C12;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-blue); margin-bottom: 4px;">99.9%</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Platform SLA</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box info" style="margin-top: 32px;">
+                    <i class="fas fa-lightbulb" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>What This Means:</strong> I am personally accountable for orchestrating a $2.8M transformation that will enable secure, seamless collaboration for every Opella employee globally. This is not a technology project—it's a business enablement initiative that requires deep ownership, relentless execution, and unwavering focus on adoption and user impact.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 1: Vision Principles -->
+            <section id="section-1" class="content-section">
+                <div class="section-header">
+                    <h2>Vision Principles</h2>
+                    <p class="subtitle">What are we building and why?</p>
+                </div>
+
+                <div class="vision-statement">
+                    <h3><i class="fas fa-star"></i> My Vision</h3>
+                    <p>As Collaboration & Communication Lead, I will enable secure, simple, and inclusive collaboration for all Opella employees—everywhere from corporate offices to manufacturing plants. I am committed to building a M365 platform experience that is standardized globally, scalable to our growth, and genuinely user-centric.</p>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin-bottom: 24px; font-size: 24px;">
+                    <i class="fas fa-compass"></i> My Leadership Principles
+                </h3>
+
+                <div class="grid-2">
+                    <div class="principle-card">
+                        <h4><i class="fas fa-cube" style="color: var(--accent-teal);"></i> Capability over Tools</h4>
+                        <p>I own business outcomes first. I start with what users need to accomplish, then architect the M365 solution backwards. This ensures every tool serves a purpose.</p>
+                    </div>
+                    <div class="principle-card">
+                        <h4><i class="fas fa-user-tie" style="color: var(--accent-teal);"></i> Accountable Ownership</h4>
+                        <p>I am personally accountable for each capability's roadmap, adoption rates, and continuous improvement. I don't delegate accountability—I set clear KPIs and drive results.</p>
+                    </div>
+                    <div class="principle-card">
+                        <h4><i class="fas fa-lock" style="color: var(--accent-teal);"></i> Security by Design</h4>
+                        <p>I will ensure security and compliance are embedded from day one, not bolted on later. Zero-trust principles guide every design decision I make.</p>
+                    </div>
+                    <div class="principle-card">
+                        <h4><i class="fas fa-globe" style="color: var(--accent-teal);"></i> Global Standards, Local Agility</h4>
+                        <p>I own the global M365 platform configuration. I standardize globally, but I remain flexible enough to support regional needs where business-critical.</p>
+                    </div>
+                    <div class="principle-card">
+                        <h4><i class="fas fa-chart-line" style="color: var(--accent-teal);"></i> Adoption First, Features Later</h4>
+                        <p>I will master core capabilities with proven adoption before expanding scope. My roadmap is disciplined about depth before breadth.</p>
+                    </div>
+                    <div class="principle-card">
+                        <h4><i class="fas fa-analytics" style="color: var(--accent-teal);"></i> Data-Driven Leadership</h4>
+                        <p>I will make every decision based on usage data, user feedback, and business impact metrics. I own transparent reporting to leadership.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+                        <div class="card-title">My Accountability Framework</div>
+                    </div>
+                    <div class="grid-3">
+                        <div class="metric-card">
+                            <div class="metric-label">User Satisfaction</div>
+                            <div class="metric-value">85%</div>
+                            <div class="metric-change">Target by Q4 2025</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Platform Adoption</div>
+                            <div class="metric-value">15,000</div>
+                            <div class="metric-change">Active users globally</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Cost Efficiency</div>
+                            <div class="metric-value">$2.5M</div>
+                            <div class="metric-change">Annual budget optimization</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Capability Landscape -->
+            <section id="section-2" class="content-section">
+                <div class="section-header">
+                    <h2>Capability Landscape</h2>
+                    <p class="subtitle">What exactly do we own?</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-info-circle" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>My Ownership Model:</strong> I own 6 core collaboration capabilities. Each has a dedicated roadmap, clear KPIs, and quarterly reviews. I don't accept capability drift—I ensure every service works toward Opella's business goals. Below is my detailed plan for each.
+                    </div>
+                </div>
+
+                <!-- Email Capability -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-envelope"></i> Email Exchange Online</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-value">15,000</div>
+                                    <div class="stat-label">Active Mailboxes</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">99.9%</div>
+                                    <div class="stat-label">Uptime SLA</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">50GB</div>
+                                    <div class="stat-label">Mailbox Quota</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">100K</div>
+                                    <div class="stat-label">Daily Emails</div>
+                                </div>
+                            </div>
+
+                            <div class="capability-detail">
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-clipboard-list"></i> Planning Approach</h5>
+                                    <ul>
+                                        <li>Assess current mail flow architecture and routing</li>
+                                        <li>Review retention and archiving policies for compliance</li>
+                                        <li>Analyze mobile device usage and security requirements</li>
+                                        <li>Evaluate shared mailbox and distribution list optimization</li>
+                                        <li>Plan migration from legacy systems to cloud</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-rocket"></i> Execution Strategy</h5>
+                                    <ul>
+                                        <li>Deploy Exchange Online Protection (EOP) with ATP</li>
+                                        <li>Implement data loss prevention (DLP) policies</li>
+                                        <li>Configure mobile device management for Outlook</li>
+                                        <li>Enable advanced threat protection and anti-phishing</li>
+                                        <li>Roll out retention labels and legal hold capabilities</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-tasks"></i> Key Priorities</h5>
+                                    <ul>
+                                        <li>Security hardening with MFA and conditional access</li>
+                                        <li>Archive optimization to reduce storage costs</li>
+                                        <li>Email hygiene training for phishing awareness</li>
+                                        <li>Integration with Teams for unified communications</li>
+                                        <li>Compliance automation for GxP environments</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-chart-bar"></i> Success Metrics</h5>
+                                    <ul>
+                                        <li>Email delivery rate 99.5%</li>
+                                        <li>Phishing detection rate 95% blocked</li>
+                                        <li>Mobile adoption 70% of users</li>
+                                        <li>User satisfaction 4.2/5.0 rating</li>
+                                        <li>Incident response time 2 hours</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h5 style="margin: 24px 0 16px; color: var(--secondary-blue);">Maturity Model</h5>
+                            <div class="maturity-track">
+                                <div class="maturity-level completed"><strong>Initial</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Basic setup</div>
+                                </div>
+                                <div class="maturity-level completed"><strong>Managed</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Policies defined</div>
+                                </div>
+                                <div class="maturity-level active"><strong>Optimized</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Current state</div>
+                                </div>
+                                <div class="maturity-level"><strong>Leading</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">AI-powered</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teams Collaboration -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-comments"></i> Collaboration Microsoft Teams</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-value">12,500</div>
+                                    <div class="stat-label">Active Users</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">2,800</div>
+                                    <div class="stat-label">Teams Created</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">78%</div>
+                                    <div class="stat-label">Daily Active Users</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">450K</div>
+                                    <div class="stat-label">Monthly Messages</div>
+                                </div>
+                            </div>
+
+                            <div class="capability-detail">
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-clipboard-list"></i> Planning Approach</h5>
+                                    <ul>
+                                        <li>Define team creation and governance policies</li>
+                                        <li>Map organizational structures to team architectures</li>
+                                        <li>Design channel naming and information architecture</li>
+                                        <li>Plan external collaboration and guest access</li>
+                                        <li>Assess app integration requirements (Power Apps, Planner)</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-rocket"></i> Execution Strategy</h5>
+                                    <ul>
+                                        <li>Deploy Teams governance framework with automation</li>
+                                        <li>Enable private channels for sensitive discussions</li>
+                                        <li>Configure meeting policies and recording settings</li>
+                                        <li>Implement Teams templates for common use cases</li>
+                                        <li>Roll out Teams Phone capability globally</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-tasks"></i> Key Priorities</h5>
+                                    <ul>
+                                        <li>Lifecycle management auto-archive inactive teams</li>
+                                        <li>External sharing controls and DLP integration</li>
+                                        <li>Meeting room devices and hybrid meeting support</li>
+                                        <li>Premium features (Webinars and Town Halls)</li>
+                                        <li>Adoption campaigns with champion network</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-chart-bar"></i> Success Metrics</h5>
+                                    <ul>
+                                        <li>Daily active users 78% → 85% target</li>
+                                        <li>Average messages per user 35/day</li>
+                                        <li>Meeting attendance 8,500 participants/week</li>
+                                        <li>Guest collaboration 1,200 external users</li>
+                                        <li>Mobile usage 65% of active users</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h5 style="margin: 24px 0 16px; color: var(--secondary-blue);">Maturity Model</h5>
+                            <div class="maturity-track">
+                                <div class="maturity-level completed"><strong>Initial</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Chat meetings</div>
+                                </div>
+                                <div class="maturity-level completed"><strong>Managed</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Governance in place</div>
+                                </div>
+                                <div class="maturity-level active"><strong>Optimized</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Current state</div>
+                                </div>
+                                <div class="maturity-level"><strong>Leading</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">AI copilot enabled</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SharePoint OneDrive -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-folder-open"></i> Knowledge Files SharePoint OneDrive</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-value">15,000</div>
+                                    <div class="stat-label">OneDrive Users</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">850</div>
+                                    <div class="stat-label">SharePoint Sites</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">125TB</div>
+                                    <div class="stat-label">Total Storage</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">2.8M</div>
+                                    <div class="stat-label">Documents Stored</div>
+                                </div>
+                            </div>
+
+                            <div class="capability-detail">
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-clipboard-list"></i> Planning Approach</h5>
+                                    <ul>
+                                        <li>Migrate from legacy file shares to OneDrive</li>
+                                        <li>Design site architecture and information taxonomy</li>
+                                        <li>Plan document management and version control</li>
+                                        <li>Define metadata schemas and content types</li>
+                                        <li>Strategy for knowledge management and search</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-rocket"></i> Execution Strategy</h5>
+                                    <ul>
+                                        <li>Deploy Known Folder Move for seamless migration</li>
+                                        <li>Configure sensitivity labels and DLP policies</li>
+                                        <li>Enable co-authoring and real-time collaboration</li>
+                                        <li>Implement hub sites for content organization</li>
+                                        <li>Roll out SharePoint Syntex for AI content processing</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-tasks"></i> Key Priorities</h5>
+                                    <ul>
+                                        <li>File share migration 80TB to cloud by Q3</li>
+                                        <li>Modern page experience for all sites</li>
+                                        <li>External sharing governance and monitoring</li>
+                                        <li>Search optimization and relevance tuning</li>
+                                        <li>Retention policies for compliance</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-chart-bar"></i> Success Metrics</h5>
+                                    <ul>
+                                        <li>OneDrive adoption 95% of users</li>
+                                        <li>Sync success rate 98%</li>
+                                        <li>Search satisfaction 4.0/5.0 rating</li>
+                                        <li>External sharing 15% controlled growth</li>
+                                        <li>Storage optimization 20% reduction</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h5 style="margin: 24px 0 16px; color: var(--secondary-blue);">Maturity Model</h5>
+                            <div class="maturity-track">
+                                <div class="maturity-level completed"><strong>Initial</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Basic storage</div>
+                                </div>
+                                <div class="maturity-level active"><strong>Managed</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Current state</div>
+                                </div>
+                                <div class="maturity-level"><strong>Optimized</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">AI search metadata</div>
+                                </div>
+                                <div class="maturity-level"><strong>Leading</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Knowledge graphs</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Intranet Engagement -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-globe"></i> Intranet Engagement Viva Engage</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-value">8,200</div>
+                                    <div class="stat-label">Active Community Members</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">45</div>
+                                    <div class="stat-label">Communities</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">55%</div>
+                                    <div class="stat-label">Monthly Engagement</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value">12K</div>
+                                    <div class="stat-label">Posts/Month</div>
+                                </div>
+                            </div>
+
+                            <div class="capability-detail">
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-clipboard-list"></i> Planning Approach</h5>
+                                    <ul>
+                                        <li>Define intranet information architecture</li>
+                                        <li>Design employee experience and engagement strategy</li>
+                                        <li>Plan Viva Engage community structure</li>
+                                        <li>Integrate with SharePoint for unified experience</li>
+                                        <li>Content strategy and editorial governance</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-rocket"></i> Execution Strategy</h5>
+                                    <ul>
+                                        <li>Deploy modern SharePoint home site</li>
+                                        <li>Enable Viva Connections for mobile access</li>
+                                        <li>Configure news distribution and targeting</li>
+                                        <li>Launch leadership QA and town halls</li>
+                                        <li>Implement recognition and rewards program</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-tasks"></i> Key Priorities</h5>
+                                    <ul>
+                                        <li>Modernize legacy intranet pages</li>
+                                        <li>Build communities for key business functions</li>
+                                        <li>Enable two-way communication channels</li>
+                                        <li>Integrate company announcements and events</li>
+                                        <li>Analytics for content engagement and reach</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-section">
+                                    <h5><i class="fas fa-chart-bar"></i> Success Metrics</h5>
+                                    <ul>
+                                        <li>Monthly active users 55% → 70%</li>
+                                        <li>News consumption 25,000 views/month</li>
+                                        <li>Community engagement 8,200 active members</li>
+                                        <li>Mobile access 40% via Viva Connections</li>
+                                        <li>Content freshness 80% updated quarterly</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h5 style="margin: 24px 0 16px; color: var(--secondary-blue);">Maturity Model</h5>
+                            <div class="maturity-track">
+                                <div class="maturity-level completed"><strong>Initial</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Static pages</div>
+                                </div>
+                                <div class="maturity-level active"><strong>Managed</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Current state</div>
+                                </div>
+                                <div class="maturity-level"><strong>Optimized</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">Personalized content</div>
+                                </div>
+                                <div class="maturity-level"><strong>Leading</strong>
+                                    <div style="font-size: 12px; margin-top: 4px;">AI recommendations</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Capabilities (Condensed) -->
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-chalkboard"></i> Whiteboarding Ideation</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="stats-grid">
+                                <div class="stat-box"><div class="stat-value">6,500</div><div class="stat-label">Active Users</div></div>
+                                <div class="stat-box"><div class="stat-value">1,200</div><div class="stat-label">Whiteboards Created</div></div>
+                                <div class="stat-box"><div class="stat-value">43%</div><div class="stat-label">Adoption Rate</div></div>
+                                <div class="stat-box"><div class="stat-value">75%</div><div class="stat-label">In Meetings</div></div>
+                            </div>
+                            <p style="margin: 16px 0;"><strong>Platform:</strong> Microsoft Whiteboard integrated with Teams</p>
+                            <p style="margin: 16px 0;"><strong>Key Priorities:</strong> Enable brainstorming sessions, design thinking workshops, hybrid meeting collaboration, template library for common scenarios, integration with Miro for advanced use cases</p>
+                            <div class="maturity-track" style="margin-top: 20px;">
+                                <div class="maturity-level completed"><strong>Initial</strong></div>
+                                <div class="maturity-level active"><strong>Managed</strong></div>
+                                <div class="maturity-level"><strong>Optimized</strong></div>
+                                <div class="maturity-level"><strong>Leading</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-video"></i> Videoconferencing Rooms</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="stats-grid">
+                                <div class="stat-box"><div class="stat-value">180</div><div class="stat-label">Meeting Rooms</div></div>
+                                <div class="stat-box"><div class="stat-value">9,800</div><div class="stat-label">Weekly Meetings</div></div>
+                                <div class="stat-box"><div class="stat-value">82%</div><div class="stat-label">Video Adoption</div></div>
+                                <div class="stat-box"><div class="stat-value">65K</div><div class="stat-label">Hours/Month</div></div>
+                            </div>
+                            <p style="margin: 16px 0;"><strong>Platform:</strong> Teams Rooms with premium AV equipment</p>
+                            <p style="margin: 16px 0;"><strong>Key Priorities:</strong> Standardize room equipment (Poly, Logitech, Yealink), enable hybrid meeting experiences, deploy Teams Rooms Pro licenses, integrate with room booking systems, provide white-glove support for exec rooms</p>
+                            <div class="maturity-track" style="margin-top: 20px;">
+                                <div class="maturity-level completed"><strong>Initial</strong></div>
+                                <div class="maturity-level completed"><strong>Managed</strong></div>
+                                <div class="maturity-level active"><strong>Optimized</strong></div>
+                                <div class="maturity-level"><strong>Leading</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-phone-alt"></i> Telephony Teams Phone</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="stats-grid">
+                                <div class="stat-box"><div class="stat-value">8,500</div><div class="stat-label">Phone Users</div></div>
+                                <div class="stat-box"><div class="stat-value">45</div><div class="stat-label">Countries</div></div>
+                                <div class="stat-box"><div class="stat-value">99.95%</div><div class="stat-label">Call Quality</div></div>
+                                <div class="stat-box"><div class="stat-value">125K</div><div class="stat-label">Calls/Month</div></div>
+                            </div>
+                            <p style="margin: 16px 0;"><strong>Platform:</strong> Teams Phone with Direct Routing and Calling Plans</p>
+                            <p style="margin: 16px 0;"><strong>Key Priorities:</strong> Replace legacy PBX systems, enable PSTN connectivity globally, configure auto-attendants and call queues, deploy emergency calling (E911), integrate with contact center solutions</p>
+                            <div class="maturity-track" style="margin-top: 20px;">
+                                <div class="maturity-level completed"><strong>Initial</strong></div>
+                                <div class="maturity-level active"><strong>Managed</strong></div>
+                                <div class="maturity-level"><strong>Optimized</strong></div>
+                                <div class="maturity-level"><strong>Leading</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span><i class="fas fa-tv"></i> Digital Signage IP-TV</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="stats-grid">
+                                <div class="stat-box"><div class="stat-value">320</div><div class="stat-label">Displays</div></div>
+                                <div class="stat-box"><div class="stat-value">85</div><div class="stat-label">Locations</div></div>
+                                <div class="stat-box"><div class="stat-value">247</div><div class="stat-label">Operations</div></div>
+                                <div class="stat-box"><div class="stat-value">12K</div><div class="stat-label">Daily Impressions</div></div>
+                            </div>
+                            <p style="margin: 16px 0;"><strong>Platform:</strong> Cloud-based digital signage (Raydiant, ScreenCloud integration)</p>
+                            <p style="margin: 16px 0;"><strong>Key Priorities:</strong> Standardize hardware across plants and offices, centralized content management, emergency notification integration, real-time KPI dashboards for manufacturing, corporate communications and safety messaging</p>
+                            <div class="maturity-track" style="margin-top: 20px;">
+                                <div class="maturity-level completed"><strong>Initial</strong></div>
+                                <div class="maturity-level active"><strong>Managed</strong></div>
+                                <div class="maturity-level"><strong>Optimized</strong></div>
+                                <div class="maturity-level"><strong>Leading</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="card-title">Design Highlights</div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 12px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <strong>Single Global Tenant</strong> One M365 tenant for unified management and compliance
+                            </li>
+                            <li style="padding: 12px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <strong>Teams as Front Door</strong> Primary collaboration hub for all users
+                            </li>
+                            <li style="padding: 12px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <strong>SharePoint as Knowledge System</strong> Centralized content management
+                            </li>
+                            <li style="padding: 12px 0; display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <strong>Email as Trusted Backbone</strong> Reliable communication foundation
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-clipboard-check"></i></div>
+                            <div class="card-title">Decision Forums</div>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <div style="background: var(--light-gray); padding: 18px; border-radius: 8px; margin-bottom: 14px;">
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 10px;"><i class="fas fa-calendar-alt"></i> Monthly Roadmap Review</h5>
+                                <p style="font-size: 14px; color: var(--medium-gray); margin-bottom: 8px;">Attendees: Product Owners, Technical Leads, VP</p>
+                                <p style="font-size: 14px; color: var(--medium-gray);">Purpose: Review progress, prioritize features, align investments</p>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 18px; border-radius: 8px;">
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 10px;"><i class="fas fa-shield-alt"></i> Security Alignment</h5>
+                                <p style="font-size: 14px; color: var(--medium-gray); margin-bottom: 8px;">Attendees: Governance Lead, CISO, Compliance</p>
+                                <p style="font-size: 14px; color: var(--medium-gray);">Purpose: Risk assessment, policy updates, threat response</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-tasks"></i></div>
+                        <div class="card-title">My Leadership Team & RACI</div>
+                    </div>
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;"><strong>I lead this directly:</strong> As Collaboration & Communication Lead, I am Accountable (A) for roadmaps and outcomes. Below is how accountability cascades.</p>
+                    <table class="raci-table">
+                        <thead>
+                            <tr>
+                                <th>Activity</th>
+                                <th>Collab Lead (Me)</th>
+                                <th>Technical Lead</th>
+                                <th>Governance Lead</th>
+                                <th>Support Team</th>
+                                <th>End Users</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Capability Roadmap</strong></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Technical Implementation</strong></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Governance Compliance</strong></td>
+                                <td><span class="raci-badge raci-c">C</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                                <td><span class="raci-badge raci-r">R</span></td>
+                                <td><span class="raci-badge raci-a">A</span></td>
+                                <td><span class="raci-badge raci-i">I</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section 3: Target Architecture -->
+            <section id="section-3" class="content-section">
+                <div class="section-header">
+                    <h2>Target Architecture</h2>
+                    <p class="subtitle">How does it all fit together?</p>
+                </div>
+
+                <div class="card">
+                    <h3 style="color: var(--secondary-blue); margin-bottom: 24px;"><i class="fas fa-layer-group"></i> Architecture Layers</h3>
+
+                    <div class="architecture-layer" style="border-left-color: #E74C3C;">
+                        <h4>Identity & Access Layer</h4>
+                        <div class="architecture-items">
+                            <span class="architecture-item">Microsoft Entra ID</span>
+                            <span class="architecture-item">Multi-Factor Authentication</span>
+                            <span class="architecture-item">Conditional Access Policies</span>
+                            <span class="architecture-item">Privileged Identity Management</span>
+                            <span class="architecture-item">Azure AD Connect</span>
+                            <span class="architecture-item">Identity Protection</span>
+                        </div>
+                    </div>
+
+                    <div class="architecture-layer" style="border-left-color: #F39C12;">
+                        <h4>Data Protection & Compliance Layer</h4>
+                        <div class="architecture-items">
+                            <span class="architecture-item">Microsoft Information Protection</span>
+                            <span class="architecture-item">Data Loss Prevention (DLP)</span>
+                            <span class="architecture-item">Sensitivity Labels</span>
+                            <span class="architecture-item">Retention Policies</span>
+                            <span class="architecture-item">eDiscovery</span>
+                            <span class="architecture-item">Audit Logging</span>
+                        </div>
+                    </div>
+
+                    <div class="architecture-layer" style="border-left-color: #27AE60;">
+                        <h4>Infrastructure & Services Layer</h4>
+                        <div class="architecture-items">
+                            <span class="architecture-item">Exchange Online</span>
+                            <span class="architecture-item">SharePoint Online</span>
+                            <span class="architecture-item">Teams</span>
+                            <span class="architecture-item">OneDrive</span>
+                            <span class="architecture-item">Azure Services</span>
+                            <span class="architecture-item">Microsoft Graph API</span>
+                        </div>
+                    </div>
+
+                    <div class="architecture-layer" style="border-left-color: #00A3BF;">
+                        <h4>User Experience Layer</h4>
+                        <div class="architecture-items">
+                            <span class="architecture-item">Teams as Front Door</span>
+                            <span class="architecture-item">Viva Connections</span>
+                            <span class="architecture-item">Mobile Apps</span>
+                            <span class="architecture-item">SharePoint Home Sites</span>
+                            <span class="architecture-item">Personalized Content</span>
+                            <span class="architecture-item">Copilot for M365</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-rocket" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Zero Trust Security Model:</strong> All architecture components implement zero trust principles with continuous verification, least privilege access, and assume breach mentality. Every layer includes threat detection and automated response capabilities.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Operating Model -->
+            <section id="section-4" class="content-section">
+                <div class="section-header">
+                    <h2>Operating Model</h2>
+                    <p class="subtitle">How do we run this at scale?</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-cogs"></i></div>
+                        <div class="card-title">My Operating Model</div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                            <div class="stat-value">1</div>
+                            <div class="stat-label">Single Global Tenant</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Geo Regions</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                            <div class="stat-value">99.9%</div>
+                            <div class="stat-label">SLA I Commit To</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                            <div class="stat-value">24/7</div>
+                            <div class="stat-label">Support I Own</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-headset"></i></div>
+                            <div class="card-title">Support Model</div>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 16px; border-left: 5px solid #27AE60;">
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-robot"></i> L1 Self-Service Automation</h5>
+                                <ul style="list-style: none; padding: 0;">
+                                    <li style="padding: 6px 0;">Knowledge base with 500 articles</li>
+                                    <li style="padding: 6px 0;">Chatbot for common issues</li>
+                                    <li style="padding: 6px 0;">Video tutorials and guides</li>
+                                    <li style="padding: 6px 0;">Target resolution 70% of tickets</li>
+                                </ul>
+                            </div>
+
+                            <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 16px; border-left: 5px solid #3498DB;">
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-users"></i> L2 Platform Support</h5>
+                                <ul style="list-style: none; padding: 0;">
+                                    <li style="padding: 6px 0;">Service desk team 245</li>
+                                    <li style="padding: 6px 0;">Configuration assistance</li>
+                                    <li style="padding: 6px 0;">Access and permission management</li>
+                                    <li style="padding: 6px 0;">Target SLA 4-hour response</li>
+                                </ul>
+                            </div>
+
+                            <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid #E74C3C;">
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-tools"></i> L3 Engineering & Vendor</h5>
+                                <ul style="list-style: none; padding: 0;">
+                                    <li style="padding: 6px 0;">Deep technical expertise</li>
+                                    <li style="padding: 6px 0;">Complex issue resolution</li>
+                                    <li style="padding: 6px 0;">Microsoft Premier Support</li>
+                                    <li style="padding: 6px 0;">Target SLA 24-hour response</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-sync-alt"></i></div>
+                            <div class="card-title">Agile Delivery Model</div>
+                        </div>
+                        <div class="grid-4">
+                            <div style="text-align: center; padding: 20px; background: var(--light-gray); border-radius: 8px;">
+                                <i class="fas fa-rocket" style="font-size: 32px; color: var(--primary-blue); margin-bottom: 12px;"></i>
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 8px;">MVP First</h5>
+                                <p style="font-size: 13px; color: var(--medium-gray);">Launch minimum viable product quickly to gather real feedback</p>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: var(--light-gray); border-radius: 8px;">
+                                <i class="fas fa-users" style="font-size: 32px; color: var(--accent-teal); margin-bottom: 12px;"></i>
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 8px;">Pilot Scale</h5>
+                                <p style="font-size: 13px; color: var(--medium-gray);">Test with select groups before enterprise rollout</p>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: var(--light-gray); border-radius: 8px;">
+                                <i class="fas fa-comments" style="font-size: 32px; color: var(--success-green); margin-bottom: 12px;"></i>
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 8px;">Feedback Driven</h5>
+                                <p style="font-size: 13px; color: var(--medium-gray);">Continuous feedback loops inform iteration decisions</p>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: var(--light-gray); border-radius: 8px;">
+                                <i class="fas fa-redo-alt" style="font-size: 32px; color: var(--warning-orange); margin-bottom: 12px;"></i>
+                                <h5 style="color: var(--secondary-blue); margin-bottom: 8px;">Iterate Fast</h5>
+                                <p style="font-size: 13px; color: var(--medium-gray);">2-week sprints with regular releases</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="border-top: 5px solid var(--accent-teal);">
+                    <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-phone-volume"></i> Teams Phone Global Rollout</h4>
+                    <div style="margin-bottom: 16px;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; color: var(--medium-gray);">
+                            <span>Progress 65%</span>
+                            <span>8,500 → 13,000 users</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 14px;">Replace legacy PBX systems with Teams Phone across all sites, enabling unified communications and significant cost savings.</p>
+                    <div style="background: var(--light-gray); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <strong style="color: var(--secondary-blue);">Key Milestones</strong>
+                        <ul style="margin-top: 8px; font-size: 13px;">
+                            <li>Phase 1 - Corporate offices: Completed</li>
+                            <li>Phase 2 - Regional hubs: 65% complete</li>
+                            <li>Phase 3 - Manufacturing plants: Starting Q3</li>
+                        </ul>
+                    </div>
+                    <div class="tags">
+                        <span class="tag priority-high">High Priority</span>
+                        <span class="tag">12 months</span>
+                        <span class="tag">$850K budget</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Governance Security -->
+            <section id="section-5" class="content-section">
+                <div class="section-header">
+                    <h2>Governance Security</h2>
+                    <p class="subtitle">How do we stay compliant without slowing people down?</p>
+                </div>
+
+                <div class="info-box warning">
+                    <i class="fas fa-exclamation-triangle" style="color: #FF9800;"></i>
+                    <div>
+                        <strong>My Governance Mandate:</strong> I will balance security and compliance requirements with user productivity. I own the governance framework that enables secure collaboration without creating friction. Smart automation and intelligent policies are my tools—not draconian rules.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-blue); margin: 32px 0 20px;"><i class="fas fa-shield-alt"></i> Governance Areas</h3>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-users-cog"></i></div>
+                        <div class="card-title">Ownership Model</div>
+                    </div>
+                    <div class="org-chart">
+                        <div class="org-level">
+                            <div class="org-box" style="border-color: #E74C3C; background: linear-gradient(135deg, #fff5f5, #ffffff);">
+                                <div class="title">VP Digital Workplace</div>
+                                <div class="name">Executive Sponsor</div>
+                            </div>
+                        </div>
+                        <div class="org-level">
+                            <div class="org-box">
+                                <div class="title">Product Owner - Collaboration</div>
+                                <div class="name">Teams, SharePoint, OneDrive</div>
+                            </div>
+                            <div class="org-box">
+                                <div class="title">Product Owner - Communication</div>
+                                <div class="name">Email, Viva, Intranet</div>
+                            </div>
+                            <div class="org-box">
+                                <div class="title">Product Owner - Meeting Tech</div>
+                                <div class="name">Rooms, Phone, Digital Signage</div>
+                            </div>
+                        </div>
+                        <div class="org-level">
+                            <div class="org-box" style="border-color: #3498DB; min-width: 150px;">
+                                <div class="title">Governance Lead</div>
+                                <div class="name">Policies Compliance</div>
+                            </div>
+                            <div class="org-box" style="border-color: #3498DB; min-width: 150px;">
+                                <div class="title">Adoption Lead</div>
+                                <div class="name">Change Training</div>
+                            </div>
+                            <div class="org-box" style="border-color: #3498DB; min-width: 150px;">
+                                <div class="title">Technical Lead</div>
+                                <div class="name">Architecture Engineering</div>
+                            </div>
+                            <div class="org-box" style="border-color: #3498DB; min-width: 150px;">
+                                <div class="title">Support Lead</div>
+                                <div class="name">Service Delivery</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 32px; background: linear-gradient(135deg, #667eea 0, #764ba2 100%); color: #fff;">
+                    <h3 style="margin-bottom: 16px; color: #fff;"><i class="fas fa-handshake"></i> My Commitment to You</h3>
+                    <p style="font-size: 16px; line-height: 1.8;">I will personally orchestrate 6 core collaboration capabilities serving 15,000 employees across 45 countries. I own the roadmap, the budget, the delivery, and the outcomes. I will measure everything, report transparently, and drive continuous improvement through relentless focus on user adoption and business impact. This is not something I'm managing—this is something I'm leading.</p>
+                </div>
+            </section>
+
+            <!-- Section 6: Roadmap Dependencies -->
+            <section id="section-6" class="content-section">
+                <div class="section-header">
+                    <h2>Roadmap Dependencies</h2>
+                    <p class="subtitle">What's coming and when?</p>
+                </div>
+
+                <div class="card" style="border-top: 5px solid var(--accent-teal);">
+                    <h4 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-globe"></i> Intranet Modernization</h4>
+                    <div style="margin-bottom: 16px;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%;"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; color: var(--medium-gray);">
+                            <span>Progress 40%</span>
+                            <span>Design phase complete</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 14px;">Transform legacy intranet into modern SharePoint hub sites with Viva Connections for mobile-first employee experience.</p>
+                    <div style="background: var(--light-gray); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <strong style="color: var(--secondary-blue);">Key Milestones</strong>
+                        <ul style="margin-top: 8px; font-size: 13px;">
+                            <li>Information architecture complete</li>
+                            <li>Design system approved</li>
+                            <li>Pilot launch Q2 2025</li>
+                        </ul>
+                    </div>
+                    <div class="tags">
+                        <span class="tag priority-medium">Medium Priority</span>
+                        <span class="tag">9 months</span>
+                        <span class="tag">$320K budget</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <h3 style="color: var(--secondary-blue); margin-bottom: 20px;"><i class="fas fa-project-diagram"></i> Program Portfolio</h3>
+                    <div class="card" style="background: linear-gradient(135deg, #667eea 0, #764ba2 100%); color: #fff;">
+                        <div class="grid-4">
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; font-weight: 700; margin-bottom: 8px;">16</div>
+                                <div style="font-size: 14px; opacity: 0.9;">Active Programs</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; font-weight: 700; margin-bottom: 8px;">$2.8M</div>
+                                <div style="font-size: 14px; opacity: 0.9;">Total Investment</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; font-weight: 700; margin-bottom: 8px;">92%</div>
+                                <div style="font-size: 14px; opacity: 0.9;">On Time Delivery</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; font-weight: 700; margin-bottom: 8px;">24</div>
+                                <div style="font-size: 14px; opacity: 0.9;">Months Avg Duration</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Program Project Delivery -->
+            <section id="section-7" class="content-section">
+                <div class="section-header">
+                    <h2>Program Project Delivery</h2>
+                    <p class="subtitle">How do we execute at scale?</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+                        <div class="card-title">Delivery Framework</div>
+                    </div>
+                    <div class="grid-2">
+                        <div style="text-align: center; padding: 20px; background: var(--light-gray); border-radius: 8px;">
+                            <i class="fas fa-rocket" style="font-size: 36px; color: var(--primary-blue); margin-bottom: 12px;"></i>
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 8px;">Phase 1: Foundation</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray);">Baseline assessment and requirements gathering</p>
+                        </div>
+                        <div style="text-align: center; padding: 20px; background: var(--light-gray); border-radius: 8px;">
+                            <i class="fas fa-hammer" style="font-size: 36px; color: var(--accent-teal); margin-bottom: 12px;"></i>
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 8px;">Phase 2: Build</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray);">Implementation and configuration</p>
+                        </div>
+                        <div style="text-align: center; padding: 20px; background: var(--light-gray); border-radius: 8px;">
+                            <i class="fas fa-users" style="font-size: 36px; color: var(--success-green); margin-bottom: 12px;"></i>
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 8px;">Phase 3: Adoption</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray);">Training and change management</p>
+                        </div>
+                        <div style="text-align: center; padding: 20px; background: var(--light-gray); border-radius: 8px;">
+                            <i class="fas fa-chart-line" style="font-size: 36px; color: var(--warning-orange); margin-bottom: 12px;"></i>
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 8px;">Phase 4: Optimize</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray);">Continuous improvement and scale</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Product Owners & Leads</div>
+                    </div>
+                    <div class="stat-box" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">Support Staff</div>
+                    </div>
+                    <div class="stat-box" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                        <div class="stat-value">15K</div>
+                        <div class="stat-label">Users Supported</div>
+                    </div>
+                    <div class="stat-box" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                        <div class="stat-value">2,500</div>
+                        <div class="stat-label">Tickets/Month</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 8: Adoption Change Management -->
+            <section id="section-8" class="content-section">
+                <div class="section-header">
+                    <h2>Adoption Change Management</h2>
+                    <p class="subtitle">How do people actually use this?</p>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker">1</div>
+                        <div class="timeline-content">
+                            <h4>Awareness & Engagement</h4>
+                            <ul>
+                                <li>Launch awareness campaigns</li>
+                                <li>Identify and train champions</li>
+                                <li>Executive messaging and buy-in</li>
+                                <li>Communication roadmap rollout</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">2</div>
+                        <div class="timeline-content">
+                            <h4>Pilot & Learning</h4>
+                            <ul>
+                                <li>Select pilot user groups</li>
+                                <li>Hands-on training sessions</li>
+                                <li>Gather early feedback</li>
+                                <li>Refine approach based on learnings</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">3</div>
+                        <div class="timeline-content">
+                            <h4>Broad Rollout</h4>
+                            <ul>
+                                <li>Phase-by-phase deployment</li>
+                                <li>Self-paced learning options</li>
+                                <li>Support escalation procedures</li>
+                                <li>Success metrics tracking</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">4</div>
+                        <div class="timeline-content">
+                            <h4>Optimization & Scale</h4>
+                            <ul>
+                                <li>Advanced feature enablement</li>
+                                <li>Usage analytics review</li>
+                                <li>Continuous improvement feedback loops</li>
+                                <li>Preparation for next capability</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 9: Financials Vendors -->
+            <section id="section-9" class="content-section">
+                <div class="section-header">
+                    <h2>Financials Vendors</h2>
+                    <p class="subtitle">What does this cost and who delivers it?</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
+                            <div class="card-title">Investment Summary</div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-box" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                <div class="stat-value">$2.8M</div>
+                                <div class="stat-label">Total Program Budget</div>
+                            </div>
+                            <div class="stat-box" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                                <div class="stat-value">$1.2M</div>
+                                <div class="stat-label">Licensing (Y1)</div>
+                            </div>
+                            <div class="stat-box" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                                <div class="stat-value">$850K</div>
+                                <div class="stat-label">Implementation</div>
+                            </div>
+                            <div class="stat-box" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                                <div class="stat-value">$750K</div>
+                                <div class="stat-label">Training & Support</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon"><i class="fas fa-building"></i></div>
+                            <div class="card-title">Key Vendors</div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 12px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <strong>Microsoft</strong> - M365, Azure, Licensing
+                            </li>
+                            <li style="padding: 12px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <strong>Dell/Microsoft</strong> - Teams Rooms
+                            </li>
+                            <li style="padding: 12px 0; border-bottom: 1px solid var(--border-gray); display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <strong>Poly/Logitech</strong> - Meeting Equipment
+                            </li>
+                            <li style="padding: 12px 0; display: flex; align-items: center; gap: 12px;">
+                                <i class="fas fa-check-circle" style="color: var(--success-green);"></i>
+                                <strong>Implementation Partner</strong> - Deloitte/Accenture
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 10: Metrics Improvement -->
+            <section id="section-10" class="content-section">
+                <div class="section-header">
+                    <h2>Metrics Improvement</h2>
+                    <p class="subtitle">How are we doing?</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="metric-card">
+                        <div class="metric-label">User Adoption Rate</div>
+                        <div class="metric-value">78%</div>
+                        <div class="metric-change">↑ 12% vs last quarter</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">User Satisfaction</div>
+                        <div class="metric-value">4.2</div>
+                        <div class="metric-change">↑ 0.3 points</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Support Tickets</div>
+                        <div class="metric-value">2,500</div>
+                        <div class="metric-change">↓ 15% reduction</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Incident Response</div>
+                        <div class="metric-value">2.1h</div>
+                        <div class="metric-change">↓ 0.9h improvement</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="card-title">KPI Trends</div>
+                    </div>
+                    <p style="margin-bottom: 20px; color: var(--medium-gray);">Key performance indicators tracking monthly over the past 12 months:</p>
+                    <div class="grid-2">
+                        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px;">
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-users"></i> Engagement</h5>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px;">
+                                    <span>Daily Active Users</span>
+                                    <span style="font-weight: 600; color: var(--secondary-blue);">78%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 78%;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px;">
+                                    <span>Message Volume</span>
+                                    <span style="font-weight: 600; color: var(--secondary-blue);">450K/month</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px;">
+                                    <span>Search Usage</span>
+                                    <span style="font-weight: 600; color: var(--secondary-blue);">92K/day</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 92%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px;">
+                            <h5 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-shield-alt"></i> Security</h5>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px;">
+                                    <span>MFA Adoption</span>
+                                    <span style="font-weight: 600; color: var(--success-green);">95%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 95%;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px;">
+                                    <span>Phishing Detection</span>
+                                    <span style="font-weight: 600; color: var(--success-green);">98%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 98%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px;">
+                                    <span>Compliance</span>
+                                    <span style="font-weight: 600; color: var(--success-green);">100%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 11: Communication -->
+            <section id="section-11" class="content-section">
+                <div class="section-header">
+                    <h2>Communication</h2>
+                    <p class="subtitle">How do we keep everyone informed?</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-bullhorn"></i></div>
+                        <div class="card-title">Communication Plan</div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-envelope"></i> Email Announcements</h5>
+                        <div style="background: var(--light-gray); padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                            <p style="margin: 0; font-size: 14px;"><strong>Frequency:</strong> Bi-weekly</p>
+                            <p style="margin: 8px 0 0 0; font-size: 14px; color: var(--medium-gray);">Executive updates, feature releases, important policy changes</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-comments"></i> Teams Channel</h5>
+                        <div style="background: var(--light-gray); padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                            <p style="margin: 0; font-size: 14px;"><strong>Frequency:</strong> Daily updates</p>
+                            <p style="margin: 8px 0 0 0; font-size: 14px; color: var(--medium-gray);">Q&A, quick tips, troubleshooting guides, community spotlights</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-calendar-alt"></i> Town Halls</h5>
+                        <div style="background: var(--light-gray); padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                            <p style="margin: 0; font-size: 14px;"><strong>Frequency:</strong> Monthly</p>
+                            <p style="margin: 8px 0 0 0; font-size: 14px; color: var(--medium-gray);">Executive Q&A, roadmap updates, success stories, feedback sessions</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 16px;"><i class="fas fa-video"></i> Video Library</h5>
+                        <div style="background: var(--light-gray); padding: 16px; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 14px;"><strong>Content:</strong> On-demand training</p>
+                            <p style="margin: 8px 0 0 0; font-size: 14px; color: var(--medium-gray);">How-to guides, best practices, recorded town halls, expert interviews</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 12: First 90 Days -->
+            <section id="section-12" class="content-section">
+                <div class="section-header">
+                    <h2>First 90 Days</h2>
+                    <p class="subtitle">What happens next?</p>
+                </div>
+
+                <div class="roadmap-phase">
+                    <h4><i class="fas fa-calendar-day"></i> Days 1-30: Foundation
+                        <span class="phase-badge">Q1 2025</span>
+                    </h4>
+                    <div style="margin-top: 16px;">
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-tasks"></i> Immediate Actions</h5>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Executive steering committee kick-off
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Finalize governance and decision rights
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Recruit and train champion network
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Launch awareness campaigns
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Baseline current state assessment
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tags" style="margin-top: 16px;">
+                        <span class="tag priority-high">High Priority</span>
+                        <span class="tag">30 days</span>
+                        <span class="tag">Executive Focus</span>
+                    </div>
+                </div>
+
+                <div class="roadmap-phase">
+                    <h4><i class="fas fa-hammer"></i> Days 31-60: Build
+                        <span class="phase-badge">Feb 2025</span>
+                    </h4>
+                    <div style="margin-top: 16px;">
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-tasks"></i> Core Execution</h5>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Infrastructure provisioning and configuration
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Pilot user group selection and training
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Support desk enablement
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Content creation and documentation
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Feedback collection mechanisms
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tags" style="margin-top: 16px;">
+                        <span class="tag priority-high">High Priority</span>
+                        <span class="tag">30 days</span>
+                        <span class="tag">Implementation</span>
+                    </div>
+                </div>
+
+                <div class="roadmap-phase">
+                    <h4><i class="fas fa-users"></i> Days 61-90: Scale
+                        <span class="phase-badge">Mar 2025</span>
+                    </h4>
+                    <div style="margin-top: 16px;">
+                        <h5 style="color: var(--secondary-blue); margin-bottom: 12px;"><i class="fas fa-tasks"></i> Rollout Activities</h5>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Phased user rollout begins
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Daily standups and feedback reviews
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Issue escalation and rapid resolution
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Success metrics tracking
+                            </li>
+                            <li style="padding: 8px 0; padding-left: 24px; position: relative; color: var(--medium-gray);">
+                                <span style="position: absolute; left: 0; color: var(--accent-teal); font-weight: bold;">▸</span>
+                                Plan for Year 2 expansion
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tags" style="margin-top: 16px;">
+                        <span class="tag priority-high">High Priority</span>
+                        <span class="tag">30 days</span>
+                        <span class="tag">Scale & Optimize</span>
+                    </div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #667eea 0, #764ba2 100%); color: #fff;">
+                    <h3 style="margin-bottom: 20px; color: #fff;"><i class="fas fa-rocket"></i> Success Definition</h3>
+                    <div class="grid-3">
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">15,000+</div>
+                            <div style="font-size: 14px; opacity: 0.9;">Active Users</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">75%+</div>
+                            <div style="font-size: 14px; opacity: 0.9;">Daily Adoption Rate</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">4.2+</div>
+                            <div style="font-size: 14px; opacity: 0.9;">User Satisfaction Score</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scroll navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-scroll');
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    updateActiveTab(this);
+                }
+            });
+        });
+
+        // Update active tab based on scroll position
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('.content-section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-scroll') === current) {
+                    tab.classList.add('active');
+                }
+            });
+        });
+
+        // Accordion functionality
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isActive = content.classList.contains('active');
+                
+                // Close all other accordions
+                document.querySelectorAll('.accordion-content').forEach(acc => {
+                    acc.classList.remove('active');
+                });
+                document.querySelectorAll('.accordion-header').forEach(h => {
+                    h.classList.remove('active');
+                });
+                
+                // Open clicked accordion
+                if (!isActive) {
+                    content.classList.add('active');
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        function updateActiveTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            tab.classList.add('active');
+        }
+
+        // Initial setup - set first tab as active
+        document.querySelector('.nav-tab').classList.add('active');
+    </script>
+</body>
+</html>

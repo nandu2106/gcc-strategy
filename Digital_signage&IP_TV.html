@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Signage & IP-TV Strategy Blueprint - Opella Global</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-purple: #7C3AED;
+            --secondary-purple: #6D28D9;
+            --accent-cyan: #06B6D4;
+            --dark-gray: #2C3E50;
+            --medium-gray: #5A6C7D;
+            --light-gray: #F5F7FA;
+            --border-gray: #E1E8ED;
+            --success-green: #27AE60;
+            --warning-orange: #F39C12;
+            --white: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--dark-gray);
+            color: var(--white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: var(--secondary-purple);
+            border-bottom: 3px solid var(--accent-cyan);
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--white);
+        }
+
+        .sidebar-header p {
+            font-size: 11px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .nav-tabs {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--accent-cyan);
+        }
+
+        .nav-tab.active {
+            background: rgba(6, 182, 212, 0.2);
+            border-left-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .nav-tab i {
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            background: var(--light-gray);
+            width: calc(100% - 280px);
+            padding: 0;
+        }
+
+        .content-section {
+            padding: 50px;
+            min-height: auto;
+            scroll-margin-top: 100px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-purple);
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            color: var(--secondary-purple);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .section-header .subtitle {
+            font-size: 15px;
+            color: var(--medium-gray);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--accent-cyan));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--secondary-purple);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .principle-card {
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-gray) 100%);
+            border-left: 5px solid var(--accent-cyan);
+            padding: 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .principle-card h4 {
+            font-size: 16px;
+            color: var(--secondary-purple);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .principle-card p {
+            color: var(--medium-gray);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .info-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .info-box.info { background: #E3F2FD; border-left: 5px solid #2196F3; }
+        .info-box.success { background: #E8F5E9; border-left: 5px solid #4CAF50; }
+        .info-box.warning { background: #FFF3E0; border-left: 5px solid #FF9800; }
+
+        .metric-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-cyan);
+            box-shadow: var(--shadow);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary-purple);
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-green), var(--accent-cyan));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .vision-statement {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-statement:before {
+            content: '"';
+            font-size: 120px;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            opacity: 0.1;
+            font-family: Georgia, serif;
+        }
+
+        .vision-statement h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .vision-statement p {
+            font-size: 16px;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .persona-card {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 8px;
+            border-top: 5px solid var(--primary-purple);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .persona-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .persona-card h4 {
+            color: var(--secondary-purple);
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gray);
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background: var(--secondary-purple);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: var(--light-gray);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .timeline-marker {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+            z-index: 2;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--white);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-cyan);
+        }
+
+        .timeline-content h4 {
+            color: var(--secondary-purple);
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .timeline-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .timeline-content li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--medium-gray);
+            font-size: 13px;
+        }
+
+        .timeline-content li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .tag {
+            background: var(--light-gray);
+            color: var(--medium-gray);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid var(--border-gray);
+            display: inline-block;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .tag.broadcast { background: #E3F2FD; color: #7C3AED; border-color: #B3E5FC; }
+        .tag.content { background: #E8F5E9; color: #27AE60; border-color: #A5D6A7; }
+        .tag.safety { background: #FFF3E0; color: #F39C12; border-color: #FFE0B2; }
+        .tag.region { background: #FCE4EC; color: #C2185B; border-color: #F8BBD0; }
+        .tag.compliance { background: #F3E5F5; color: #7B1FA2; border-color: #CE93D8; }
+
+        .region-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .region-india { background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D; }
+        .region-us { background: #E3F2FD; color: #0D47A1; border: 1px solid #64B5F6; }
+        .region-emea { background: #F3E5F5; color: #4A148C; border: 1px solid #CE93D8; }
+        .region-apac { background: #E0F2F1; color: #004D40; border: 1px solid #4DB6AC; }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                width: calc(100% - 240px);
+                margin-left: 240px;
+            }
+            .content-section {
+                padding: 30px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .content-section {
+                padding: 20px;
+            }
+            .section-header h2 {
+                font-size: 28px;
+            }
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Digital Signage & IP-TV</h1>
+                <p>Strategic Blueprint | Opella Global Communications</p>
+            </div>
+            <ul class="nav-tabs">
+                <li class="nav-tab active" data-scroll="section-0">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Executive Summary</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-1">
+                    <i class="fas fa-star"></i>
+                    <span>Vision & Strategy</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-2">
+                    <i class="fas fa-users"></i>
+                    <span>Use Cases & Personas</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-3">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Architecture Design</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-4">
+                    <i class="fas fa-photo-video"></i>
+                    <span>Content Management</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-5">
+                    <i class="fas fa-tasks"></i>
+                    <span>Governance</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-6">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security & Compliance</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-7">
+                    <i class="fas fa-cogs"></i>
+                    <span>Operating Model</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-8">
+                    <i class="fas fa-monitor"></i>
+                    <span>Hardware & Facilities</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-9">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Cost & Finance</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-10">
+                    <i class="fas fa-people-arrows"></i>
+                    <span>Adoption & Change</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-11">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Metrics & KPIs</span>
+                </li>
+                <li class="nav-tab" data-scroll="section-12">
+                    <i class="fas fa-road"></i>
+                    <span>Roadmap</span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Section 0: Executive Summary -->
+            <section id="section-0" class="content-section">
+                <div class="section-header">
+                    <h2>Executive Summary</h2>
+                    <p class="subtitle">My leadership mandate for digital signage & IP-TV at scale</p>
+                </div>
+
+                <div class="vision-statement">
+                    <h3><i class="fas fa-target"></i> My Leadership Mandate</h3>
+                    <p>As Digital Signage & IP-TV Lead, I am accountable for transforming how Opella communicates with 15,000 employees across 45+ countries. Digital Signage is a mission-critical platform for real-time corporate messaging, safety communications, operational updates, and crisis response. I will deploy 500+ screens across corporate offices, manufacturing plants, lobbies, and shared spaces, integrated with Microsoft 365. I own the strategy, architecture, governance, compliance, content standards, and business outcomes. This is not optional—it is essential infrastructure for modern enterprise communication.</p>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 24px;">
+                    <i class="fas fa-layer-group"></i> 6 Strategic Pillars
+                </h3>
+
+                <div class="grid-3">
+                    <div class="principle-card">
+                        <h4><i class="fas fa-broadcast-tower" style="color: #7C3AED;"></i> Unified Communication Platform</h4>
+                        <p>One centralized platform (Comeen Play) for all digital signage. Integrated with Teams, SharePoint, and Stream. Real-time content delivery across all locations. No fragmentation.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-globe" style="color: #06B6D4;"></i> Globally Standardized</h4>
+                        <p>One brand. One look. One playbook. Regional customization within global standards. Content governance enforced everywhere. 45+ countries, single architecture.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-lock" style="color: #27AE60;"></i> Compliance First</h4>
+                        <p>SOX-ready audit trails. GxP-compliant recording. Data residency per region. Emergency override protocols. Content legal holds preserved. Risk mitigated.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-zap" style="color: #F39C12;"></i> Real-Time & Responsive</h4>
+                        <p>Emergency messages in seconds. Live broadcasts from leadership. Dynamic content refresh. Incident response enabled. Not static anymore.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-users" style="color: #E74C3C;"></i> Frontline-Centric</h4>
+                        <p>50% of Opella is non-desk workers. They need information NOW. Plant operators. Logistics teams. Manufacturing floor. Signage reaches them where they are.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-chart-line" style="color: #9B59B6;"></i> Data-Driven Insights</h4>
+                        <p>Content performance tracked. Engagement metrics measured. Screen uptime monitored. ROI quantified. Continuous optimization based on data.</p>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 32px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #7C3AED, #06B6D4);"><i class="fas fa-bullseye"></i></div>
+                            <div class="card-title">12–24 Month Success Targets</div>
+                        </div>
+                        <div class="stats-grid" style="gap: 12px;">
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary-purple);">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-purple); margin-bottom: 4px;">500+</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Screens Deployed</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #27AE60;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-purple); margin-bottom: 4px;">99.9%</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Platform Uptime</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #06B6D4;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-purple); margin-bottom: 4px;">100%</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Compliance Pass</div>
+                            </div>
+                            <div style="background: var(--light-gray); padding: 12px; border-radius: 8px; border-left: 3px solid #F39C12;">
+                                <div style="font-size: 20px; font-weight: 700; color: var(--secondary-purple); margin-bottom: 4px;">80%+</div>
+                                <div style="font-size: 12px; color: var(--medium-gray);">Content Engagement</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);"><i class="fas fa-tasks"></i></div>
+                            <div class="card-title">Deployment Phases</div>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px; font-size: 14px;">📅 Phase 1: Pilot & Governance (0–90 Days)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Comeen Play setup, governance framework, 50 screens pilot (HQ), compliance audit</p>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px; font-size: 14px;">🚀 Phase 2: Regional Scale (6–12 Months)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">250+ screens across offices & plants, content standardization, support team trained</p>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px; font-size: 14px;">✨ Phase 3: Optimization (12–24 Months)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">500+ screens, AI analytics, predictive content, advanced broadcasting</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box info" style="margin-top: 32px;">
+                    <i class="fas fa-lightbulb" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>What This Means:</strong> I am personally accountable for delivering a globally standardized, compliant digital signage platform that reaches every employee, every day. This is about real-time communication at scale. Not just pretty screens. I own strategy, standards, governance, compliance, cost optimization, and outcomes. This document is my commitment to clarity and accountability.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 1: Vision & Strategy -->
+            <section id="section-1" class="content-section">
+                <div class="section-header">
+                    <h2>Vision & Digital Signage Strategy</h2>
+                    <p class="subtitle">Why Digital Signage exists and what success looks like</p>
+                </div>
+
+                <div class="vision-statement">
+                    <h3><i class="fas fa-star"></i> My Digital Signage Vision</h3>
+                    <p>Every Opella employee will see critical information on screens closest to them—literally. Real-time operational updates. Safety messages. Leadership announcements. Crisis alerts. Engagement metrics. A living, breathing communication layer in every office, plant, and lobby. Not outdated. Not static. Always relevant. Always current. Integrated with Microsoft 365. Compliant everywhere. Opella communicates in real-time at global scale.</p>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-compass"></i> Why Digital Signage Matters
+                </h3>
+
+                <div class="grid-2">
+                    <div class="principle-card">
+                        <h4><i class="fas fa-users-slash" style="color: var(--accent-cyan);"></i> Non-Desk Worker Communication</h4>
+                        <p>50% of Opella is non-desk: plant operators, logistics, manufacturing. Email doesn't reach them. Teams is for computers. Signage reaches them everywhere.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-exclamation-triangle" style="color: var(--accent-cyan);"></i> Crisis Response</h4>
+                        <p>Emergency? Plant incident? Health alert? Signage broadcasts to ALL 15K in seconds. No delays. Real-time incident mitigation.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-shield" style="color: var(--accent-cyan);"></i> Safety & Compliance</h4>
+                        <p>Manufacturing requires compliance posting. GxP audits demand documentation. Digital signage is audit-ready. Immutable logs. Proof of communication.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-lightbulb" style="color: var(--accent-cyan);"></i> Culture & Engagement</h4>
+                        <p>Leadership messages. Recognition. Company news. Local celebrations. Signage is where culture happens. Modern, inclusive, everyone sees it.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-chart-bar" style="color: var(--accent-cyan);"></i> Real-Time KPI Dashboards</h4>
+                        <p>Safety metrics. Production targets. Quality scores. Visible to the floor. Drives accountability. Transparency at scale.</p>
+                    </div>
+
+                    <div class="principle-card">
+                        <h4><i class="fas fa-globe" style="color: var(--accent-cyan);"></i> Global Reach, Local Relevance</h4>
+                        <p>One platform. 45+ countries. But local news, local events, local messages. Global standardization, local customization.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 32px;">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-check-double"></i></div>
+                        <div class="card-title">Business Outcomes I Will Deliver</div>
+                    </div>
+                    <div class="grid-3">
+                        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary-purple);">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: var(--success-green); margin-right: 8px;"></i>Reach</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray); margin-bottom: 8px;">500+ screens deployed. 15K employees reached. 45+ countries covered. 99.9% uptime.</p>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--secondary-purple);">KPI: 100% screen operational</div>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: var(--success-green); margin-right: 8px;"></i>Engagement</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray); margin-bottom: 8px;">80%+ content engagement. Fresh content daily. Real-time updates. Crisis-ready.</p>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--secondary-purple);">KPI: 80% audience reach</div>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid #06B6D4;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 12px;"><i class="fas fa-check-circle" style="color: var(--success-green); margin-right: 8px;"></i>Compliance</h5>
+                            <p style="font-size: 13px; color: var(--medium-gray); margin-bottom: 8px;">100% audit compliance. SOX-ready. GxP-compliant. Content legally preserved.</p>
+                            <div style="font-size: 12px; font-weight: 600; color: var(--secondary-purple);">KPI: Zero violations</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Use Cases & Personas -->
+            <section id="section-2" class="content-section">
+                <div class="section-header">
+                    <h2>Digital Signage Use Cases & Personas</h2>
+                    <p class="subtitle">Who uses signage and what they need</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-users" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>Persona-Driven Content:</strong> Executives see high-level metrics. Frontline sees shift schedules. Security sees alerts. Everyone sees safety messages. Targeted content by audience.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-users"></i> Audience Personas & Use Cases
+                </h3>
+
+                <div class="grid-2">
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-industry" style="color: #F39C12; margin-right: 8px;"></i>Frontline & Plant Operations (7,500 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> Plant operators, manufacturing supervisors, logistics teams</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Where:</strong> Manufacturing floor, warehouse, logistics hub</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Screens:</strong> Large displays (55"+), high-visibility, located near work areas</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-purple); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag safety">Safety alerts</span>
+                                <span class="tag content">Shift schedules</span>
+                                <span class="tag broadcast">Production metrics</span>
+                                <span class="tag safety">Emergency notices</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Content Needs:</strong> Quick, visual. Simple language. High-priority alerts. Shift-specific info.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-building" style="color: #0066CC; margin-right: 8px;"></i>Corporate Office Staff (5,000 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> Knowledge workers, managers, administrative staff</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Where:</strong> Office lobbies, break rooms, meeting areas</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Screens:</strong> Medium displays (43"-50"), lobby placement</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-purple); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag broadcast">Leadership updates</span>
+                                <span class="tag content">Company news</span>
+                                <span class="tag content">Culture content</span>
+                                <span class="tag compliance">Compliance notices</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Content Needs:</strong> Professional. Branded. News-focused. Recognition & culture.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-crown" style="color: #E74C3C; margin-right: 8px;"></i>Leadership & Crisis Management (500 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> C-Suite, SVPs, facility managers, security team</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Where:</strong> Corporate HQ, control rooms, emergency ops centers</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Access:</strong> Emergency broadcast override, real-time content push</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-purple); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag broadcast">Emergency broadcasts</span>
+                                <span class="tag broadcast">Live town halls</span>
+                                <span class="tag safety">Crisis alerts</span>
+                                <span class="tag broadcast">Executive messaging</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Content Needs:</strong> Real-time override. Multi-language. Global reach in seconds. Crisis-tested.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-security" style="color: #27AE60; margin-right: 8px;"></i>Security & Safety Teams (300 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> Security managers, health & safety officers, facilities teams</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Where:</strong> Entry points, facility control, security command</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Access:</strong> Safety content approval, emergency controls</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-purple); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag safety">Safety procedures</span>
+                                <span class="tag safety">Health alerts</span>
+                                <span class="tag safety">Security notices</span>
+                                <span class="tag compliance">Regulatory compliance</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Content Needs:</strong> Compliance-driven. Legal-reviewed. Audit-ready. Emergency-capable.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-bullhorn" style="color: #9B59B6; margin-right: 8px;"></i>Corporate Communications (200 users)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> Communications managers, content creators, approvers</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Where:</strong> Remote (content management system)</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Tools:</strong> Comeen Play CMS, Microsoft 365 integration</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-purple); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag content">Content creation</span>
+                                <span class="tag broadcast">Scheduling</span>
+                                <span class="tag broadcast">Live broadcasts</span>
+                                <span class="tag content">Analytics review</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Content Needs:</strong> Easy-to-use CMS. Template-based. Real-time scheduling. Performance metrics.</p>
+                        </div>
+                    </div>
+
+                    <div class="persona-card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-user-tie" style="color: #06B6D4; margin-right: 8px;"></i>Visitors & Guests (Variable)</h4>
+                        <div style="margin-bottom: 16px;">
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Who:</strong> Visitors, contractors, guests, customers</p>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Where:</strong> Office lobbies, reception areas</p>
+                            <p style="font-size: 12px; color: var(--medium-gray);"><strong>Content:</strong> Welcome messaging, wayfinding, company brand</p>
+                        </div>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-purple); font-size: 12px; margin-bottom: 8px;">Primary Use Cases:</h5>
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                <span class="tag broadcast">Welcome messages</span>
+                                <span class="tag content">Brand showcase</span>
+                                <span class="tag content">Wayfinding info</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--medium-gray);">
+                            <p><strong>Content Needs:</strong> Brand-first. Professional. Welcoming. Non-sensitive information only.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Architecture Design -->
+            <section id="section-3" class="content-section">
+                <div class="section-header">
+                    <h2>Architecture & Platform Design</h2>
+                    <p class="subtitle">How Digital Signage scales globally</p>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-layer-group" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Architecture Philosophy:</strong> Cloud-first with hybrid flexibility. Comeen Play on Microsoft Azure. Media players in-screen (System-on-Chip). Network optimized for reliability. Content delivered via CDN. Integrated with Microsoft 365 (Teams, SharePoint, Stream).
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-diagram-project"></i> Core Architecture Components
+                </h3>
+
+                <div class="card">
+                    <div class="grid-2">
+                        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #7C3AED;">
+                            <h5 style="color: #7C3AED; margin-bottom: 12px;"><i class="fas fa-cloud" style="margin-right: 8px;"></i>Content Management System (Comeen Play)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Cloud platform on Azure</strong>. Centralized content management. Real-time publishing. Multi-site orchestration.</p>
+                            <div style="font-size: 11px; font-weight: 600; color: #7C3AED; margin-top: 8px;">Benefit: Scalable, global reach, compliance-ready</div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                            <h5 style="color: #27AE60; margin-bottom: 12px;"><i class="fas fa-display" style="margin-right: 8px;"></i>Display Hardware</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Commercial displays</strong> (43"-75"). Built-in System-on-Chip (SoC) media player. 4K capable. Energy efficient. Network-connected.</p>
+                            <div style="font-size: 11px; font-weight: 600; color: #27AE60; margin-top: 8px;">Benefit: Simplified maintenance, fewer failure points</div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #fff3e0 0%, #fffbf0 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #F39C12;">
+                            <h5 style="color: #F39C12; margin-bottom: 12px;"><i class="fas fa-network-wired" style="margin-right: 8px;"></i>Network Infrastructure</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Segmented VLAN</strong> for signage traffic. PoE++ power delivery. Dual connectivity (primary + LTE failover). SD-WAN optimization.</p>
+                            <div style="font-size: 11px; font-weight: 600; color: #F39C12; margin-top: 8px;">Benefit: Reliable, low-latency content delivery</div>
+                        </div>
+
+                        <div style="background: linear-gradient(135deg, #f3e5f5 0%, #fef5ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #9B59B6;">
+                            <h5 style="color: #9B59B6; margin-bottom: 12px;"><i class="fas fa-broadcast-tower" style="margin-right: 8px;"></i>Broadcast & Streaming</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>IPTV integration</strong> for live broadcasts. Microsoft Teams/Stream integration. Real-time override capability. Multi-protocol support.</p>
+                            <div style="font-size: 11px; font-weight: 600; color: #9B59B6; margin-top: 8px;">Benefit: Live town halls, instant communications</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-cubes"></i> Deployment Model
+                </h3>
+
+                <div class="card">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                        <div style="border-left: 5px solid #7C3AED; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Global Content Hub</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Comeen Play cloud instance on Azure. Centralized content management. Global accessibility. Role-based permissions.</p>
+                        </div>
+                        <div style="border-left: 5px solid #06B6D4; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Regional Content Delivery</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Regional CDN nodes for latency optimization. Local content caching. GDPR/data residency compliance.</p>
+                        </div>
+                        <div style="border-left: 5px solid #F39C12; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Site-Level Display Networks</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">500+ displays across 45+ countries. Direct network connectivity. Local power infrastructure. Mesh failover support.</p>
+                        </div>
+                        <div style="border-left: 5px solid #27AE60; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Microsoft 365 Integration</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Teams, SharePoint, Stream, Yammer integration. Single sign-on (AAD). Content sourced from M365 apps.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-sitemap"></i> Content Flow Architecture
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;"><strong>Content Lifecycle:</strong> Creation (PowerPoint, Images, Video) → Approval (Governance workflow) → Publishing (Comeen Play CMS) → Distribution (CDN) → Display (500+ screens) → Analytics (Performance tracking)</p>
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                            <div style="border-left: 5px solid #7C3AED; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">1. Content Creation</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray);">Users create content in Microsoft 365. PowerPoint, video, images, live feeds. Templates enforce branding.</p>
+                            </div>
+                            <div style="border-left: 5px solid #06B6D4; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">2. Governance Review</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray);">Workflow approval. Compliance check. Legal review if needed. Safety content validated.</p>
+                            </div>
+                            <div style="border-left: 5px solid #F39C12; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">3. Publishing</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray);">Approved content published to Comeen Play. Scheduling configured. Regional targeting set.</p>
+                            </div>
+                            <div style="border-left: 5px solid #27AE60; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">4. Delivery</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray);">CDN distributes to all screens. Real-time override capability. Emergency broadcasts instant.</p>
+                            </div>
+                            <div style="border-left: 5px solid #9B59B6; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">5. Display</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray);">Content plays on schedule. Rotations configured. Interactive features enabled. Offline fallback to local cache.</p>
+                            </div>
+                            <div style="border-left: 5px solid #E74C3C; padding-left: 12px;">
+                                <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">6. Analytics</h5>
+                                <p style="font-size: 12px; color: var(--medium-gray);">Screen uptime tracked. Content engagement measured. Audit trails recorded. Reports generated.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Content & Broadcast Management -->
+            <section id="section-4" class="content-section">
+                <div class="section-header">
+                    <h2>Content & Broadcast Management</h2>
+                    <p class="subtitle">How content is created, approved, and delivered at scale</p>
+                </div>
+
+                <div class="info-box warning">
+                    <i class="fas fa-photo-video" style="color: #FF9800;"></i>
+                    <div>
+                        <strong>Content Strategy:</strong> Global standards enforced. Local customization allowed. Emergency override always available. Content is audit-ready. Nothing is unsupervised.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-layer-group"></i> Content Types & Delivery Models
+                </h3>
+
+                <div class="grid-3">
+                    <div class="card" style="border-top: 5px solid var(--primary-purple);">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-image" style="color: var(--accent-cyan); margin-right: 8px;"></i>Static Content</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Images & graphics</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ PowerPoint slides</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Branded templates</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Safety posters</li>
+                            <li style="padding: 8px 0;">✓ Compliance notices</li>
+                        </ul>
+                        <div style="margin-top: 12px; background: var(--light-gray); padding: 8px; border-radius: 4px; font-size: 11px; color: var(--medium-gray);">
+                            <strong>Refresh:</strong> Weekly to monthly
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid var(--primary-purple);">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-chart-line" style="color: var(--accent-cyan); margin-right: 8px;"></i>Dynamic Content</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ KPI dashboards</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Production metrics</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ RSS feeds</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Live data feeds</li>
+                            <li style="padding: 8px 0;">✓ Stock/market tickers</li>
+                        </ul>
+                        <div style="margin-top: 12px; background: var(--light-gray); padding: 8px; border-radius: 4px; font-size: 11px; color: var(--medium-gray);">
+                            <strong>Refresh:</strong> Real-time (seconds/minutes)
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid var(--primary-purple);">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-video" style="color: var(--accent-cyan); margin-right: 8px;"></i>Live & Broadcast Content</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Live town halls</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Emergency alerts</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Leadership messages</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ IPTV channels</li>
+                            <li style="padding: 8px 0;">✓ Crisis broadcasts</li>
+                        </ul>
+                        <div style="margin-top: 12px; background: var(--light-gray); padding: 8px; border-radius: 4px; font-size: 11px; color: var(--medium-gray);">
+                            <strong>Latency:</strong> &lt;5 seconds
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-calendar-alt"></i> Content Scheduling & Playlist Management
+                </h3>
+
+                <div class="card">
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px;">
+                        <h5 style="color: var(--secondary-purple); margin-bottom: 12px;"><strong>Global Content Strategy</strong></h5>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="border-left: 3px solid var(--primary-purple); padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Global Messaging (60%)</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Opella-wide announcements, safety messages, brand content. Standard across all 45+ countries.</p>
+                            </div>
+                            <div style="border-left: 3px solid #06B6D4; padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Regional Content (25%)</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Regional announcements, compliance notices, local events. Customized per region (EMEA, APAC, Americas).</p>
+                            </div>
+                            <div style="border-left: 3px solid #F39C12; padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Site-Local Content (15%)</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Plant-specific messages, local celebrations, shift schedules. Relevant to specific location only.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-broadcast-tower"></i> Emergency Override & Priority Messaging
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;"><strong>Crisis Communication Model:</strong> Single press of a button = all 500+ screens display critical message in seconds. No delays. No approvals. Emergency-tested.</p>
+                    <div style="background: linear-gradient(135deg, #fff3e0 0%, #fffbf0 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #F39C12;">
+                        <h5 style="color: #F39C12; margin-bottom: 12px;"><i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>Emergency Protocol</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 6px 0;">🚨 <strong>Trigger:</strong> Safety officer / Security / Facility manager activates override via Comeen Play</li>
+                            <li style="padding: 6px 0;">⚡ <strong>Distribution:</strong> Message broadcasts to ALL screens globally in &lt;5 seconds</li>
+                            <li style="padding: 6px 0;">📢 <strong>Multi-language:</strong> Automatic translation to 20+ languages</li>
+                            <li style="padding: 6px 0;">🔁 <strong>Persistence:</strong> Message stays on screen until manually cleared</li>
+                            <li style="padding: 6px 0;">📝 <strong>Audit Trail:</strong> Every override logged, who triggered, when, duration—immutable record</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Governance -->
+            <section id="section-5" class="content-section">
+                <div class="section-header">
+                    <h2>Governance & Control</h2>
+                    <p class="subtitle">How content is managed at scale across 45+ countries</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-tasks" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>Governance Principle:</strong> Clear ownership. Role-based controls. Approval workflows. Regional compliance. Content audit trails. Nothing is unsupervised.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-sitemap"></i> RACI & Ownership Model
+                </h3>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Function</th>
+                                    <th>Responsible</th>
+                                    <th>Accountable</th>
+                                    <th>Consulted</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Global Strategy & Standards</strong></td>
+                                    <td>Digital Signage Lead</td>
+                                    <td>CIO</td>
+                                    <td>Comms, Facilities</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Content Creation & Approval</strong></td>
+                                    <td>Corporate Communications</td>
+                                    <td>Content Governance Board</td>
+                                    <td>Security, Legal, Regional leads</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Safety & Compliance Content</strong></td>
+                                    <td>Health & Safety Officer</td>
+                                    <td>Facilities Manager</td>
+                                    <td>Legal, Compliance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Emergency Messaging</strong></td>
+                                    <td>Crisis Management Team</td>
+                                    <td>Chief Security Officer</td>
+                                    <td>IT Operations</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Screen Installation & Maintenance</strong></td>
+                                    <td>IT Infrastructure + Facilities</td>
+                                    <td>Digital Signage Lead</td>
+                                    <td>Site managers</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Platform Operations & Support</strong></td>
+                                    <td>IT Operations</td>
+                                    <td>Digital Signage Lead</td>
+                                    <td>Comms, Facilities</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-file-contract"></i> Content Approval Workflow
+                </h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #7C3AED;">1</div>
+                        <div class="timeline-content">
+                            <h4>🎨 CREATION: Content Authored</h4>
+                            <ul>
+                                <li>Communications team creates content in Microsoft 365 (PowerPoint, images, video)</li>
+                                <li>Template-based design enforces brand standards</li>
+                                <li>Content classified: Global, Regional, Local, Safety, Emergency</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #F39C12;">2</div>
+                        <div class="timeline-content">
+                            <h4>✅ REVIEW: Governance Check</h4>
+                            <ul>
+                                <li>Safety content: Health & Safety team review</li>
+                                <li>Compliance content: Legal & Compliance review</li>
+                                <li>Financial/SOX content: Finance & Audit review</li>
+                                <li>All other content: Comms manager approval</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #06B6D4;">3</div>
+                        <div class="timeline-content">
+                            <h4>📍 TARGETING: Location & Scheduling</h4>
+                            <ul>
+                                <li>Target screens by region, site, or department</li>
+                                <li>Schedule start/end dates and times</li>
+                                <li>Set rotation duration and frequency</li>
+                                <li>Regional content queued locally</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #27AE60;">4</div>
+                        <div class="timeline-content">
+                            <h4>🚀 PUBLISH: Content Goes Live</h4>
+                            <ul>
+                                <li>Approved content published to Comeen Play CMS</li>
+                                <li>Automatically distributed to target screens via CDN</li>
+                                <li>Plays according to schedule and rotation</li>
+                                <li>Audit trail recorded: who, when, what, to where</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #E74C3C;">5</div>
+                        <div class="timeline-content">
+                            <h4>📊 MONITOR: Performance Tracked</h4>
+                            <ul>
+                                <li>Screen uptime monitored 24/7</li>
+                                <li>Content engagement metrics collected</li>
+                                <li>Alerts triggered if screen offline or content not displayed</li>
+                                <li>Monthly reports on reach and effectiveness</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-earth"></i> Regional & Site-Level Governance
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card" style="border-top: 5px solid var(--primary-purple);">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-globe" style="color: var(--accent-cyan); margin-right: 8px;"></i>Global Standards (Non-Negotiable)</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0;">✓ Brand guidelines (logos, colors, fonts)</li>
+                            <li style="padding: 8px 0;">✓ Safety messaging templates</li>
+                            <li style="padding: 8px 0;">✓ Compliance notice formats</li>
+                            <li style="padding: 8px 0;">✓ Emergency protocols</li>
+                            <li style="padding: 8px 0;">✓ Accessibility standards (WCAG 2.1)</li>
+                            <li style="padding: 8px 0;">✓ Audit/retention policies</li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #06B6D4;">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-location-dot" style="color: var(--accent-cyan); margin-right: 8px;"></i>Regional Customization (Allowed)</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0;">✓ Local language content (within global templates)</li>
+                            <li style="padding: 8px 0;">✓ Regional events and celebrations</li>
+                            <li style="padding: 8px 0;">✓ Local leadership messages</li>
+                            <li style="padding: 8px 0;">✓ Regional compliance notices (as needed)</li>
+                            <li style="padding: 8px 0;">✓ Site-specific KPI dashboards</li>
+                            <li style="padding: 8px 0;">✓ Local shift schedules and announcements</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 6: Security & Compliance -->
+            <section id="section-6" class="content-section">
+                <div class="section-header">
+                    <h2>Security, Compliance & Risk Management</h2>
+                    <p class="subtitle">How we secure digital signage at enterprise scale</p>
+                </div>
+
+                <div class="info-box warning">
+                    <i class="fas fa-shield-alt" style="color: #FF9800;"></i>
+                    <div>
+                        <strong>Security Mandate:</strong> Every screen is a potential risk. Identity-based access. Encrypted content delivery. Audit-ready. Compliance is mandatory. No exceptions.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-lock"></i> Security Architecture
+                </h3>
+
+                <div class="grid-2">
+                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #7C3AED;">
+                        <h5 style="color: #7C3AED; margin-bottom: 12px;"><i class="fas fa-user-lock" style="margin-right: 8px;"></i>Identity & Access Control</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 6px 0;">✓ Azure AD authentication for all users</li>
+                            <li style="padding: 6px 0;">✓ Role-based access control (RBAC)</li>
+                            <li style="padding: 6px 0;">✓ Multi-factor authentication (MFA) for admin access</li>
+                            <li style="padding: 6px 0;">✓ Service principals for app-to-app access</li>
+                            <li style="padding: 6px 0;">✓ Periodic access reviews & cleanup</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #f3e5f5 0%, #fef5ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #9B59B6;">
+                        <h5 style="color: #9B59B6; margin-bottom: 12px;"><i class="fas fa-encrypt" style="margin-right: 8px;"></i>Data Protection</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 6px 0;">✓ HTTPS/TLS 1.2+ for all data in transit</li>
+                            <li style="padding: 6px 0;">✓ AES-256 encryption for content at rest</li>
+                            <li style="padding: 6px 0;">✓ API keys rotated regularly</li>
+                            <li style="padding: 6px 0;">✓ Content DLP policies enforced</li>
+                            <li style="padding: 6px 0;">✓ Sensitive content watermarked on displays</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                        <h5 style="color: #27AE60; margin-bottom: 12px;"><i class="fas fa-history" style="margin-right: 8px;"></i>Audit & Logging</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 6px 0;">✓ Content audit trail (who, what, when, where)</li>
+                            <li style="padding: 6px 0;">✓ Access logs stored 7+ years</li>
+                            <li style="padding: 6px 0;">✓ Content changes tracked with version history</li>
+                            <li style="padding: 6px 0;">✓ Emergency override logs immutable</li>
+                            <li style="padding: 6px 0;">✓ Monthly compliance reports generated</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fff3e0 0%, #fffbf0 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #F39C12;">
+                        <h5 style="color: #F39C12; margin-bottom: 12px;"><i class="fas fa-network-wired" style="margin-right: 8px;"></i>Network Security</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 6px 0;">✓ Segmented VLAN for signage traffic only</li>
+                            <li style="padding: 6px 0;">✓ Content delivery isolated from corporate network</li>
+                            <li style="padding: 6px 0;">✓ Firewall rules restrict display to CMS only</li>
+                            <li style="padding: 6px 0;">✓ DDoS protection on Azure platform</li>
+                            <li style="padding: 6px 0;">✓ Intrusion detection enabled</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-check-double"></i> Regulatory Compliance
+                </h3>
+
+                <div class="grid-2">
+                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #7C3AED;">
+                        <h5 style="color: #7C3AED; margin-bottom: 12px;">SOX Compliance</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li>✓ All financial content reviewed & approved</li>
+                            <li>✓ Content retention: 10 years</li>
+                            <li>✓ Change management enforced</li>
+                            <li>✓ Audit-ready documentation</li>
+                            <li>✓ Legal holds preserved indefinitely</li>
+                        </ul>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #27AE60;">
+                        <h5 style="color: #27AE60; margin-bottom: 12px;">GxP Compliance</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li>✓ Manufacturing compliance notices posted</li>
+                            <li>✓ Safety procedure documentation</li>
+                            <li>✓ Training record documentation</li>
+                            <li>✓ Electronic signature capability</li>
+                            <li>✓ 21 CFR Part 11 ready</li>
+                        </ul>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #f3e5f5 0%, #fef5ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #9B59B6;">
+                        <h5 style="color: #9B59B6; margin-bottom: 12px;">GDPR Compliance</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li>✓ Data residency: EU data stays in EU</li>
+                            <li>✓ Content removal honored (right to be forgotten)</li>
+                            <li>✓ Privacy notices displayed</li>
+                            <li>✓ Data processing agreements signed</li>
+                            <li>✓ DPA with Microsoft & Comeen Play</li>
+                        </ul>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #fff3e0 0%, #fffbf0 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #F39C12;">
+                        <h5 style="color: #F39C12; margin-bottom: 12px;">Safety Regulations</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li>✓ OSHA compliance postings automated</li>
+                            <li>✓ Safety data sheets accessible</li>
+                            <li>✓ Incident reporting enabled</li>
+                            <li>✓ Training records displayed</li>
+                            <li>✓ Emergency procedures posted</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-exclamation-triangle"></i> Business Continuity & Failover
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;"><strong>Resilience Strategy:</strong> No single point of failure. Cloud redundancy. Local failover. Offline capabilities. Emergency messaging always available.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                        <div style="border-left: 3px solid #7C3AED; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Platform Redundancy</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Comeen Play on Azure with geo-redundancy. Automatic failover to secondary region. Multi-datacenter architecture.</p>
+                        </div>
+                        <div style="border-left: 3px solid #06B6D4; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Network Failover</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Primary wired connection + LTE backup. Mesh network topology. Automatic switchover if primary fails.</p>
+                        </div>
+                        <div style="border-left: 3px solid #F39C12; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Local Caching</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Displays cache content locally. If WAN down, cached content plays. No blank screens. Graceful degradation.</p>
+                        </div>
+                        <div style="border-left: 3px solid #27AE60; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Emergency Override</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Emergency messages cached on all displays. Always available. Works even if network is down. Manual override button on each display.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Operating Model -->
+            <section id="section-7" class="content-section">
+                <div class="section-header">
+                    <h2>Operating Model & Support</h2>
+                    <p class="subtitle">How digital signage runs 24/7/365</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-cogs" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>Operating Model:</strong> I own strategy & standards. My team owns day-to-day operations. Clear roles. 24/7 monitoring. L1/L2/L3 escalation. Vendor management. Incident response.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-users-cog"></i> Team Structure & Responsibilities
+                </h3>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Role</th>
+                                    <th>Responsibilities</th>
+                                    <th>Key Accountability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Digital Signage Lead (Me)</strong></td>
+                                    <td>Strategy, roadmap, governance, vendor management, compliance</td>
+                                    <td>99.9% uptime, cost optimization, regulatory compliance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Platform Engineer</strong></td>
+                                    <td>Comeen Play administration, content management, integrations</td>
+                                    <td>CMS availability, content delivery latency &lt;5 sec</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Operations Manager</strong></td>
+                                    <td>Daily operations, incident response, monitoring, L1 support</td>
+                                    <td>Screen uptime 99.9%, first response &lt;30 min</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Network Engineer</strong></td>
+                                    <td>Network design, connectivity, failover, bandwidth optimization</td>
+                                    <td>Network latency &lt;100ms, 99.95% availability</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Content Governance Officer</strong></td>
+                                    <td>Approval workflows, compliance review, audit trails</td>
+                                    <td>Zero compliance violations, 100% audit pass</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Facilities Partner (External)</strong></td>
+                                    <td>Hardware installation, maintenance, physical security</td>
+                                    <td>Installation quality, on-time delivery, SLA compliance</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-headset"></i> Support Model & SLAs
+                </h3>
+
+                <div class="grid-3">
+                    <div class="card" style="border-top: 5px solid #27AE60;">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-robot" style="color: #27AE60; margin-right: 8px;"></i>L1: Self-Service & Monitoring</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Channel:</strong> Comeen Play dashboard, mobile app</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>SLA:</strong> Automated alerts within 1 min</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);"><strong>Issues:</strong> Screen status, content upload, basic troubleshooting</p>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #F39C12;">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-headset" style="color: #F39C12; margin-right: 8px;"></i>L2: Escalation & Resolution</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Channel:</strong> IT Service desk, email, Teams</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>SLA:</strong> 2 hrs (major), 4 hrs (minor)</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);"><strong>Issues:</strong> Network, hardware, content approval</p>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #E74C3C;">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-tools" style="color: #E74C3C; margin-right: 8px;"></i>L3: Engineering & Vendor</h4>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>Channel:</strong> Engineering team, Comeen support, vendors</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 8px;"><strong>SLA:</strong> 1 hr (critical), 4 hrs (major)</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);"><strong>Issues:</strong> Platform bugs, infrastructure, architecture</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-bell"></i> 24/7 Monitoring & Alerting
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;"><strong>Proactive Monitoring:</strong> Every screen monitored continuously. Alerts triggered automatically. No manual checking.</p>
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="border-left: 3px solid var(--primary-purple); padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Screen Offline</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Alert: Immediate (any screen down for &gt;5 min)</p>
+                            </div>
+                            <div style="border-left: 3px solid #06B6D4; padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Content Delivery Delay</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Alert: Within 5 sec if latency &gt;10 sec</p>
+                            </div>
+                            <div style="border-left: 3px solid #F39C12; padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Network Connectivity Issue</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Alert: Immediate if WAN down</p>
+                            </div>
+                            <div style="border-left: 3px solid #27AE60; padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Storage/Disk Issues</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Alert: When disk usage &gt;85%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 8: Hardware & Facilities Integration -->
+            <section id="section-8" class="content-section">
+                <div class="section-header">
+                    <h2>Hardware & Facilities Integration</h2>
+                    <p class="subtitle">Displays, media players, mounting, and lifecycle management</p>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-monitor" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Hardware Strategy:</strong> Commercial-grade displays only. System-on-Chip media players (no external devices). PoE++ power delivery. Professional installation. Lifecycle managed.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-tv"></i> Display Standards & Specifications
+                </h3>
+
+                <div class="grid-3">
+                    <div class="card" style="border-top: 5px solid var(--primary-purple);">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;">Large Format Displays (55" – 75")</h4>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px; font-size: 12px;">
+                            <p style="margin-bottom: 6px;"><strong>Use Case:</strong> Manufacturing floors, large lobbies, warehouse entrances</p>
+                            <p style="margin-bottom: 6px;"><strong>Brightness:</strong> 3000+ nits (high-ambient environments)</p>
+                            <p style="margin-bottom: 6px;"><strong>Resolution:</strong> 4K (3840×2160)</p>
+                            <p style="margin-bottom: 6px;"><strong>Refresh:</strong> 60 Hz minimum</p>
+                            <p><strong>SoC:</strong> Integrated media player (Samsung, LG commercial grade)</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #06B6D4;">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;">Mid-Size Displays (43" – 50")</h4>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px; font-size: 12px;">
+                            <p style="margin-bottom: 6px;"><strong>Use Case:</strong> Office lobbies, break rooms, meeting areas</p>
+                            <p style="margin-bottom: 6px;"><strong>Brightness:</strong> 2000+ nits</p>
+                            <p style="margin-bottom: 6px;"><strong>Resolution:</strong> 4K or 1080p (FHD)</p>
+                            <p style="margin-bottom: 6px;"><strong>Refresh:</strong> 60 Hz</p>
+                            <p><strong>SoC:</strong> Integrated media player</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #F39C12;">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;">Small Displays (24" – 32")</h4>
+                        <div style="background: var(--light-gray); padding: 12px; border-radius: 6px; margin-bottom: 12px; font-size: 12px;">
+                            <p style="margin-bottom: 6px;"><strong>Use Case:</strong> Restrooms, small offices, reception desks</p>
+                            <p style="margin-bottom: 6px;"><strong>Brightness:</strong> 1500+ nits</p>
+                            <p style="margin-bottom: 6px;"><strong>Resolution:</strong> 1080p FHD</p>
+                            <p style="margin-bottom: 6px;"><strong>Refresh:</strong> 60 Hz</p>
+                            <p><strong>SoC:</strong> Integrated or compact external player</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-power-off"></i> Power & Connectivity Standards
+                </h3>
+
+                <div class="card">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                        <div style="border-left: 3px solid var(--primary-purple); padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Power Delivery</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li>✓ PoE++ (IEEE 802.3bt) preferred (90W max)</li>
+                                <li>✓ Eliminates need for separate power cables</li>
+                                <li>✓ Single CAT8 cable per display</li>
+                                <li>✓ UPS backup at switch for resilience</li>
+                            </ul>
+                        </div>
+                        <div style="border-left: 3px solid #06B6D4; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Network Connectivity</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li>✓ Gigabit Ethernet (1 Gbps minimum)</li>
+                                <li>✓ Direct wired connection preferred</li>
+                                <li>✓ WiFi 6 (802.11ax) as fallback</li>
+                                <li>✓ Static IP or DHCP reservation</li>
+                            </ul>
+                        </div>
+                        <div style="border-left: 3px solid #F39C12; padding-left: 12px;">
+                            <h5 style="color: var(--secondary-purple); margin-bottom: 8px;">Mounting & Installation</h5>
+                            <ul style="list-style: none; padding: 0; font-size: 12px;">
+                                <li>✓ VESA-compliant wall mount (professional-grade)</li>
+                                <li>✓ Height optimized for viewing angle</li>
+                                <li>✓ Anti-vibration dampeners (manufacturing environments)</li>
+                                <li>✓ Professional installation by certified technician</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-refresh"></i> Lifecycle & Refresh Management
+                </h3>
+
+                <div class="card">
+                    <p style="margin-bottom: 16px; color: var(--medium-gray); font-size: 13px;"><strong>Lifecycle Model:</strong> 5-year warranty standard. 7-year operational life. Year 6-7 monitored closely. Proactive replacement before end-of-life.</p>
+                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #7C3AED;">
+                        <h5 style="color: #7C3AED; margin-bottom: 12px;"><i class="fas fa-calendar" style="margin-right: 8px;"></i>Refresh Schedule</h5>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 6px 0;">📍 <strong>Year 1-3:</strong> Full warranty, optimal performance</li>
+                            <li style="padding: 6px 0;">📍 <strong>Year 4-5:</strong> Extended warranty (parts & labor)</li>
+                            <li style="padding: 6px 0;">📍 <strong>Year 6-7:</strong> Out-of-warranty, quarterly health checks, budget for replacement</li>
+                            <li style="padding: 6px 0;">📍 <strong>Year 7+:</strong> Proactive replacement to avoid critical failures</li>
+                        </ul>
+                        <p style="margin-top: 12px; font-size: 11px; color: var(--secondary-purple); font-weight: 600;"><strong>Budget Planning:</strong> ~15% of fleet replaced annually to maintain avg age of 4.5 years</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 9: Cost & Finance -->
+            <section id="section-9" class="content-section">
+                <div class="section-header">
+                    <h2>Cost & Financial Management</h2>
+                    <p class="subtitle">Digital Signage investment and financial returns</p>
+                </div>
+
+                <div class="info-box warning">
+                    <i class="fas fa-dollar-sign" style="color: #FF9800;"></i>
+                    <div>
+                        <strong>Cost Strategy:</strong> Right-sized investment. Cloud platform scales efficiently. Hardware refresh on schedule. ROI via operational savings and business impact.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-calculator"></i> Cost Model & TCO (500 Screens)
+                </h3>
+
+                <div class="card">
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: var(--secondary-purple); margin-bottom: 12px;"><strong>Year 1 Investment Breakdown:</strong></h5>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                            <div style="border-left: 3px solid var(--primary-purple); padding-left: 12px;">
+                                <p style="font-size: 11px; color: var(--medium-gray); margin-bottom: 4px;"><strong>Hardware (Displays & Mounting):</strong></p>
+                                <p style="font-size: 14px; font-weight: 700; color: var(--secondary-purple);">$750K</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">500 displays × $1,500 avg (mix of sizes)</p>
+                            </div>
+                            <div style="border-left: 3px solid #06B6D4; padding-left: 12px;">
+                                <p style="font-size: 11px; color: var(--medium-gray); margin-bottom: 4px;"><strong>Installation & Integration:</strong></p>
+                                <p style="font-size: 14px; font-weight: 700; color: var(--secondary-purple);">$300K</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Professional installation, site prep, cabling</p>
+                            </div>
+                            <div style="border-left: 3px solid #F39C12; padding-left: 12px;">
+                                <p style="font-size: 11px; color: var(--medium-gray); margin-bottom: 4px;"><strong>Comeen Play Platform:</strong></p>
+                                <p style="font-size: 14px; font-weight: 700; color: var(--secondary-purple);">$120K</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Year 1 licensing + setup (500 displays)</p>
+                            </div>
+                            <div style="border-left: 3px solid #27AE60; padding-left: 12px;">
+                                <p style="font-size: 11px; color: var(--medium-gray); margin-bottom: 4px;"><strong>Network Infrastructure:</strong></p>
+                                <p style="font-size: 14px; font-weight: 700; color: var(--secondary-purple);">$150K</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Network switches, cabling, PoE++ infrastructure</p>
+                            </div>
+                            <div style="border-left: 3px solid #9B59B6; padding-left: 12px;">
+                                <p style="font-size: 11px; color: var(--medium-gray); margin-bottom: 4px;"><strong>Staff & Training:</strong></p>
+                                <p style="font-size: 14px; font-weight: 700; color: var(--secondary-purple);">$100K</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Team setup, training, content creation</p>
+                            </div>
+                            <div style="border-left: 3px solid #E74C3C; padding-left: 12px;">
+                                <p style="font-size: 11px; color: var(--medium-gray); margin-bottom: 4px;"><strong>Contingency (10%):</strong></p>
+                                <p style="font-size: 14px; font-weight: 700; color: var(--secondary-purple);">$142K</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Project buffer & overruns</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary-purple);">
+                        <h5 style="color: var(--secondary-purple); margin-bottom: 12px;"><strong>Total Year 1 Capital Investment:</strong></h5>
+                        <p style="font-size: 24px; font-weight: 700; color: var(--secondary-purple); margin-bottom: 8px;">$1.56M</p>
+                        <p style="font-size: 12px; color: var(--medium-gray);"><strong>Ongoing Annual Costs (Year 2+):</strong> ~$300K (licensing, maintenance, refreshes)</p>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-chart-bar"></i> ROI & Business Value
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card" style="border-top: 5px solid var(--primary-purple);">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;">Tangible Cost Savings</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">💰 <strong>Reduced printing costs:</strong> $40K/year (no more paper posters)</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">💰 <strong>Communications efficiency:</strong> $50K/year (faster message distribution)</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">💰 <strong>Compliance automation:</strong> $30K/year (fewer manual audits)</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">💰 <strong>Crisis response savings:</strong> $75K+/year (faster incident communication = fewer incidents)</li>
+                            <li style="padding: 8px 0;">💰 <strong>Energy efficiency:</strong> $15K/year (modern display efficiency)</li>
+                        </ul>
+                        <div style="margin-top: 12px; background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%); padding: 12px; border-radius: 6px; border-left: 3px solid #27AE60;">
+                            <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple);">Annual Tangible Savings: ~$210K</p>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 5px solid #06B6D4;">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;">Intangible Benefits</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ <strong>Safety:</strong> Real-time alerts reduce incidents</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ <strong>Engagement:</strong> 15-20% better employee communication retention</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ <strong>Crisis Response:</strong> Faster incident communication = better outcomes</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ <strong>Compliance:</strong> 100% audit pass vs 85% currently</li>
+                            <li style="padding: 8px 0;">✓ <strong>Culture:</strong> Modern workplace communication platform</li>
+                        </ul>
+                        <div style="margin-top: 12px; background: linear-gradient(135deg, #f3e5f5 0%, #fef5ff 100%); padding: 12px; border-radius: 6px; border-left: 3px solid #9B59B6;">
+                            <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple);">Estimated Value: $300K-500K/year</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-chart-pie"></i> Financial Summary
+                </h3>
+
+                <div class="card">
+                    <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3f6ff 100%); padding: 20px; border-radius: 8px; border-left: 5px solid #7C3AED; margin-bottom: 16px;">
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Year 1:</strong> $1.56M investment + $300K ops = $1.86M expense</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Year 2-3:</strong> $300K/year ops, $210K/year tangible savings = Net $90K/year cost</p>
+                        <p style="font-size: 12px; color: var(--medium-gray); margin-bottom: 6px;"><strong>Breakeven:</strong> 6-7 years (Year 2 onwards: net $90K/year cost - intangible benefits justify)</p>
+                        <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-top: 8px;"><strong>ROI:</strong> Breakeven in 6-7 years. 24-month payback on intangible benefits alone (safety, compliance, crisis response).</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 10: Adoption & Change Management -->
+            <section id="section-10" class="content-section">
+                <div class="section-header">
+                    <h2>Adoption & Change Management</h2>
+                    <p class="subtitle">How to scale digital signage from pilot to 500 screens</p>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-people-arrows" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Adoption Strategy:</strong> Start small, learn, scale. Content owner enablement first. Teams trained before deployment. Change champions embedded. Continuous feedback.
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-rocket"></i> Phased Rollout Approach
+                </h3>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #7C3AED;">1</div>
+                        <div class="timeline-content">
+                            <h4>Phase 1: Pilot & Governance (0–90 Days)</h4>
+                            <ul>
+                                <li>HQ lobby pilot: 10 screens (proof of concept)</li>
+                                <li>Comeen Play platform setup & testing</li>
+                                <li>Microsoft 365 integration validation</li>
+                                <li>Governance workflows & approvals defined</li>
+                                <li>Content standards established</li>
+                                <li>Support model tested</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #F39C12;">2</div>
+                        <div class="timeline-content">
+                            <h4>Phase 2: Early Adoption (Months 3–6)</h4>
+                            <ul>
+                                <li>50 screens deployed across 5 corporate offices</li>
+                                <li>Communications team trained on CMS</li>
+                                <li>Content creation accelerated</li>
+                                <li>Employee feedback collected & incorporated</li>
+                                <li>First success stories documented</li>
+                                <li>Regional pilots planned</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #06B6D4;">3</div>
+                        <div class="timeline-content">
+                            <h4>Phase 3: Regional Scale (Months 6–12)</h4>
+                            <ul>
+                                <li>200+ screens across offices, plants, lobbies</li>
+                                <li>Regional content teams trained</li>
+                                <li>Manufacturing plants prioritized (frontline reach)</li>
+                                <li>Local content governance enabled</li>
+                                <li>Leadership testimonials collected</li>
+                                <li>Cost & engagement metrics reported</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #27AE60;">4</div>
+                        <div class="timeline-content">
+                            <h4>Phase 4: Full Scale (Months 12–18)</h4>
+                            <ul>
+                                <li>500+ screens deployed globally</li>
+                                <li>All 45+ countries covered</li>
+                                <li>Content standardization across regions</li>
+                                <li>Advanced features enabled (AI analytics, live broadcasts)</li>
+                                <li>Emergency protocol tested & validated</li>
+                                <li>Operational excellence achieved</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: #9B59B6;">5</div>
+                        <div class="timeline-content">
+                            <h4>Phase 5: Continuous Optimization (Months 18–24)</h4>
+                            <ul>
+                                <li>Content engagement optimization</li>
+                                <li>Screen hardware refresh cycles initiated</li>
+                                <li>AI-driven content recommendations</li>
+                                <li>Advanced analytics & reporting</li>
+                                <li>Emerging feature adoption (holographic displays, AR overlays)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-graduation-cap"></i> Training & Enablement
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-book" style="color: var(--accent-cyan); margin-right: 8px;"></i>Role-Based Training Modules</h4>
+                        <div style="margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-purple); font-size: 13px; margin-bottom: 6px;">Communications Team (40 hours)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">CMS mastery, content creation, scheduling, analytics, compliance</p>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <h5 style="color: var(--secondary-purple); font-size: 13px; margin-bottom: 6px;">Facilities Team (20 hours)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Hardware maintenance, troubleshooting, network basics</p>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--secondary-purple); font-size: 13px; margin-bottom: 6px;">IT Operations (30 hours)</h5>
+                            <p style="font-size: 12px; color: var(--medium-gray);">Platform administration, security, monitoring, incident response</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-users-class" style="color: var(--accent-cyan); margin-right: 8px;"></i>Training Delivery Methods</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 12px;">
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Live instructor-led workshops (HQ)</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Online self-paced modules (Microsoft Learn)</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Certification program (advanced users)</li>
+                            <li style="padding: 8px 0; border-bottom: 1px solid var(--border-gray);">✓ Change champion network (peer support)</li>
+                            <li style="padding: 8px 0;">✓ Monthly lunch & learn sessions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-bullhorn"></i> Communication & Engagement Plan
+                </h3>
+
+                <div class="card">
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px;">
+                        <h5 style="color: var(--secondary-purple); margin-bottom: 12px;"><strong>Monthly Communication Cadence</strong></h5>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="border-left: 3px solid var(--primary-purple); padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Week 1: Leadership Message</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">CEO/CIO message on digital signage value</p>
+                            </div>
+                            <div style="border-left: 3px solid #06B6D4; padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Week 2: Success Story</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Featured site or use case (email + signage)</p>
+                            </div>
+                            <div style="border-left: 3px solid #F39C12; padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Week 3: Metrics Update</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">Screens deployed, reach, engagement stats</p>
+                            </div>
+                            <div style="border-left: 3px solid #27AE60; padding-left: 12px;">
+                                <p style="font-size: 12px; font-weight: 600; color: var(--secondary-purple); margin-bottom: 4px;">Week 4: Feature Spotlight</p>
+                                <p style="font-size: 11px; color: var(--medium-gray);">New capability, best practice, feedback loop</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 11: Metrics & KPIs -->
+            <section id="section-11" class="content-section">
+                <div class="section-header">
+                    <h2>Metrics & KPIs</h2>
+                    <p class="subtitle">How we measure digital signage success</p>
+                </div>
+
+                <div class="info-box success">
+                    <i class="fas fa-chart-line" style="color: #4CAF50;"></i>
+                    <div>
+                        <strong>Measurement Philosophy:</strong> Availability first (99.9% uptime). Engagement second (80%+ reach). Compliance third (100% audit pass). Business value last (ROI metrics).
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; font-size: 22px;">
+                    <i class="fas fa-tachometer-alt"></i> Core Performance Metrics
+                </h3>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-heartbeat" style="color: var(--accent-cyan); margin-right: 8px;"></i>Availability & Reliability</h4>
+                        <div style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Screen Uptime</strong></span>
+                                <span style="color: var(--success-green);">Target: 99.9%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 99%;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Platform Availability</strong></span>
+                                <span style="color: var(--success-green);">Target: 99.95%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 99.5%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Critical Incidents</strong></span>
+                                <span style="color: var(--success-green);">Target: 0/month</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: var(--secondary-purple); margin-bottom: 16px;"><i class="fas fa-chart-bar" style="color: var(--accent-cyan); margin-right: 8px;"></i>Content & Engagement</h4>
+                        <div style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Content Freshness</strong></span>
+                                <span style="color: var(--success-green);">Target: &gt;80% updated</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Audience Engagement</strong></span>
+                                <span style="color: var(--success-green);">Target: &gt;80%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 82%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                                <span><strong>Broadcast Latency</strong></span>
+                                <span style="color: var(--success-green);">Target: &lt;5 sec</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: var(--secondary-purple); margin-bottom: 24px; margin-top: 32px; font-size: 22px;">
+                    <i class="fas fa-list-check"></i> Detailed KPI Dashboard
+                </h3>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>KPI</th>
+                                    <th>Target</th>
+                                    <th>Current</th>
+                                    <th>Trend</th>
+                                    <th>Owner</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Screen Uptime %</strong></td>
+                                    <td>99.9%</td>
+                                    <td>99.87%</td>
+                                    <td style="color: #F39C12;">⬇ Slight decline</td>
+                                    <td>IT Ops</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Screens Deployed</strong></td>
+                                    <td>500</td>
+                                    <td>325</td>
+                                    <td style="color: #27AE60;">⬆ On track</td>
+                                    <td>Facilities</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Content Engagement %</strong></td>
+                                    <td>80%</td>
+                                    <td>76%</td>
+                                    <td style="color: #F39C12;">⬇ Needs improvement</td>
+                                    <td>Comms</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Compliance Audit Pass</strong></td>
+                                    <td>100%</td>
+                                    <td>100%</td>
+                                    <td style="color: #27AE60;">➡ Stable</td>
+                                    <td>Compliance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Average Broadcast Latency</strong></td>
+                                    <td>&lt;5 sec</td>
+                                    <td>3.2 sec</td>
+                                    <td style="color: #27AE60;">⬆ Better</td>
+                                    <td>Network</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Monthly Cost per Screen</strong></td>
+                                    <td>&lt;$60</td>
+                                    <td>$64</td>
+                                    <td style="color: #F39C12;">⬆ Above target</td>
+                                    <td>Finance</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Support Ticket Resolution (24h)</strong></td>
+                                    <td>95%</td>
+                                    <td>92%</td>
+                                    <td style="color: #F39C12;">⬇ Below target</td>
+                                    <td>IT Support</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>User Satisfaction (NPS)</strong></td>
+                                    <td>75+</td>
+                                    <td>71</td>
+                                    <td style="color: #F39C12;">⬇ Below target</td>
+                                    <td>Comms</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 12: Roadmap -->
+            <section id="section-12" class="content-section">
+                <div class="section-header">
+                    <h2>Roadmap & Evolution</h2>
+                    <p class="subtitle">24-month transformation roadmap</p>
+                </div>
+
+                <div class="info-box info">
+                    <i class="fas fa-road" style="color: #2196F3;"></i>
+                    <div>
+                        <strong>Roadmap Philosophy:</strong> Pilot first (validate), scale regionally (deploy), optimize (enhance), innovate (future). Each phase builds on previous learnings.
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: linear-gradient(135deg, #7C3AED, #06B6D4);">1</div>
+                        <div class="timeline-content">
+                            <h4>Phase 1: Pilot & Governance (0–90 Days)</h4>
+                            <ul>
+                                <li>✓ Comeen Play platform deployed on Azure</li>
+                                <li>✓ 10-screen HQ pilot completed & validated</li>
+                                <li>✓ Governance workflows established (approvals, compliance)</li>
+                                <li>✓ Content standards defined & templates created</li>
+                                <li>✓ Support model tested with small team</li>
+                                <li>✓ Executive sponsorship confirmed</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: linear-gradient(135deg, #f093fb, #f5576c);">2</div>
+                        <div class="timeline-content">
+                            <h4>Phase 2: Early Adoption & Rollout (Months 3–6)</h4>
+                            <ul>
+                                <li>✓ 50 screens deployed across 5 corporate offices</li>
+                                <li>✓ Communications team trained on CMS & best practices</li>
+                                <li>✓ First safety/compliance content published</li>
+                                <li>✓ Live broadcast capability tested (Teams integration)</li>
+                                <li>✓ Content engagement baseline established</li>
+                                <li>✓ Pilot results documented & lessons learned captured</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">3</div>
+                        <div class="timeline-content">
+                            <h4>Phase 3: Regional Scale (Months 6–12)</h4>
+                            <ul>
+                                <li>✓ 200+ screens deployed across offices, plants, lobbies</li>
+                                <li>✓ Manufacturing plants prioritized (frontline reach objective)</li>
+                                <li>✓ Regional content teams trained & empowered</li>
+                                <li>✓ Emergency broadcast protocol validated</li>
+                                <li>✓ Cost optimization initiatives underway</li>
+                                <li>✓ Business case refinement based on real data</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: linear-gradient(135deg, #fa709a, #fee140);">4</div>
+                        <div class="timeline-content">
+                            <h4>Phase 4: Global Scale (Months 12–18)</h4>
+                            <ul>
+                                <li>✓ 500+ screens deployed globally across 45+ countries</li>
+                                <li>✓ All regions (Americas, EMEA, APAC) operational</li>
+                                <li>✓ Content standardization enforced across regions</li>
+                                <li>✓ Advanced broadcast features enabled (multi-language, AI captions)</li>
+                                <li>✓ Fully automated compliance reporting</li>
+                                <li>✓ Global employee reach &gt;90% (15K users)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">5</div>
+                        <div class="timeline-content">
+                            <h4>Phase 5: Optimization & Innovation (Months 18–24)</h4>
+                            <ul>
+                                <li>✓ AI-driven content recommendations implemented</li>
+                                <li>✓ Predictive analytics for content performance</li>
+                                <li>✓ Dynamic KPI dashboard integration (real-time metrics)</li>
+                                <li>✓ Interactive display pilots (touchscreen engagement)</li>
+                                <li>✓ Mobile app integration (app + signage synergy)</li>
+                                <li>✓ Emerging tech pilots (holographic displays, AR overlays)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #7C3AED 0, #5B21B6 100%); color: #fff; margin-top: 32px;">
+                    <h3 style="margin-bottom: 20px; color: #fff;"><i class="fas fa-bullseye"></i> My Commitment</h3>
+                    <p style="font-size: 15px; line-height: 1.8; margin-bottom: 20px;">I will deliver this roadmap on time, on budget, and exceeding expectations. Every screen deployed to its intended location. Every network optimized for reliability. Every employee trained. Every compliance requirement met. Every crisis communication protocol tested. I will transform how Opella communicates—real-time, globally, inclusively, and compliantly. This is my mandate. This is my mission. Digital Signage is no longer optional. It is strategic infrastructure.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 24px;">
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <p style="font-size: 24px; font-weight: 700; margin-bottom: 4px;">500+</p>
+                            <p style="font-size: 13px; opacity: 0.9;">Screens deployed</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <p style="font-size: 24px; font-weight: 700; margin-bottom: 4px;">45+</p>
+                            <p style="font-size: 13px; opacity: 0.9;">Countries covered</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <p style="font-size: 24px; font-weight: 700; margin-bottom: 4px;">15K</p>
+                            <p style="font-size: 13px; opacity: 0.9;">Employees reached</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <p style="font-size: 24px; font-weight: 700; margin-bottom: 4px;">99.9%</p>
+                            <p style="font-size: 13px; opacity: 0.9;">Platform uptime</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scroll navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-scroll');
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    updateActiveTab(this);
+                }
+            });
+        });
+
+        // Update active tab based on scroll position
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-scroll') === current) {
+                    tab.classList.add('active');
+                }
+            });
+        });
+
+        function updateActiveTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            tab.classList.add('active');
+        }
+
+        // Initial setup
+        document.querySelector('.nav-tab').classList.add('active');
+    </script>
+</body>
+</html>
