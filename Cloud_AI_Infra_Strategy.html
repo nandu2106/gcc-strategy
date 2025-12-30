@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cloud & AI Infrastructure Strategy | Interview Reference Pack</title>
+  <style>
+    :root{
+      --bg:#050816;
+      --bg2:#0b1020;
+      --card:#0f172a;
+      --line:rgba(148,163,184,.22);
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --soft:#6b7280;
+      --teal:#06b6d4;
+      --green:#22c55e;
+      --amber:#f59e0b;
+      --red:#ef4444;
+      --shadow:0 18px 45px rgba(0,0,0,.45);
+      --r-lg:18px;
+      --r-xl:22px;
+      --pill:999px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%, #020617 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1280px;margin:0 auto}
+    .header{
+      position:sticky;top:0;z-index:50;
+      padding:22px 18px;
+      background:linear-gradient(to right, rgba(15,23,42,.97), rgba(15,23,42,.92));
+      border-bottom:2px solid var(--teal);
+      box-shadow:0 4px 12px rgba(0,0,0,.45);
+    }
+    .title{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
+    .header h1{margin:0;font-size:22px;letter-spacing:-.02em;font-weight:650}
+    .sub{margin:6px 0 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+    .disclaimer{
+      margin-top:10px;
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+      color:#cbd5e1;font-size:11px;
+      opacity:.95;
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:4px 10px;border-radius:var(--pill);
+      border:1px solid var(--line);
+      background:rgba(6,182,212,.10);
+      color:#a5f3fc;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:600;
+      font-size:10px;
+      white-space:nowrap;
+    }
+    .badge.dot::before{
+      content:"";
+      width:7px;height:7px;border-radius:99px;background:var(--green);
+      box-shadow:0 0 0 6px rgba(34,197,94,.22);
+      display:inline-block;
+    }
+
+    /* Tabs */
+    .tabbar{
+      position:sticky;top:104px;z-index:49;
+      background:radial-gradient(circle at top left, #0f172a, #020617);
+      border-bottom:1px solid rgba(30,64,175,.40);
+      overflow:auto hidden;
+      scrollbar-width:thin;
+    }
+    .tabs{display:flex;gap:0;min-width:max-content}
+    .tabbtn{
+      appearance:none;
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      padding:14px 16px;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:650;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+      border-bottom:2px solid transparent;
+      transition:all 180ms ease;
+    }
+    .tabbtn:hover{color:var(--text);background:rgba(34,197,94,.05)}
+    .tabbtn[aria-selected="true"]{
+      color:var(--teal);
+      border-bottom-color:var(--teal);
+      background:rgba(6,182,212,.10);
+    }
+
+    /* Content */
+    main{padding:26px 18px}
+    .panel{display:none;animation:fade .16s ease}
+    .panel.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+    h2{margin:0 0 10px 0;font-size:22px;letter-spacing:-.02em}
+    h3{
+      margin:22px 0 10px 0;
+      color:var(--teal);
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-weight:750;
+    }
+    p{margin:0 0 10px 0;color:var(--muted);font-size:13px;line-height:1.7}
+    ul{margin:8px 0 12px 18px;color:var(--text)}
+    li{margin:6px 0;font-size:13px;line-height:1.6}
+    li::marker{color:var(--green)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:linear-gradient(to bottom right, rgba(15,23,42,.95), rgba(15,23,42,.90));
+      border:1px solid rgba(31,41,55,.95);
+      border-radius:var(--r-xl);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .highlight{
+      background:rgba(34,197,94,.08);
+      border-left:3px solid var(--green);
+      padding:12px 12px;
+      border-radius:10px;
+      margin:12px 0;
+      color:#d1fae5;
+      font-size:12px;
+      line-height:1.6;
+    }
+    .highlight strong{color:#a5f3fc}
+    .metrics{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+      gap:12px;margin:14px 0 0 0;
+    }
+    .metric{
+      border:1px solid rgba(6,182,212,.28);
+      background:rgba(6,182,212,.06);
+      border-radius:14px;
+      padding:12px;
+    }
+    .metric .v{font-size:20px;font-weight:800;color:var(--teal);margin-bottom:2px}
+    .metric .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;line-height:1.4}
+
+    /* Tables */
+    table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px}
+    .tblwrap{overflow:auto;border-radius:14px;border:1px solid rgba(31,41,55,.95);box-shadow:var(--shadow);background:rgba(15,23,42,.92);margin:10px 0}
+    th,td{
+      padding:10px 12px;
+      border-bottom:1px solid rgba(31,41,55,.85);
+      border-right:1px solid rgba(31,41,55,.85);
+      text-align:left;
+      font-size:12px;
+      vertical-align:top;
+      min-width:160px;
+    }
+    th{
+      background:linear-gradient(to right, rgba(30,64,175,.75), rgba(15,118,110,.75));
+      color:#dbeafe;
+      text-transform:uppercase;
+      letter-spacing:.10em;
+      font-weight:800;
+      font-size:11px;
+    }
+    tr:last-child td{border-bottom:0}
+    td:last-child,th:last-child{border-right:0}
+    tr:nth-child(even) td{background:rgba(15,23,42,.86)}
+    .pilltag{
+      display:inline-flex;align-items:center;
+      padding:4px 10px;border-radius:var(--pill);
+      border:1px solid rgba(148,163,184,.26);
+      background:rgba(2,6,23,.35);
+      font-size:10px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#cbd5e1;
+      white-space:nowrap;
+      font-weight:700;
+    }
+    .tshirt.low{color:#86efac;border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.12)}
+    .tshirt.med{color:#a5f3fc;border-color:rgba(6,182,212,.40);background:rgba(6,182,212,.10)}
+    .tshirt.high{color:#fcd34d;border-color:rgba(245,158,11,.42);background:rgba(245,158,11,.12)}
+
+    /* Collapsible */
+    details{
+      margin-top:10px;
+      border:1px solid rgba(148,163,184,.22);
+      border-radius:14px;
+      background:rgba(15,23,42,.60);
+      padding:10px 12px;
+    }
+    summary{
+      cursor:pointer;
+      font-weight:800;
+      letter-spacing:.02em;
+      color:#e2e8f0;
+      list-style:none;
+    }
+    summary::-webkit-details-marker{display:none}
+    summary::after{
+      content:"▾";
+      float:right;
+      color:var(--muted);
+      transition:transform .15s ease;
+    }
+    details[open] summary::after{transform:rotate(180deg)}
+    footer{color:var(--soft);font-size:11px;margin:22px 0 8px 0}
+    a{color:#93c5fd}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="header">
+      <div class="title">
+        <h1>Cloud & AI Infrastructure Strategy - CIO Ref</h1>
+        <span class="badge dot">Nanda Karri</span>
+      </div>
+      <p class="sub">Enterprise guardrails, capability lanes, and operating model for cloud and AI as growth platforms | FY2025–2028</p>
+<p class="sub">Purpose: Shared as a personal reference framework to illustrate how I think about cloud & AI infrastructure strategy at CIO scale </p>
+      <div class="disclaimer">
+        <span class="badge">Directional architecture</span>
+        <span class="badge">Illustrative targets</span>
+        <span class="badge">Assumptions explicitly labeled</span>
+      </div>
+      <p class="sub" style="margin-top:8px;">
+       
+      </p>
+    </header>
+
+    <nav class="tabbar" aria-label="Strategy tabs">
+      <div class="tabs" role="tablist">
+        <button class="tabbtn" role="tab" aria-selected="true" aria-controls="p0" id="t0">Executive Summary</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p1" id="t1">Business Outcomes</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p2" id="t2">AI Workload Classes</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p3" id="t3">Infrastructure Lanes</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p4" id="t4">Reference Architecture</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p5" id="t5">Vendor & Multi-Cloud</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p6" id="t6">Security & Trust</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p7" id="t7">FinOps</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p8" id="t8">Operating Model</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p9" id="t9">Ops & Observability</button>
+        <button class="tabbtn" role="tab" aria-selected="false" aria-controls="p10" id="t10">Resilience & DR</button>
+      </div>
+    </nav>
+
+    <main>
+      <!-- Panel 0 -->
+      <section class="panel active" role="tabpanel" id="p0" aria-labelledby="t0" tabindex="0">
+        <div class="card">
+          <h2>Vision & 3-Year Outcomes </h2>
+          <p>
+            Position cloud and AI as a <strong>growth + resilience platform</strong> for an India-scale FMCG business.
+            Assumption: strategy aligns to a growth ambition (e.g., CAGR targets may exist internally) — used here only to shape operating model, not as a sourced claim.
+          </p>
+
+          <div class="metrics">
+            <div class="metric"><div class="v">60%+</div><div class="l">Workloads cloud-native & AI-ready (target by FY28)</div></div>
+            <div class="metric"><div class="v">20–25%</div><div class="l">Unit cost efficiency improvement (hypothesis)</div></div>
+            <div class="metric"><div class="v">99.95%+</div><div class="l">Availability for mission-critical lanes (target)</div></div>
+            <div class="metric"><div class="v">10–15%</div><div class="l">Forecast accuracy lift (hypothesis; validated via pilots)</div></div>
+          </div>
+
+          <h3>Top Strategic Bets (Investment Sizing: Low / Medium / High)</h3>
+          <div class="tblwrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Bet</th>
+                  <th>Rationale</th>
+                  <th>Expected outcome (hypothesis)</th>
+                  <th>Investment</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Demand sensing & AI-led planning</strong></td>
+                  <td>Reduce planning volatility; improve trade responsiveness</td>
+                  <td>Better forecast confidence + working-capital discipline (measured quarterly)</td>
+                  <td><span class="pilltag tshirt med">Medium</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Omnichannel commerce platform</strong></td>
+                  <td>Unify GT/MT/e-commerce/D2C experience</td>
+                  <td>Higher conversion + improved customer experience (tracked via CX/commerce KPIs)</td>
+                  <td><span class="pilltag tshirt high">High</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Factory 4.0 & predictive maintenance</strong></td>
+                  <td>Reduce unplanned downtime; stabilize quality & energy</td>
+                  <td>Downtime reduction + energy optimization (plant-by-plant rollout)</td>
+                  <td><span class="pilltag tshirt med">Medium</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Consumer insights & personalization</strong></td>
+                  <td>Improve segmentation, content relevance, marketing ROI</td>
+                  <td>Lift campaign effectiveness (A/B measured)</td>
+                  <td><span class="pilltag tshirt med">Medium</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Enterprise data & AI platform</strong></td>
+                  <td>Foundation for all AI use cases; governed by design</td>
+                  <td>Faster time-to-insight and safer AI rollout</td>
+                  <td><span class="pilltag tshirt high">High</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Risks & mitigations</h3>
+          <div class="grid">
+            <div class="card">
+              <h3 style="margin-top:0">AI bias / drift (forecasting)</h3>
+              <p><strong>Impact:</strong> planning errors, margin risk</p>
+              <p><strong>Mitigation:</strong> bias audits, drift monitoring, human override, diverse training data.</p>
+            </div>
+            <div class="card">
+              <h3 style="margin-top:0">Privacy & regulatory drift</h3>
+              <p><strong>Impact:</strong> compliance exposure, reputational risk</p>
+              <p><strong>Mitigation:</strong> privacy-by-design, DLP, DPIAs, legal review loops.</p>
+            </div>
+            <div class="card">
+              <h3 style="margin-top:0">Runaway GPU / token spend</h3>
+              <p><strong>Impact:</strong> cost volatility</p>
+              <p><strong>Mitigation:</strong> quotas, hard caps, auto-suspend, FinOps anomaly alerts.</p>
+            </div>
+            <div class="card">
+              <h3 style="margin-top:0">Vendor lock‑in</h3>
+              <p><strong>Impact:</strong> reduced flexibility & leverage</p>
+              <p><strong>Mitigation:</strong> abstraction layer, portable formats, periodic “exit drills”.</p>
+            </div>
+          </div>
+
+          <h3>Governance themes</h3>
+          <div class="tblwrap">
+            <table>
+              <thead>
+                <tr><th>Theme</th><th>Owner</th><th>Horizon</th><th>Review cadence</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Cloud foundation & FinOps</td><td>Group CIO</td><td>FY26–28</td><td>Quarterly</td></tr>
+                <tr><td>Data & AI platform</td><td>Data / AI leadership</td><td>FY26–28</td><td>Quarterly</td></tr>
+                <tr><td>Use cases (supply chain, sales, marketing, ops)</td><td>Business + CIO joint</td><td>Rolling 12 months</td><td>Monthly steering</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 1 -->
+      <section class="panel" role="tabpanel" id="p1" aria-labelledby="t1" tabindex="0">
+        <div class="card">
+          <h2>Use Case Portfolio (Quick reference)</h2>
+          <p>
+            
+
+          <h3>Top 10 initiatives (main table)</h3>
+          <div class="tblwrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Use Case</th><th>Domain</th><th>AI Class</th><th>Value hypothesis</th><th>Owner</th><th>Timeline</th><th>Stage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Demand forecasting v2.0</strong></td><td>Supply chain</td><td>Analytical</td><td>Improve forecast confidence; reduce stock-outs/overstock</td><td>VP Supply Chain</td><td>FY26</td><td><span class="pilltag">In‑flight</span></td></tr>
+                <tr><td><strong>Outlet execution insights</strong></td><td>Sales & distribution</td><td>Real‑time/Edge</td><td>Field productivity improvement; faster issue detection</td><td>Head GT Sales</td><td>FY25–26</td><td><span class="pilltag">In‑flight</span></td></tr>
+                <tr><td><strong>Omnichannel commerce</strong></td><td>Commerce</td><td>GenAI + Analytical</td><td>Better conversion + unified customer experience</td><td>Head Commerce</td><td>FY25–26</td><td><span class="pilltag">In‑flight</span></td></tr>
+                <tr><td><strong>Factory predictive maintenance</strong></td><td>Manufacturing</td><td>Real‑time/Edge</td><td>Lower unplanned downtime; stabilize throughput</td><td>VP Manufacturing</td><td>FY26</td><td><span class="pilltag">Planning</span></td></tr>
+                <tr><td><strong>Quality inspection automation</strong></td><td>Factories</td><td>Real‑time/Edge</td><td>Reduce defect escape; speed QC cycle</td><td>VP Quality</td><td>FY26</td><td><span class="pilltag">Planning</span></td></tr>
+                <tr><td><strong>Marketing content copilot</strong></td><td>Marketing</td><td>Interactive GenAI</td><td>Reduce content cycle time; improve consistency</td><td>VP Marketing</td><td>FY26</td><td><span class="pilltag">In‑flight</span></td></tr>
+                <tr><td><strong>Consumer segmentation</strong></td><td>Marketing</td><td>Analytical</td><td>Lift campaign ROI via better targeting</td><td>CMO org</td><td>FY26</td><td><span class="pilltag">Planning</span></td></tr>
+                <tr><td><strong>Enterprise data & AI platform</strong></td><td>Data/Tech</td><td>Platform</td><td>Faster time‑to‑insight; safer AI adoption</td><td>Group CIO / Data lead</td><td>FY25–26</td><td><span class="pilltag">In‑flight</span></td></tr>
+                <tr><td><strong>AIOps & incident automation</strong></td><td>IT Ops</td><td>IT/Ops AI</td><td>Reduce MTTR; reduce alert noise</td><td>Head Infrastructure</td><td>FY26</td><td><span class="pilltag">Planning</span></td></tr>
+                <tr><td><strong>Cloud security & compliance automation</strong></td><td>Governance</td><td>IT/Ops AI</td><td>Reduce audit effort; maintain control drift &lt; threshold</td><td>CISO + CIO</td><td>FY26</td><td><span class="pilltag">In‑flight</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <details>
+            <summary>Show next 5 initiatives (extended list)</summary>
+            <div style="height:10px"></div>
+            <div class="tblwrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Use Case</th><th>Domain</th><th>AI Class</th><th>Value hypothesis</th><th>Owner</th><th>Timeline</th><th>Stage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><strong>Supply network optimization</strong></td><td>Logistics</td><td>Analytical</td><td>Reduce logistics cost; improve service levels</td><td>VP Logistics</td><td>FY26</td><td><span class="pilltag">Planning</span></td></tr>
+                  <tr><td><strong>Procurement optimization</strong></td><td>Procurement</td><td>Analytical</td><td>Better vendor leverage; reduce purchase variance</td><td>Head Procurement</td><td>FY27</td><td><span class="pilltag">Planning</span></td></tr>
+                  <tr><td><strong>Finance copilot (variance)</strong></td><td>Finance</td><td>Enterprise Copilot</td><td>Shorten variance analysis cycle</td><td>CFO org</td><td>FY26</td><td><span class="pilltag">Planning</span></td></tr>
+                  <tr><td><strong>HR copilot (L&D)</strong></td><td>HR</td><td>Enterprise Copilot</td><td>Improve knowledge access; reduce cycle time</td><td>CHRO org</td><td>FY26</td><td><span class="pilltag">Planning</span></td></tr>
+                  <tr><td><strong>Energy optimization</strong></td><td>Sustainability</td><td>Real‑time/Edge</td><td>Lower energy cost; improve reporting accuracy</td><td>Head Sustainability</td><td>FY27</td><td><span class="pilltag">Planning</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <h3>Portfolio governance</h3>
+          <ul>
+            <li><strong>Go/No‑Go gates:</strong> Concept (≤6 weeks) → Build (≤3 months) → Scale (≤6 months) → Run (ongoing).</li>
+            <li><strong>Value tracking:</strong> Each use case has a business owner and measurable KPIs tracked quarterly.</li>
+            <li><strong>Kill-switch:</strong> If value is not material after 2 review cycles, optimize or sunset.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Panel 2 -->
+      <section class="panel" role="tabpanel" id="p2" aria-labelledby="t2" tabindex="0">
+        <div class="card">
+          <h2>AI Workload Classification Model</h2>
+          <p>
+            Standardize AI workloads into classes so infrastructure, security, and FinOps controls can be applied consistently — independent of application teams.
+          </p>
+
+          <div class="tblwrap">
+            <table>
+              <thead>
+                <tr><th>Class</th><th>Definition</th><th>Latency</th><th>Compute</th><th>Data profile</th><th>Risk profile</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Interactive GenAI</strong></td><td>Real-time generation for copilots & content</td><td>Sub‑2s desired (≤5s acceptable)</td><td>GPU / optimized inference</td><td>Moderate (context windows)</td><td>Med‑High (hallucination/brand)</td></tr>
+                <tr><td><strong>Analytical / Forecasting</strong></td><td>Batch insights, planning, optimization</td><td>Minutes‑hours (batch)</td><td>CPU/GPU bursts</td><td>Very high (multi-domain)</td><td>Medium (drift/financial impact)</td></tr>
+                <tr><td><strong>Real‑time / Edge</strong></td><td>Local decisions in plants/OT loops</td><td>&lt;500ms local</td><td>Edge accelerators</td><td>High-frequency, local</td><td>High (safety/production)</td></tr>
+                <tr><td><strong>Enterprise Copilots</strong></td><td>Knowledge-grounded Q&A for HR/Legal/Finance</td><td>Sub‑2s</td><td>Moderate</td><td>High (enterprise KB)</td><td>Med‑High (confidentiality)</td></tr>
+                <tr><td><strong>IT / Ops AI</strong></td><td>Anomaly, incident prediction, capacity</td><td>Seconds‑minutes</td><td>Streaming analytics</td><td>Very high (logs/metrics/events)</td><td>Medium (SLA impact)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Infrastructure requirements (per class)</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Class</th><th>Infra needs</th><th>Execution model</th><th>Data requirements</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Interactive GenAI</strong></td><td>Low-latency endpoints, caching, fallback</td><td>Request/response + streaming</td><td>Clean prompts + governed context</td></tr>
+                <tr><td><strong>Analytical</strong></td><td>Scheduled compute, cost-optimized batch</td><td>Batch/Spark</td><td>Versioned data products + feature store</td></tr>
+                <tr><td><strong>Real‑time / Edge</strong></td><td>On‑prem edge, secure connectivity, OTA model versioning</td><td>Event streams / embedded</td><td>Local sensor + reference data sync</td></tr>
+                <tr><td><strong>Enterprise Copilots</strong></td><td>RAG, vector store, audit logging</td><td>Semantic retrieval + LLM</td><td>Governed KB + change logs</td></tr>
+                <tr><td><strong>IT/Ops AI</strong></td><td>Time-series, streaming ingestion, feedback loops</td><td>Streaming + periodic retrain</td><td>Labeled incidents + continuous telemetry</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 3 -->
+      <section class="panel" role="tabpanel" id="p3" aria-labelledby="t3" tabindex="0">
+        <div class="card">
+          <h2>Infrastructure Capability Lanes</h2>
+          <p>
+            Define pre-engineered lanes with clear SLOs, data boundaries, approval gates, and cost models — so teams can move fast without reinventing foundations.
+          </p>
+
+          <h3>Lane matrix</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Lane</th><th>Workloads</th><th>SLO / RTO / RPO (targets)</th><th>Network posture</th><th>Data locality</th><th>Cost model</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Lane 1: Mission‑Critical</strong></td>
+                  <td>Order capture, payments, sales ordering, core integrations</td>
+                  <td>99.95%+; RTO ≤ 1h; RPO ≤ 15m</td>
+                  <td>Multi‑AZ, segmented networks, strict IAM</td>
+                  <td>Primary region + secondary DR region</td>
+                  <td>Resilience‑optimized (reserved baseline)</td>
+                </tr>
+                <tr>
+                  <td><strong>Lane 2: Analytics & AI</strong></td>
+                  <td>Lakehouse, forecasting, model hosting, BI</td>
+                  <td>99.5%+; batch SLOs by domain</td>
+                  <td>Governed cross‑domain access; GPU pools</td>
+                  <td>Regional primary; replica where needed</td>
+                  <td>Balanced (commitments + elastic bursts)</td>
+                </tr>
+                <tr>
+                  <td><strong>Lane 3: Edge & Plant</strong></td>
+                  <td>OT/IT integration, quality, energy, control loops</td>
+                  <td>Local HA; RTO &lt; 1h; RPO &lt; 5m</td>
+                  <td>OT/IT zoning; secure VPN; least privilege</td>
+                  <td>Plant local + cloud backup</td>
+                  <td>Capex edge + opex mgmt</td>
+                </tr>
+                <tr>
+                  <td><strong>Lane 4: Innovation</strong></td>
+                  <td>PoCs, pilots, hackathons</td>
+                  <td>Best effort</td>
+                  <td>Isolated accounts/projects</td>
+                  <td>Synthetic/obfuscated preferred</td>
+                  <td>Hard caps + auto‑expire</td>
+                </tr>
+                <tr>
+                  <td><strong>Lane 5: Workplace</strong></td>
+                  <td>Collab, enterprise copilots, SaaS</td>
+                  <td>Vendor SLOs + internal SLOs for custom</td>
+                  <td>DLP + identity federation</td>
+                  <td>Provider-defined + encryption</td>
+                  <td>License optimization</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Approval rules</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Lane</th><th>Allowed data class</th><th>Approval</th><th>Cost guardrails</th></tr></thead>
+              <tbody>
+                <tr><td>Lane 1</td><td>Internal + Sensitive (controlled)</td><td>CIO + business sponsor</td><td>Annual budget + CAB for changes</td></tr>
+                <tr><td>Lane 2</td><td>Internal + Sensitive (controlled)</td><td>Data/AI lead + business owner</td><td>Monthly cost SLOs; GPU caps</td></tr>
+                <tr><td>Lane 3</td><td>Internal + Sensitive (OT protected)</td><td>Manufacturing + Security</td><td>Capex/opex caps; vendor portability</td></tr>
+                <tr><td>Lane 4</td><td>Public + Internal (no Sensitive by default)</td><td>Team lead + data governance fast‑track</td><td>Hard caps; auto‑terminate ≤90 days</td></tr>
+                <tr><td>Lane 5</td><td>Internal + Sensitive (DLP)</td><td>IT leadership (standard approvals)</td><td>Quarterly license/usage review</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 4 -->
+      <section class="panel" role="tabpanel" id="p4" aria-labelledby="t4" tabindex="0">
+        <div class="card">
+          <h2>Reference Architecture (Composable layers)</h2>
+          <p>Use consistent patterns for security, observability, and cost — regardless of which cloud runs the workload.</p>
+
+          <h3>Layer model</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Layer</th><th>Components</th><th>Standards</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Consumer & Edge</strong></td><td>Mobile/field apps, plant edge devices</td><td>Offline-first, encrypted sync</td><td>Edge decisions remain local; cloud sync for learning</td></tr>
+                <tr><td><strong>API & Integration</strong></td><td>APIs, events, messaging</td><td>Versioning, rate-limits, circuit breakers</td><td>Keep integration observable and governed</td></tr>
+                <tr><td><strong>Compute</strong></td><td>Kubernetes, serverless, batch</td><td>IaC, auto-scaling, blue/green</td><td>Prefer portable patterns</td></tr>
+                <tr><td><strong>Data platform</strong></td><td>Ingest, lakehouse, catalog</td><td>Open formats, lineage, quality SLAs</td><td>Data products enable AI safely</td></tr>
+                <tr><td><strong>Model platform</strong></td><td>Registry, pipelines, endpoints</td><td>Versioning, evaluation, rollback</td><td>Model governance integrated with SDLC</td></tr>
+                <tr><td><strong>Observability</strong></td><td>Logs, metrics, traces</td><td>Standard schemas, SLO dashboards</td><td>Telemetry is non-negotiable</td></tr>
+                <tr><td><strong>Security</strong></td><td>IAM, secrets, encryption</td><td>Zero-trust, JIT access, audit logs</td><td>Least privilege everywhere</td></tr>
+                <tr><td><strong>Cost governance</strong></td><td>Tags, budgets, showback</td><td>Unit economics</td><td>Cost is a product metric</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="highlight">
+            <strong>“AI‑ready by default” means:</strong>
+            APIs are discoverable and event-driven, data is governed and versioned, SLOs are defined, PII is tagged and protected,
+            and feedback loops exist for model quality and drift.
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 5 -->
+      <section class="panel" role="tabpanel" id="p5" aria-labelledby="t5" tabindex="0">
+        <div class="card">
+          <h2>Vendor & Multi‑Cloud Strategy (Anti lock‑in)</h2>
+          <p>Use deliberate role definition per cloud, standard formats, and portability drills to retain leverage.</p>
+
+          <h3>Decision rules</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Workload</th><th>Primary</th><th>Rule of thumb</th><th>Exit / portability</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Lane 1 – Mission-critical</strong></td><td>Primary cloud + DR cloud/region</td><td>Terraform + containers; avoid deep proprietary coupling where feasible</td><td>Run quarterly exit drill for a representative service</td></tr>
+                <tr><td><strong>Lane 2 – Analytics & AI</strong></td><td>Primary cloud + specialized services where justified</td><td>Open formats (Parquet/Avro), portable compute patterns</td><td>Keep data + model artifacts portable</td></tr>
+                <tr><td><strong>Lane 3 – Edge</strong></td><td>Plant edge + cloud sync</td><td>Industry protocols (OPC UA/MQTT); secure segmentation</td><td>Edge abstraction to support multiple backends</td></tr>
+                <tr><td><strong>Lane 4 – Innovation</strong></td><td>Any</td><td>Time-boxed experiments</td><td>Auto-cleanup on expiry</td></tr>
+                <tr><td><strong>Lane 5 – SaaS</strong></td><td>Best-of-breed</td><td>Contract portability clauses + API export</td><td>Annual renegotiation window</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>AI vendor abstraction</h3>
+          <ul>
+            <li><strong>Model gateway:</strong> One orchestration layer routes to approved models (policy + cost + quality).</li>
+            <li><strong>Portable prompts:</strong> Standard prompt patterns; avoid vendor-specific tooling lock-in.</li>
+            <li><strong>Evaluation cadence:</strong> Quarterly bake-off across cost, latency, quality, safety.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Panel 6 -->
+      <section class="panel" role="tabpanel" id="p6" aria-labelledby="t6" tabindex="0">
+        <div class="card">
+          <h2>Security, Data & Trust Architecture</h2>
+          <p>Security is embedded at every layer: zero trust, data classification, and AI-specific governance (prompt logging, red teaming, output controls).</p>
+
+          <h3>Data classification & AI policy</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Data class</th><th>Examples</th><th>Storage/encryption</th><th>AI usage</th><th>Controls</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Public</strong></td><td>Published brand content</td><td>Encrypt in transit</td><td>Allowed</td><td>Standard controls</td></tr>
+                <tr><td><strong>Internal</strong></td><td>Process docs, internal KPIs</td><td>Encrypt at rest; RBAC</td><td>Allowed in enterprise copilots</td><td>No external fine-tuning; logging</td></tr>
+                <tr><td><strong>Sensitive</strong></td><td>Pricing, strategy, trade terms</td><td>Strong encryption; residency rules</td><td>Restricted; approval required</td><td>JIT access; audit; retention limits</td></tr>
+                <tr><td><strong>Restricted/PII</strong></td><td>Employee/customer PII</td><td>Tokenize/anonymize where possible</td><td>Specific approved cases only</td><td>DPIA, minimization, DLP, strict retention</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>AI governance controls</h3>
+          <div class="grid">
+            <div class="card"><h3 style="margin-top:0">Prompt & response logging</h3><ul><li>Log request/response (policy-controlled).</li><li>Quarterly audit for leakage.</li><li>Prompt-injection detection.</li></ul></div>
+            <div class="card"><h3 style="margin-top:0">Model approval</h3><ul><li>Risk review before production.</li><li>Bias testing for decision-support.</li><li>Rollback plan required.</li></ul></div>
+            <div class="card"><h3 style="margin-top:0">Red teaming</h3><ul><li>Adversarial testing each quarter.</li><li>Jailbreak monitoring.</li><li>Output filters for brand/legal.</li></ul></div>
+            <div class="card"><h3 style="margin-top:0">Privacy handling</h3><ul><li>Tokenize PII.</li><li>Access via least privilege.</li><li>Data residency enforced.</li></ul></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 7 -->
+      <section class="panel" role="tabpanel" id="p7" aria-labelledby="t7" tabindex="0">
+        <div class="card">
+          <h2>FinOps for Cloud & AI</h2>
+          <p>Cloud and AI spend is governed like a portfolio: ownership, unit economics, budgets, and automated guardrails — especially for GPUs and model APIs.</p>
+
+          <h3>Unit economics focus</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Cost dimension</th><th>Primary driver</th><th>Control mechanism</th><th>Outcome target (hypothesis)</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Compute (CPU/GPU)</strong></td><td>Hours + headroom</td><td>Right-size, commitments, schedules</td><td>10–15% annual unit cost improvement</td></tr>
+                <tr><td><strong>Storage & transfer</strong></td><td>TB + egress</td><td>Lifecycle tiering, caching, private links</td><td>20–25% reduction per TB (3 years)</td></tr>
+                <tr><td><strong>LLM inference</strong></td><td>Tokens/calls</td><td>Budgets, throttling, caching, fallback</td><td>Keep variance within governance threshold</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>GPU governance (T‑shirt sizing, no currency)</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>GPU use case</th><th>Allocation model</th><th>Budget posture</th><th>Approval gate</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Production inference</strong></td><td>Reserved baseline + burst</td><td><span class="pilltag tshirt high">High</span></td><td>CIO + Finance review</td></tr>
+                <tr><td><strong>Training & experimentation</strong></td><td>Time-boxed slots</td><td><span class="pilltag tshirt med">Medium</span></td><td>Data/AI lead</td></tr>
+                <tr><td><strong>Sandbox</strong></td><td>Per-user quotas + auto-suspend</td><td><span class="pilltag tshirt low">Low</span></td><td>Self-service within quota</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Guardrails that matter</h3>
+          <ul>
+            <li><strong>Hard caps:</strong> auto-suspend at 80% of budget.</li>
+            <li><strong>Idle cleanup:</strong> stop resources after 7 days idle.</li>
+            <li><strong>Anomaly detection:</strong> alert on unusual spend spikes and auto-throttle lane 4.</li>
+            <li><strong>Showback:</strong> weekly dashboards; chargeback above agreed thresholds.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Panel 8 -->
+      <section class="panel" role="tabpanel" id="p8" aria-labelledby="t8" tabindex="0">
+        <div class="card">
+          <h2>Operating Model & Ownership</h2>
+          <p>Decision rights are explicit: platform teams build reusable foundations, business owns value, and security/finance are embedded as guardrails.</p>
+
+          <h3>RACI (high level)</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Area</th><th>Accountable</th><th>Responsible</th><th>Consulted</th><th>Informed</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Cloud landing zones</strong></td><td>CIO</td><td>Cloud platform</td><td>Security, Finance, App teams</td><td>Business sponsors</td></tr>
+                <tr><td><strong>Data & AI platform</strong></td><td>Data/AI leader</td><td>Data platform + AI eng</td><td>Risk, Legal, Security</td><td>Product teams</td></tr>
+                <tr><td><strong>Use case prioritization</strong></td><td>Business sponsor</td><td>Product owner + IT delivery</td><td>CIO, Finance</td><td>Stakeholders</td></tr>
+                <tr><td><strong>Security & compliance</strong></td><td>CISO</td><td>Security engineering</td><td>CIO, Audit</td><td>All teams</td></tr>
+                <tr><td><strong>FinOps</strong></td><td>CFO</td><td>FinOps + CIO</td><td>Procurement, Business</td><td>Cost centers</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Cadence</h3>
+          <ul>
+            <li><strong>Weekly:</strong> CoE standups (platform, security, FinOps).</li>
+            <li><strong>Bi‑weekly:</strong> architecture review board.</li>
+            <li><strong>Monthly:</strong> cloud & AI steering committee.</li>
+            <li><strong>Quarterly:</strong> exec review on value, risk, and spend.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Panel 9 -->
+      <section class="panel" role="tabpanel" id="p9" aria-labelledby="t9" tabindex="0">
+        <div class="card">
+          <h2>Ops, Observability & AIOps</h2>
+          <p>Shift from ticket-driven operations to automation-first reliability: standardized telemetry, runbook automation, and AIOps for prediction and suppression of noise.</p>
+
+          <h3>Observability stance</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Signal</th><th>Approach</th><th>Retention (example)</th><th>Owner</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Logs</strong></td><td>Central aggregation + standard schema</td><td>30d hot / 90d archive</td><td>Platform</td></tr>
+                <tr><td><strong>Metrics</strong></td><td>Service + infra metrics with SLO dashboards</td><td>12–15 months</td><td>SRE</td></tr>
+                <tr><td><strong>Traces</strong></td><td>Distributed tracing for key flows</td><td>7d hot + sampled</td><td>Platform</td></tr>
+                <tr><td><strong>Model quality</strong></td><td>Accuracy + drift + feedback metrics</td><td>12 months</td><td>Data/AI</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Automation maturity</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Area</th><th>Visibility</th><th>Automation</th><th>Intelligence (AIOps)</th><th>Target</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Provisioning</strong></td><td>Tickets</td><td>Self‑service</td><td>AI‑recommended configs</td><td>Stage 3 for L2–L5</td></tr>
+                <tr><td><strong>Incidents</strong></td><td>Manual triage</td><td>Runbook automation</td><td>Prediction + auto-remediation (low risk)</td><td>Stage 3 for noise suppression</td></tr>
+                <tr><td><strong>Change</strong></td><td>CAB heavy</td><td>Policy approvals</td><td>Progressive delivery + auto rollback</td><td>Stage 2/3 by lane</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 10 -->
+      <section class="panel" role="tabpanel" id="p10" aria-labelledby="t10" tabindex="0">
+        <div class="card">
+          <h2>Resilience, DR & Business Continuity</h2>
+          <p>DR posture is aligned to business criticality. Testing is continuous and measurable against RTO/RPO targets.</p>
+
+          <h3>Criticality tiers</h3>
+          <div class="tblwrap">
+            <table>
+              <thead><tr><th>Tier</th><th>Examples</th><th>RTO target</th><th>RPO target</th><th>Pattern</th><th>Test cadence</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Tier 1</strong></td><td>Revenue-critical transactions</td><td>&lt; 1 hour</td><td>&lt; 15 minutes</td><td>Active-active / hot standby</td><td>Monthly (representative)</td></tr>
+                <tr><td><strong>Tier 2</strong></td><td>Analytics & planning</td><td>&lt; 4 hours</td><td>&lt; 4 hours</td><td>Warm standby</td><td>Quarterly</td></tr>
+                <tr><td><strong>Tier 3</strong></td><td>Non-critical</td><td>&lt; 24 hours</td><td>&lt; 24 hours</td><td>Backups only</td><td>Annual</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>AI-specific failure modes</h3>
+          <div class="grid">
+            <div class="card"><h3 style="margin-top:0">Model endpoint unavailable</h3><ul><li>Fallback to cached responses (time-bounded)</li><li>Failover to secondary endpoint</li></ul></div>
+            <div class="card"><h3 style="margin-top:0">Data pipeline stale</h3><ul><li>Freeze predictions with warning</li><li>Use last-known-good dataset with age label</li></ul></div>
+            <div class="card"><h3 style="margin-top:0">External LLM outage</h3><ul><li>Switch to secondary provider/model</li><li>Queue non-critical requests</li></ul></div>
+            <div class="card"><h3 style="margin-top:0">Edge device failure</h3><ul><li>Dual edge nodes for critical lines</li><li>Manual override procedures</li></ul></div>
+          </div>
+        </div>
+
+        <footer>
+          
+        </footer>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const tabButtons = Array.from(document.querySelectorAll('.tabbtn[role="tab"]'));
+      const panels = Array.from(document.querySelectorAll('.panel[role="tabpanel"]'));
+
+      function activateTab(btn, focusPanel = true) {
+        const targetId = btn.getAttribute('aria-controls');
+        tabButtons.forEach(b => b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+        panels.forEach(p => p.classList.toggle('active', p.id === targetId));
+        if (focusPanel) {
+          const panel = document.getElementById(targetId);
+          if (panel) panel.focus({preventScroll:true});
+        }
+        // keep selected tab visible in horizontal scroll
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => activateTab(btn, true));
+        btn.addEventListener('keydown', (e) => {
+          const idx = tabButtons.indexOf(btn);
+          if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            const next = tabButtons[(idx + 1) % tabButtons.length];
+            next.focus(); activateTab(next, false);
+          } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            const prev = tabButtons[(idx - 1 + tabButtons.length) % tabButtons.length];
+            prev.focus(); activateTab(prev, false);
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            tabButtons[0].focus(); activateTab(tabButtons[0], false);
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            tabButtons[tabButtons.length - 1].focus(); activateTab(tabButtons[tabButtons.length - 1], false);
+          }
+        });
+      });
+
+      // Ensure correct initial state
+      const initial = tabButtons.find(b => b.getAttribute('aria-selected') === 'true') || tabButtons[0];
+      activateTab(initial, false);
+    })();
+  </script>
+</body>
+</html>
