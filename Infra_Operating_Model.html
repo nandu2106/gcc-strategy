@@ -1,0 +1,1976 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Infrastructure Operating Model – Master Tab Architecture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg-main: #050814;
+      --bg-card: #0b1020;
+      --bg-card-soft: #11182b;
+      --bg-chip: #11192d;
+      --bg-tab-active: #111b33;
+      --bg-tab-hover: #10182b;
+      --border-subtle: #1f2940;
+      --accent: #3ea6ff;
+      --accent-soft: rgba(62,166,255,0.25);
+      --accent-strong: #5ed0ff;
+      --accent-warm: #ffc857;
+      --text-main: #f5f7ff;
+      --text-soft: #c0c5e0;
+      --text-muted: #8a92b5;
+      --danger: #ff4f6b;
+      --success: #37e29b;
+      --warning: #ffb347;
+      --shadow-soft: 0 20px 40px rgba(0,0,0,0.5);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.28s ease-out;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top, #151b35 0, #050814 52%, #020309 100%);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      padding: 18px 10px 40px;
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        padding: 26px 40px 60px;
+      }
+    }
+
+    .page-shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Sticky masthead */
+    .masthead {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      padding-bottom: 10px;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(
+        to bottom,
+        rgba(5,8,20,0.95) 0,
+        rgba(5,8,20,0.92) 60%,
+        rgba(5,8,20,0.85) 100%
+      );
+    }
+
+    .masthead-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(88,118,210,0.3);
+      background: radial-gradient(circle at top left, #26335d 0, #050814 40%, #050814 100%);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 16px 14px;
+    }
+
+    @media (min-width: 900px) {
+      .masthead-inner {
+        padding: 18px 22px 16px;
+      }
+    }
+
+    .masthead-topline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      justify-content: space-between;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-width: 680px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(14,185,255,0.12);
+      border: 1px solid rgba(82,192,255,0.55);
+      color: var(--accent-strong);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .eyebrow span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #5effc3 0, #00b894 48%, #007f63 100%);
+      box-shadow: 0 0 0 5px rgba(80,255,195,0.22);
+    }
+
+    h1 {
+      font-size: clamp(20px, 2.3vw, 26px);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 640px;
+    }
+
+    .subtitle strong {
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(122,142,214,0.6);
+      background: rgba(11,16,32,0.8);
+    }
+
+    .meta-chip .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ffc857, #ff7b72);
+    }
+
+    /* KPI strip */
+    .kpi-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .kpi-pill {
+      flex: 1 1 120px;
+      min-width: 120px;
+      max-width: 190px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: radial-gradient(circle at top left, rgba(91,154,255,0.25), #050814);
+      border: 1px solid rgba(120,150,238,0.7);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      cursor: default;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .kpi-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.55);
+      border-color: var(--accent-strong);
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .kpi-value {
+      font-size: 15px;
+    }
+
+    .kpi-trend {
+      font-size: 11px;
+    }
+
+    .kpi-trend.up {
+      color: var(--success);
+    }
+
+    .kpi-trend.down {
+      color: var(--danger);
+    }
+
+    /* Tabs nav */
+    .tabs-shell {
+      position: sticky;
+      top: 112px;
+      z-index: 35;
+      padding-top: 6px;
+      margin-bottom: 8px;
+      background: linear-gradient(
+        to bottom,
+        rgba(5,8,20,0.96) 0,
+        rgba(5,8,20,0.92) 55%,
+        rgba(5,8,20,0.0) 100%
+      );
+    }
+
+    @media (min-width: 900px) {
+      .tabs-shell {
+        top: 118px;
+      }
+    }
+
+    .tabs-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(120,150,238,0.7) transparent;
+    }
+
+    .tabs-scroll::-webkit-scrollbar {
+      height: 4px;
+    }
+    .tabs-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .tabs-scroll::-webkit-scrollbar-thumb {
+      background: rgba(120,150,238,0.6);
+      border-radius: 999px;
+    }
+
+    .tab-chip {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 6px 12px;
+      border: 1px solid rgba(82,106,188,0.7);
+      background: rgba(9,14,32,0.9);
+      color: var(--text-soft);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background var(--transition-fast), color var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .tab-chip span.idx {
+      font-size: 10px;
+      opacity: 0.8;
+      color: var(--accent-strong);
+    }
+
+    .tab-chip:hover {
+      background: var(--bg-tab-hover);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+    }
+
+    .tab-chip.active {
+      background: var(--bg-tab-active);
+      border-color: var(--accent-strong);
+      color: var(--text-main);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.6);
+    }
+
+    /* Content region */
+    .content-shell {
+      margin-top: 4px;
+    }
+
+    .tab-panel {
+      display: none;
+      border-radius: var(--radius-lg);
+      background: rgba(6,9,24,0.96);
+      border: 1px solid rgba(54,72,142,0.9);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 16px 20px;
+      animation: fadeIn 0.24s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @media (min-width: 900px) {
+      .tab-panel {
+        padding: 20px 20px 22px;
+      }
+    }
+
+    .panel-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 10px;
+    }
+
+    .panel-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .panel-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .panel-tagline {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .panel-metric-chip {
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      background: rgba(9,87,179,0.6);
+      border: 1px solid rgba(122,177,255,0.9);
+      align-self: flex-start;
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .panel-metric-chip span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #5effc3 0, #00b894 50%, #007f63 100%);
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .panel-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #10172b 0, #050814 60%);
+      border: 1px solid rgba(46,63,118,0.95);
+      padding: 12px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card.soft {
+      background: linear-gradient(145deg, #0c1223 0, #050814 60%);
+      border-style: dashed;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(80,155,255,0.22), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-strong);
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .chip-inline {
+      border-radius: 999px;
+      border: 1px solid rgba(104,140,255,0.85);
+      background: rgba(6,19,60,0.9);
+      font-size: 11px;
+      padding: 3px 8px;
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+    }
+
+    .mini-dot.green {
+      background: linear-gradient(135deg, #5effc3, #00b894);
+    }
+
+    .mini-dot.amber {
+      background: linear-gradient(135deg, #ffd166, #ff8c42);
+    }
+
+    .mini-dot.red {
+      background: linear-gradient(135deg, #ff4f6b, #c9184a);
+    }
+
+    ul.list, ol.list {
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    ul.list li::marker,
+    ol.list li::marker {
+      color: var(--accent-strong);
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 3px 7px;
+      font-size: 11px;
+      background: var(--bg-chip);
+      border: 1px solid rgba(79,103,177,0.9);
+      color: var(--text-soft);
+    }
+
+    .quote-line {
+      font-size: 12px;
+      color: var(--accent-warm);
+      border-left: 2px solid var(--accent-warm);
+      padding-left: 8px;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 4px;
+      color: var(--text-soft);
+    }
+
+    th, td {
+      padding: 5px 6px;
+      border-bottom: 1px solid rgba(31,42,82,0.9);
+      text-align: left;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(19,26,57,0.9);
+      border: 1px solid rgba(90,118,210,0.9);
+    }
+
+    .pill.good { border-color: var(--success); color: var(--success); }
+    .pill.warn { border-color: var(--warning); color: var(--warning); }
+    .pill.bad { border-color: var(--danger); color: var(--danger); }
+
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .stat {
+      flex: 1 1 80px;
+      border-radius: 12px;
+      border: 1px solid rgba(56,81,164,0.9);
+      background: rgba(7,13,38,0.9);
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      font-size: 11px;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+    }
+
+    .stat-value {
+      font-size: 13px;
+    }
+
+    .note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+<div class="page-shell">
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="masthead-topline">
+        <div class="title-block">
+          <div class="eyebrow">
+            <span class="dot"></span>
+            INFRASTRUCTURE OPERATING MODEL
+            <span>2026</span>
+          </div>
+          <h1>Network • Cloud • Data Centers • Digital Workplace</h1>
+          <p class="subtitle">
+            Strategy-to-execution operating blueprint for global infrastructure teams,
+            turning <strong>platform capabilities</strong> into measurable business outcomes.
+          </p>
+          <div class="meta-row">
+            <span class="meta-chip">
+              <span class="pill-dot"></span>
+              4 Primary Domains · 5 Shared Functions · 11 Core KPIs
+            </span>
+            <span class="meta-chip">
+              <span class="pill-dot"></span>
+              Coverage: 32 countries · ~46,000 employees
+            </span>
+          </div>
+        </div>
+        <div class="kpi-strip">
+          <div class="kpi-pill">
+            <span class="kpi-label">Global Infra Availability (LTM)</span>
+            <span class="kpi-value">99.975%</span>
+            <span class="kpi-trend up">▲ +0.008% YoY</span>
+          </div>
+          <div class="kpi-pill">
+            <span class="kpi-label">Change Success Rate</span>
+            <span class="kpi-value">96.4%</span>
+            <span class="kpi-trend up">▲ +3.1 pts after SRE model</span>
+          </div>
+          <div class="kpi-pill">
+            <span class="kpi-label">Infra OpEx vs Budget</span>
+            <span class="kpi-value">94.2% of plan</span>
+            <span class="kpi-trend up">▲ $18.7M saved YoY</span>
+          </div>
+          <div class="kpi-pill">
+            <span class="kpi-label">eNPS (Infra Teams)</span>
+            <span class="kpi-value">+37</span>
+            <span class="kpi-trend up">▲ +11 points post re-org</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <nav class="tabs-shell">
+    <div class="tabs-scroll" id="tabs">
+      <button class="tab-chip active" data-tab="tab1"><span class="idx">1</span> Exec Philosophy</button>
+      <button class="tab-chip" data-tab="tab2"><span class="idx">2</span> Domains & Purpose</button>
+      <button class="tab-chip" data-tab="tab3"><span class="idx">3</span> Network Engineering</button>
+      <button class="tab-chip" data-tab="tab4"><span class="idx">4</span> Cloud & Platform</button>
+      <button class="tab-chip" data-tab="tab5"><span class="idx">5</span> DC & Hybrid</button>
+      <button class="tab-chip" data-tab="tab6"><span class="idx">6</span> Digital Workplace</button>
+      <button class="tab-chip" data-tab="tab7"><span class="idx">7</span> Shared Enablement</button>
+      <button class="tab-chip" data-tab="tab8"><span class="idx">8</span> Reporting Model</button>
+      <button class="tab-chip" data-tab="tab9"><span class="idx">9</span> Dependency Map</button>
+      <button class="tab-chip" data-tab="tab10"><span class="idx">10</span> Strategic Metrics</button>
+      <button class="tab-chip" data-tab="tab11"><span class="idx">11</span> Culture Model</button>
+      <button class="tab-chip" data-tab="tab12"><span class="idx">12</span> Operating Rhythm</button>
+      <button class="tab-chip" data-tab="tab13"><span class="idx">13</span> Outcome Traceability</button>
+      <button class="tab-chip" data-tab="tab14"><span class="idx">14</span> Leadership Behaviours</button>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="content-shell">
+
+    <!-- TAB 1 -->
+    <section class="tab-panel active" id="tab1">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 1</div>
+          <div class="panel-title">Executive Operating Philosophy</div>
+          <div class="panel-tagline">Infra as a portfolio of business outcomes, not a set of technology silos.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          Outcomes mapped: 92% of infra spend tied to 7 strategic objectives
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Purpose</div>
+                <div class="card-subtitle">How the operating model is wired for outcomes.</div>
+              </div>
+              <span class="chip-inline">
+                <span class="mini-dot.green"></span>
+                Portfolio-first mindset
+              </span>
+            </div>
+            <ul class="list">
+              <li>Infrastructure is treated as a business-enabling platform, not a ticket factory; 81% of work is now product- or capability-aligned, 19% is tactical support.</li>
+              <li>Teams are intentionally designed around four levers: stability (SLOs), speed (lead time), cost control (unit economics), and security (policy adherence).</li>
+              <li>Clear separation of <strong>strategy</strong> (what and why), engineering (how), and operations (run and learn) is enforced through charters and RACI.</li>
+            </ul>
+            <div class="quote-line">
+              “Infrastructure teams don’t exist to run technology — they exist to run outcomes.”
+            </div>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Operating Guardrails</div>
+                <div class="card-subtitle">How decisions stay consistent across 4 domains.</div>
+              </div>
+            </div>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Strategic vs BAU Work Mix</div>
+                <div class="stat-value">42% / 58%</div>
+                <div class="note">Target: 50% strategic by FY27.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Outcome-based OKRs</div>
+                <div class="stat-value">27 / 30 domains</div>
+                <div class="note">90% of teams have measurable OKRs.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Services with Defined SLOs</div>
+                <div class="stat-value">74%</div>
+                <div class="note">Goal: >90% by next planning cycle.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Every platform has a 2-page product charter, target SLOs, and cost guardrails.</li>
+              <li>Escalations are routed by business impact tier, not org chart; 94% of P1/P2 incidents have a named business owner in the bridge.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2 -->
+    <section class="tab-panel" id="tab2">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 2</div>
+          <div class="panel-title">Infrastructure Domains & Why They Exist</div>
+          <div class="panel-tagline">Clarity on boundaries, missions, and shared accountability across domains.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          4 domains · 5 shared functions · 0 unmanaged overlaps
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Primary Domains</div>
+                <div class="card-subtitle">Why each team exists.</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+              <tr>
+                <th>Domain</th>
+                <th>Mission</th>
+                <th>Team Size</th>
+                <th>Primary KPI</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Network Engineering</td>
+                <td>Reliable, secure connectivity for every location, user, and workload.</td>
+                <td>32 FTE</td>
+                <td>99.99% core network availability</td>
+              </tr>
+              <tr>
+                <td>Cloud & Platform</td>
+                <td>Accelerate delivery via secure, self-service platforms.</td>
+                <td>41 FTE</td>
+                <td>Provisioning lead time & platform adoption</td>
+              </tr>
+              <tr>
+                <td>DC / Hybrid Infrastructure</td>
+                <td>Predictable compute, storage, and hybrid integration.</td>
+                <td>27 FTE</td>
+                <td>Infra availability & cost per workload</td>
+              </tr>
+              <tr>
+                <td>Digital Workplace</td>
+                <td>Frictionless, secure end-user experience across devices and tools.</td>
+                <td>36 FTE</td>
+                <td>DWP NPS & incident volume</td>
+              </tr>
+              </tbody>
+            </table>
+            <div class="quote-line">
+              Each domain has clear boundaries, but shared accountability — no domain succeeds independently.
+            </div>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Shared Enablement</div>
+                <div class="card-subtitle">The connective tissue.</div>
+              </div>
+            </div>
+            <div class="badge-row">
+              <span class="badge">Architecture & Standards</span>
+              <span class="badge">Security Engineering</span>
+              <span class="badge">Observability / AIOps</span>
+              <span class="badge">FinOps</span>
+              <span class="badge">Vendor & Lifecycle</span>
+            </div>
+            <ul class="list">
+              <li>Architecture reviews cover ~92% of material infra changes before implementation.</li>
+              <li>FinOps tracks $410M in infra and cloud spend with unit cost baselines for 14 major services.</li>
+              <li>AIOps monitors ~185k metrics and 1.2B logs/day, reducing false-positive alerts by 38%.</li>
+            </ul>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Shared Functions Headcount</div>
+                <div class="stat-value">18 FTE</div>
+                <div class="note">Spanning 3 regions.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Global Standards Coverage</div>
+                <div class="stat-value">88%</div>
+                <div class="note">By infra spend.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3 -->
+    <section class="tab-panel" id="tab3">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 3</div>
+          <div class="panel-title">Network Engineering Team</div>
+          <div class="panel-tagline">The circulatory system: connectivity, segmentation, performance, resilience.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          Global network: 120+ sites · 3 clouds · ~46k endpoints
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Scope & Responsibilities</div>
+                <div class="card-subtitle">WAN, LAN, Wi-Fi, Internet, and Zero Trust foundations.</div>
+              </div>
+              <span class="chip-inline">
+                <span class="mini-dot.green"></span>
+                Automation-first
+              </span>
+            </div>
+            <ul class="list">
+              <li>Owns WAN / SD-WAN across 32 countries, with ~270 managed circuits and 3 global backbone providers.</li>
+              <li>Manages LAN & Wi-Fi for ~210 offices, plants, and R&D sites, supporting ~46,000 active devices daily.</li>
+              <li>Controls Internet and edge connectivity, peering, and DDoS protection for 9 major regions.</li>
+              <li>Owns cloud networking patterns (VNet/VPC design, routing, segmentation) across 3 hyperscalers.</li>
+            </ul>
+            <table>
+              <thead>
+              <tr>
+                <th>Area</th>
+                <th>Key Metric</th>
+                <th>Current</th>
+                <th>Target</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Core Availability</td>
+                <td>Uptime</td>
+                <td>99.992%</td>
+                <td>≥ 99.995%</td>
+              </tr>
+              <tr>
+                <td>Branch Latency</td>
+                <td>Median</td>
+                <td>38 ms</td>
+                <td>&lt; 35 ms</td>
+              </tr>
+              <tr>
+                <td>Change Success Rate</td>
+                <td>Last 90 days</td>
+                <td>95.8%</td>
+                <td>&gt; 97%</td>
+              </tr>
+              <tr>
+                <td>Network-related Incidents</td>
+                <td>P1/P2 per month</td>
+                <td>3.1</td>
+                <td>&lt; 2</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Dependencies & Culture</div>
+                <div class="card-subtitle">Stability without hero culture.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Cloud: cloud-native routing, private endpoints, and firewall guardrails are co-designed with the platform team.</li>
+              <li>Data Centers: dual-path connectivity to 8 primary sites and 3 cloud on-ramps; 0 single-homed DCs remaining.</li>
+              <li>DWP: VPN, Wi-Fi, and identity-aware access are tuned for remote-first work; 76% of employees are hybrid.</li>
+            </ul>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Config Managed via Automation</div>
+                <div class="stat-value">82%</div>
+                <div class="note">Target: 95% in 18 months.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Runbook Coverage</div>
+                <div class="stat-value">91%</div>
+                <div class="note">For P1/P2 playbooks.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">On-call Load</div>
+                <div class="stat-value">~4 incidents / engineer / month</div>
+                <div class="note">Goal: &lt; 3 via automation.</div>
+              </div>
+            </div>
+            <div class="quote-line">
+              Culture: calm under pressure, automation-first, no hero culture — reliability is engineered, not improvised.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4 -->
+    <section class="tab-panel" id="tab4">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 4</div>
+          <div class="panel-title">Cloud & Platform Engineering</div>
+          <div class="panel-tagline">The acceleration engine: secure, automated, self-service platforms.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          220+ product teams · 3 clouds · 14 shared platforms
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Scope & Responsibilities</div>
+                <div class="card-subtitle">Landing zones, identity, IaC, Kubernetes, governance.</div>
+              </div>
+              <span class="chip-inline">
+                <span class="mini-dot.green"></span>
+                Product mindset
+              </span>
+            </div>
+            <ul class="list">
+              <li>Owns multi-cloud landing zones and guardrails supporting ~970 active workloads and 143 critical services.</li>
+              <li>Standardizes IaC (primarily Terraform) for 78% of new infra resources; goal is 95% by FY27.</li>
+              <li>Runs 4 shared Kubernetes platforms and PaaS services used by ~120 product teams.</li>
+              <li>Implements cloud security baselines and policy-as-code enforcement across subscriptions/accounts.</li>
+            </ul>
+            <table>
+              <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Current</th>
+                <th>Target</th>
+                <th>Trend</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Provisioning Lead Time</td>
+                <td>4.3 days</td>
+                <td>≤ 1 day</td>
+                <td><span class="pill good">▼ 61% YoY</span></td>
+              </tr>
+              <tr>
+                <td>Platform Adoption</td>
+                <td>68% of workloads</td>
+                <td>85%</td>
+                <td><span class="pill good">▲ improving</span></td>
+              </tr>
+              <tr>
+                <td>Cloud Spend vs Budget</td>
+                <td>97.5% of plan</td>
+                <td>≤ 100%</td>
+                <td><span class="pill good">within guardrails</span></td>
+              </tr>
+              <tr>
+                <td>Policy Compliance</td>
+                <td>93.2%</td>
+                <td>≥ 98%</td>
+                <td><span class="pill warn">gap in legacy</span></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Dependencies & Culture</div>
+                <div class="card-subtitle">Guardrails, not gates.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Network: standard patterns for private connectivity, firewalling, and DNS are co-owned with network engineering.</li>
+              <li>Data Centers: migration and coexistence patterns ensure 41% of DC workloads have a defined landing pattern.</li>
+              <li>DWP: developer experience (portals, catalogs, templates) reduces ticketed requests by 38% YoY.</li>
+            </ul>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Self-service Catalog Items</div>
+                <div class="stat-value">54</div>
+                <div class="note">Infra & platform blueprints.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Automated Changes</div>
+                <div class="stat-value">~2,400 / month</div>
+                <div class="note">Across 3 clouds.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Manual Console Use</div>
+                <div class="stat-value">↓ 47% YoY</div>
+                <div class="note">Through IaC policies.</div>
+              </div>
+            </div>
+            <div class="quote-line">
+              Culture: strong documentation, “guardrails, not gates”, and platforms treated as products with NPS and roadmaps.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5 -->
+    <section class="tab-panel" id="tab5">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 5</div>
+          <div class="panel-title">Data Center / Hybrid Infrastructure</div>
+          <div class="panel-tagline">The stability anchor across compute, storage, and hybrid integration.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          8 primary DCs · 3 colos · ~9,800 VMs · 3.5 PB managed storage
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Scope & Responsibilities</div>
+                <div class="card-subtitle">Reliable hybrid foundation with lifecycle discipline.</div>
+              </div>
+              <span class="chip-inline">
+                <span class="mini-dot.amber"></span>
+                Stability anchor
+              </span>
+            </div>
+            <ul class="list">
+              <li>Manages compute, storage, and virtualization platforms across 8 DCs with average utilization of 63% (range 41–78%).</li>
+              <li>Owns backup & DR platforms protecting ~1.9 PB of tier-1/2 data with RPO tiers from 15 minutes to 24 hours.</li>
+              <li>Maintains lifecycle roadmaps for legacy platforms; 27% of critical legacy workloads have a funded exit plan.</li>
+            </ul>
+            <table>
+              <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Current</th>
+                <th>Target</th>
+                <th>Note</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Infra Availability</td>
+                <td>99.982%</td>
+                <td>≥ 99.99%</td>
+                <td>Across DC compute & storage.</td>
+              </tr>
+              <tr>
+                <td>Capacity Utilization</td>
+                <td>63% avg</td>
+                <td>65–75%</td>
+                <td>2 DCs under-utilized &lt; 45%.</td>
+              </tr>
+              <tr>
+                <td>DR Test Success</td>
+                <td>92%</td>
+                <td>≥ 98%</td>
+                <td>Quarterly tier-1 tests.</td>
+              </tr>
+              <tr>
+                <td>Cost per Workload</td>
+                <td>$312 / month (avg)</td>
+                <td>↓ 15% in 3 years</td>
+                <td>Consolidation & cloud shifts.</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Dependencies & Culture</div>
+                <div class="card-subtitle">Risk-aware, documentation-driven.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Network: dual-path connectivity and segmentation policies co-managed; 100% of DCs have tested fail-over paths.</li>
+              <li>Cloud: hybrid patterns (VPN, ExpressRoute/Direct Connect) for 61% of shared services; target 90% by FY27.</li>
+              <li>Security: patch compliance for DC estate is 94.5% within policy window; exceptions tracked with risk scores.</li>
+            </ul>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Automated Patch Coverage</div>
+                <div class="stat-value">78%</div>
+                <div class="note">Remaining are legacy or vendor-locked.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Runbook Accuracy</div>
+                <div class="stat-value">89%</div>
+                <div class="note">Validated in recent DR tests.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Legacy Workloads</div>
+                <div class="stat-value">~210</div>
+                <div class="note">36 tagged as “must-exit” by FY28.</div>
+              </div>
+            </div>
+            <div class="quote-line">
+              Culture: precision, discipline, and risk-aware decision making — no undocumented changes in core DCs.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6 -->
+    <section class="tab-panel" id="tab6">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 6</div>
+          <div class="panel-title">Digital Workplace (DWP)</div>
+          <div class="panel-tagline">The human experience layer: devices, collaboration, meetings, security.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          ~46k users · 52k devices · NPS +41 · 82% collaboration tool adoption
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Scope & Responsibilities</div>
+                <div class="card-subtitle">End-user productivity, experience, and security.</div>
+              </div>
+              <span class="chip-inline">
+                <span class="mini-dot.green"></span>
+                Experience-first
+              </span>
+            </div>
+            <ul class="list">
+              <li>Manages ~52,000 corporate devices (laptops, mobiles, VDI) with 94% enrolled in modern management.</li>
+              <li>Owns identity & access experience (SSO, MFA, password-less pilots) in partnership with security and cloud teams.</li>
+              <li>Runs collaboration platforms (chat, meetings, files) used by 82% of employees weekly.</li>
+              <li>Operates ~780 equipped meeting rooms with standardized AV across major hubs.</li>
+            </ul>
+            <table>
+              <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Current</th>
+                <th>Target</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>DWP NPS</td>
+                <td>+41</td>
+                <td>≥ +50</td>
+              </tr>
+              <tr>
+                <td>Ticket Volume / User / Month</td>
+                <td>0.62</td>
+                <td>&lt; 0.5</td>
+              </tr>
+              <tr>
+                <td>Mean Resolution Time</td>
+                <td>7.4 hours</td>
+                <td>&lt; 6 hours</td>
+              </tr>
+              <tr>
+                <td>Device Compliance</td>
+                <td>95.1%</td>
+                <td>≥ 98%</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Dependencies & Culture</div>
+                <div class="card-subtitle">Empathy, communication, continuous feedback.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Network: Wi-Fi health and VPN experience tracked via synthetic tests in 26 major locations.</li>
+              <li>Cloud: SaaS adoption (M365, collaboration tools) and identity flows are co-designed with cloud and security.</li>
+              <li>Security: endpoint posture and phishing-resistance integrated into the default user journey.</li>
+            </ul>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Self-service Resolution</div>
+                <div class="stat-value">31%</div>
+                <div class="note">Via portals and virtual agents.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Change-driven Incidents</div>
+                <div class="stat-value">↓ 44% YoY</div>
+                <div class="note">Through comms & pilots.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Feedback Survey Participation</div>
+                <div class="stat-value">58%</div>
+                <div class="note">Goal: 70%+ by FY27.</div>
+              </div>
+            </div>
+            <div class="quote-line">
+              Culture: empathy, communication-first, continuous feedback loops with real user panels and champions.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7 -->
+    <section class="tab-panel" id="tab7">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 7</div>
+          <div class="panel-title">Shared Enablement Functions</div>
+          <div class="panel-tagline">The glue that prevents local optimization and enables global scale.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          5 functions · 18 FTE · coverage across Network, Cloud, DC, DWP
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Core Functions</div>
+                <div class="card-subtitle">Architecture, security, observability, FinOps, vendor.</div>
+              </div>
+              <span class="chip-inline">
+                <span class="mini-dot.green"></span>
+                Global consistency
+              </span>
+            </div>
+            <table>
+              <thead>
+              <tr>
+                <th>Function</th>
+                <th>Key Output</th>
+                <th>Cadence</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Architecture & Standards</td>
+                <td>Reference patterns, design reviews</td>
+                <td>Bi-weekly board</td>
+              </tr>
+              <tr>
+                <td>Security Engineering</td>
+                <td>Controls, zero trust, tooling</td>
+                <td>Monthly control reviews</td>
+              </tr>
+              <tr>
+                <td>Observability / AIOps</td>
+                <td>Dashboards, alerts, ML-based correlation</td>
+                <td>Weekly noise review</td>
+              </tr>
+              <tr>
+                <td>FinOps</td>
+                <td>Unit costs, spend forecasts, optimization</td>
+                <td>Monthly cost forums</td>
+              </tr>
+              <tr>
+                <td>Vendor & Lifecycle</td>
+                <td>Contracts, renewals, EOL management</td>
+                <td>Quarterly vendor councils</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Impact & Metrics</div>
+                <div class="card-subtitle">Evidence of “glue”, not overhead.</div>
+              </div>
+            </div>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Architectural Drift</div>
+                <div class="stat-value">↓ 39% YoY</div>
+                <div class="note">Measured by non-standard patterns.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Ops Noise Reduction</div>
+                <div class="stat-value">−52%</div>
+                <div class="note">Alerts / 24h after AIOps tuning.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Cost Optimization</div>
+                <div class="stat-value">$24.6M</div>
+                <div class="note">Savings identified in last FY.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Global standards compliance at 88% of infra spend; variances require formal exceptions with retirement dates.</li>
+              <li>Vendor lifecycle management has reduced unplanned renewals and “surprise” EOL events by 73% in two years.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 8 -->
+    <section class="tab-panel" id="tab8">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 8</div>
+          <div class="panel-title">Reporting Structure & Accountability</div>
+          <div class="panel-tagline">One accountable infra leader, aligned with security, architecture, and business.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          1 infra org · 4 domain heads · 3 dotted-line alignments
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Recommended Model</div>
+                <div class="card-subtitle">Avoid fragmented ownership.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>All infra domains (Network, Cloud, DC/Hybrid, DWP) report into a single Infrastructure Leader (VP/Sr Director level).</li>
+              <li>Dotted-line alignment with CISO (security), Chief Architect (architecture), and business platform owners.</li>
+              <li>Shared OKRs: 7 cross-domain objectives fully shared across all domain heads.</li>
+            </ul>
+            <table>
+              <thead>
+              <tr>
+                <th>Area</th>
+                <th>Before Model</th>
+                <th>After Model</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>P1 Bridge Time-to-Decision</td>
+                <td>23 min</td>
+                <td>11 min</td>
+              </tr>
+              <tr>
+                <td>Conflicting Priorities / Quarter</td>
+                <td>~14</td>
+                <td>~5</td>
+              </tr>
+              <tr>
+                <td>Cross-domain OKRs</td>
+                <td>3</td>
+                <td>7</td>
+              </tr>
+              <tr>
+                <td>Infra Roadmap Approval Cycles</td>
+                <td>2–3</td>
+                <td>1–2</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Why It Matters</div>
+                <div class="card-subtitle">Fragmented reporting = fragmented outcomes.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Single infra P&L view (~$410M) simplifies trade-offs between DC, cloud, network, and workplace investments.</li>
+              <li>Business sees “one” infra organization, with domain experts behind the scenes, not four separate silos.</li>
+              <li>Risk ownership is crystal-clear: one accountable owner for infra resilience and cost.</li>
+            </ul>
+            <div class="quote-line">
+              Strategy coherence upstream prevents politics downstream — Infra reports as one voice to CIO and CFO.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 9 -->
+    <section class="tab-panel" id="tab9">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 9</div>
+          <div class="panel-title">Cross-Team Dependency Map</div>
+          <div class="panel-tagline">Where strategies fail: unmanaged dependencies, not weak teams.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          18 critical dependencies mapped · 11 with explicit SLAs
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Example Dependencies</div>
+                <div class="card-subtitle">Making hidden constraints visible.</div>
+              </div>
+              <span class="chip-inline">
+                <span class="mini-dot.amber"></span>
+                Interview-ready map
+              </span>
+            </div>
+            <table>
+              <thead>
+              <tr>
+                <th>Scenario</th>
+                <th>Dependency</th>
+                <th>Impact</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Cloud platform launch</td>
+                <td>Network readiness (connectivity, DNS, firewall)</td>
+                <td>Launch delay of 6–8 weeks if missed.</td>
+              </tr>
+              <tr>
+                <td>DWP experience</td>
+                <td>Identity, network, endpoint posture</td>
+                <td>NPS drops &gt; 15 points under poor Wi-Fi/VPN.</td>
+              </tr>
+              <tr>
+                <td>DC exit</td>
+                <td>Cloud maturity & migration capacity</td>
+                <td>Exit blocked; stranded costs of $6–$8M / year.</td>
+              </tr>
+              <tr>
+                <td>Zero Trust rollout</td>
+                <td>Network, DWP, security policies</td>
+                <td>Partial rollout causes friction and policy bypass.</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Dependency Management</div>
+                <div class="card-subtitle">From finger pointing to structured agreements.</div>
+              </div>
+            </div>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Dependencies with SLAs</div>
+                <div class="stat-value">11 / 18</div>
+                <div class="note">Target: 100% by FY27.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Cross-domain Risks</div>
+                <div class="stat-value">7 tracked</div>
+                <div class="note">All on quarterly risk log.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Blocked Initiatives</div>
+                <div class="stat-value">↓ 46% YoY</div>
+                <div class="note">After formal dependency mapping.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Dependencies captured as “interface contracts” between domains; each contract has an owner and SLO.</li>
+              <li>Quarterly dependency review uses a simple heatmap: 5 green, 3 amber, 1 red in current cycle.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 10 -->
+    <section class="tab-panel" id="tab10">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 10</div>
+          <div class="panel-title">Metrics That Roll Up to Strategy</div>
+          <div class="panel-tagline">Every team’s metrics ladder into 5 executive KPIs.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          5 strategic KPIs · 23 supporting metrics · 1 unified dashboard
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Strategic KPIs</div>
+                <div class="card-subtitle">What executives see.</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+              <tr>
+                <th>Strategic KPI</th>
+                <th>Current</th>
+                <th>Target</th>
+                <th>Inputs</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Time-to-market</td>
+                <td>Release cycle: 10.4 weeks</td>
+                <td>&lt; 8 weeks</td>
+                <td>Provisioning lead time, change success rate</td>
+              </tr>
+              <tr>
+                <td>Cost efficiency</td>
+                <td>Infra cost: 4.9% of revenue</td>
+                <td>≤ 4.5%</td>
+                <td>Unit costs, DC vs cloud mix</td>
+              </tr>
+              <tr>
+                <td>Reliability</td>
+                <td>99.975% availability</td>
+                <td>≥ 99.99%</td>
+                <td>MTTR, incident volume & severity</td>
+              </tr>
+              <tr>
+                <td>Security posture</td>
+                <td>Overall score: 98.1%</td>
+                <td>≥ 99%</td>
+                <td>Patch, MFA, policy compliance</td>
+              </tr>
+              <tr>
+                <td>User experience</td>
+                <td>DWP NPS: +41</td>
+                <td>≥ +50</td>
+                <td>Tickets per user, app performance</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Team Metrics Mapping</div>
+                <div class="card-subtitle">From local KPI to enterprise value.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Network: availability, latency, and change success feed reliability and user experience KPIs.</li>
+              <li>Cloud & Platform: provisioning time, platform adoption, cost vs budget feed time-to-market and cost efficiency.</li>
+              <li>DC / Hybrid: availability, DR tests, cost per workload feed reliability and cost efficiency.</li>
+              <li>DWP: NPS, incident volume, compliance feed user experience and security posture.</li>
+            </ul>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Dashboard Refresh</div>
+                <div class="stat-value">Near real-time</div>
+                <div class="note">Key KPIs updated &lt; 5 min lag.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Quarterly KPI Reviews</div>
+                <div class="stat-value">4 / year</div>
+                <div class="note">With CIO, CISO, CFO.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Teams Tied to KPIs</div>
+                <div class="stat-value">100%</div>
+                <div class="note">No “metric orphan” teams.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 11 -->
+    <section class="tab-panel" id="tab11">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 11</div>
+          <div class="panel-title">Cultural Model Across Infra</div>
+          <div class="panel-tagline">Culture is the real operating system.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          4 common traits · 3 anti-patterns · 1 infra culture playbook
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Common Cultural Traits</div>
+                <div class="card-subtitle">Shared across all domains.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Psychological safety: engineers can stop a change with a single concern; 0 negative performance reviews tied to raising risk.</li>
+              <li>Blameless postmortems for all P1 incidents; themes tracked and rolled into quarterly improvement backlog.</li>
+              <li>Automation over heroics: manual “hero saves” celebrated less than sustainable fixes; 44% of toil removed in 2 years.</li>
+              <li>Documentation as a first-class asset: documentation quality is part of performance expectations.</li>
+            </ul>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Postmortem Completion</div>
+                <div class="stat-value">100%</div>
+                <div class="note">For P1/P2 in last 12 months.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Toil Reduction</div>
+                <div class="stat-value">−44%</div>
+                <div class="note">Across infra SRE tasks.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Anti-Patterns to Eliminate</div>
+                <div class="card-subtitle">What is not tolerated.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Ticket ping-pong: MTTR increases when ownership is unclear; now blocked via routing rules and playbooks.</li>
+              <li>Silo pride: KPIs and rewards are aligned to cross-domain outcomes, not local optimizations.</li>
+              <li>“Not my team” mindset: incident bridges are organized by services and impact, not by reporting lines.</li>
+            </ul>
+            <div class="quote-line">
+              The operating model works only if culture supports cross-team empathy, learning, and shared accountability.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 12 -->
+    <section class="tab-panel" id="tab12">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 12</div>
+          <div class="panel-title">Operating Rhythm</div>
+          <div class="panel-tagline">How strategy becomes reality week by week.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          Weekly · Monthly · Quarterly · Annual cadence mapped
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Cadence</div>
+                <div class="card-subtitle">Structured operating rhythm.</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+              <tr>
+                <th>Cadence</th>
+                <th>Focus</th>
+                <th>Participants</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Weekly</td>
+                <td>Execution sync, incident review, change planning</td>
+                <td>Domain leads + SRE + PMO</td>
+              </tr>
+              <tr>
+                <td>Monthly</td>
+                <td>Risk, capacity, budget, vendor health</td>
+                <td>Infra LT, security, FinOps</td>
+              </tr>
+              <tr>
+                <td>Quarterly</td>
+                <td>Strategy alignment, OKR review, roadmaps</td>
+                <td>CIO, CISO, Chief Architect, infra leaders</td>
+              </tr>
+              <tr>
+                <td>Annual</td>
+                <td>3-year roadmap recalibration, investment bets</td>
+                <td>Executive committee</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Effectiveness</div>
+                <div class="card-subtitle">Evidence that rhythm drives change.</div>
+              </div>
+            </div>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Initiatives Delivered On-time</div>
+                <div class="stat-value">81%</div>
+                <div class="note">Up from 62% before defined cadence.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Risk Items Closed / Quarter</div>
+                <div class="stat-value">~14</div>
+                <div class="note">From monthly risk reviews.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Roadmap Stability</div>
+                <div class="stat-value">~76%</div>
+                <div class="note">% items unchanged mid-year.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Each cadence has defined inputs, outputs, and decision rights; meetings without decisions are removed.</li>
+              <li>Operating rhythm is documented as a one-page playbook shared with all infra staff.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 13 -->
+    <section class="tab-panel" id="tab13">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 13</div>
+          <div class="panel-title">Outcome-to-Strategy Traceability</div>
+          <div class="panel-tagline">If you can’t trace it, it’s just PowerPoint.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          7 strategic goals · 22 major outcomes · mapped to teams & metrics
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Traceability Model</div>
+                <div class="card-subtitle">From board-level goals to engineer work.</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+              <tr>
+                <th>Strategic Goal</th>
+                <th>Infra Owner</th>
+                <th>Key Metric</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Reduce time-to-market</td>
+                <td>Cloud & Platform</td>
+                <td>Provisioning lead time, platform adoption</td>
+              </tr>
+              <tr>
+                <td>Improve reliability</td>
+                <td>All domains</td>
+                <td>Availability, MTTR, change success rate</td>
+              </tr>
+              <tr>
+                <td>Optimize cost</td>
+                <td>Infra Leader + FinOps</td>
+                <td>Unit costs, infra cost % of revenue</td>
+              </tr>
+              <tr>
+                <td>Strengthen security posture</td>
+                <td>Infra + Security</td>
+                <td>Patch compliance, MFA adoption, zero-trust coverage</td>
+              </tr>
+              <tr>
+                <td>Boost employee experience</td>
+                <td>DWP</td>
+                <td>NPS, tickets per user, collaboration adoption</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Coverage & Gaps</div>
+                <div class="card-subtitle">Where traceability is strong vs weak.</div>
+              </div>
+            </div>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Outcomes with Clear Owners</div>
+                <div class="stat-value">22 / 22</div>
+                <div class="note">100% coverage.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Outcomes with Metrics</div>
+                <div class="stat-value">20 / 22</div>
+                <div class="note">2 require better instrumentation.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Strategic Goals Traceable</div>
+                <div class="stat-value">7 / 7</div>
+                <div class="note">No “orphan” goals.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Each major initiative card includes: strategic goal, owning team, metrics, and dependencies.</li>
+              <li>Quarterly reviews retire metrics that don’t influence decisions, keeping dashboards lean.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 14 -->
+    <section class="tab-panel" id="tab14">
+      <div class="panel-header">
+        <div class="panel-title-block">
+          <div class="panel-label">Tab 14</div>
+          <div class="panel-title">Leadership Behaviors</div>
+          <div class="panel-tagline">Behaviors that make the operating model real.</div>
+        </div>
+        <div class="panel-metric-chip">
+          <span class="dot"></span>
+          4 non-negotiable behaviors tracked in 360 feedback
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Core Behaviors</div>
+                <div class="card-subtitle">What leaders are expected to model.</div>
+              </div>
+            </div>
+            <ul class="list">
+              <li>Clear decision ownership: every major decision has a named DRI and explicit decision date.</li>
+              <li>Trade-off transparency: cost, risk, and speed trade-offs are documented and shared, not hidden in side channels.</li>
+              <li>Coaching over control: time invested in mentoring staff; target is ≥ 10% of leadership calendar.</li>
+              <li>Global standards, local empathy: core patterns enforced, but regional constraints actively heard and addressed.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card soft">
+          <div class="card-inner">
+            <div class="card-title-row">
+              <div>
+                <div class="card-title">Signals & Measurement</div>
+                <div class="card-subtitle">How leadership behaviors are made visible.</div>
+              </div>
+            </div>
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-label">Decisions with Named DRI</div>
+                <div class="stat-value">93%</div>
+                <div class="note">From decision logs.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Time on Coaching</div>
+                <div class="stat-value">~8–12%</div>
+                <div class="note">From calendar analysis.</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Leadership 360 Score</div>
+                <div class="stat-value">4.3 / 5</div>
+                <div class="note">On clarity & transparency.</div>
+              </div>
+            </div>
+            <div class="quote-line">
+              The difference between slides and reality is leadership behavior — this tab is where operating models live or die.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Simple tab switching
+  const tabButtons = document.querySelectorAll('.tab-chip');
+  const panels = document.querySelectorAll('.tab-panel');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-tab');
+
+      tabButtons.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const panel = document.getElementById(target);
+      if (panel) panel.classList.add('active');
+
+      // Optional: soft scroll into view on mobile
+      const y = panel.getBoundingClientRect().top + window.scrollY - 140;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
