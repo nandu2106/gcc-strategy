@@ -1,0 +1,2417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABC Corp - GCC Infrastructure Operating Model</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .tabs-container {
+            position: sticky;
+            top: 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .tabs {
+            display: flex;
+            padding: 0 20px;
+            min-width: max-content;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab:hover {
+            background: #f8f9fa;
+            color: #2a5298;
+        }
+
+        .tab.active {
+            color: #2a5298;
+            border-bottom-color: #2a5298;
+            background: #f0f4ff;
+        }
+
+        .content {
+            padding: 30px 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .executive-insight {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.3);
+            border-left: 6px solid #10b981;
+        }
+
+        .executive-insight h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .executive-insight p {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            opacity: 0.95;
+        }
+
+        .executive-insight ul {
+            margin: 15px 0 15px 25px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .executive-insight ul li {
+            margin-bottom: 8px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+        .grid-6 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2a5298;
+            margin-bottom: 8px;
+        }
+
+        .card-trend {
+            font-size: 13px;
+            color: #10b981;
+        }
+
+        .card-trend.negative {
+            color: #ef4444;
+        }
+
+        .domain-tile {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .domain-tile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .domain-tile h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .domain-tile p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2a5298;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .pattern-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .pattern-card:hover {
+            border-color: #2a5298;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .pattern-card h4 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 1s ease;
+        }
+
+        .metric-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2a5298;
+        }
+
+        .infographic {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .flywheel-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .flywheel-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .tier-ladder {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .tier-box {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .tier-box h4 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            .grid-2, .grid-3, .grid-4, .grid-6 {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                padding: 0 10px;
+            }
+            .tab {
+                padding: 12px 15px;
+                font-size: 12px;
+            }
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2a5298;
+        }
+
+        .kpi-sparkline {
+            width: 100%;
+            height: 40px;
+            margin-top: 10px;
+        }
+
+        .heatmap-cell {
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .heat-low { background: #d1fae5; color: #065f46; }
+        .heat-medium { background: #fef3c7; color: #92400e; }
+        .heat-high { background: #fee2e2; color: #991b1b; }
+
+        .split-callout {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-top: 4px solid #2a5298;
+        }
+
+        .split-callout h4 {
+            color: #1e3c72;
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .split-section {
+            padding: 20px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .split-section h5 {
+            color: #2a5298;
+            font-size: 16px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .split-section .percentage {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .split-section ul {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #666;
+            margin-left: 20px;
+        }
+
+        .split-message {
+            background: #f0f4ff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e3c72;
+            border-left: 4px solid #2a5298;
+        }
+
+        .benchmark-box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #667eea;
+        }
+
+        .benchmark-box h4 {
+            color: #1e3c72;
+            font-size: 17px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .benchmark-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .benchmark-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #2a5298;
+        }
+
+        .benchmark-item h5 {
+            color: #2a5298;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .benchmark-item .range {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .benchmark-item p {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .target-statement {
+            background: #f0f4ff;
+            padding: 18px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1e3c72;
+            line-height: 1.7;
+            border-left: 4px solid #10b981;
+        }
+
+        .fts-callout {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .fts-callout h4 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .fts-callout p {
+            font-size: 14px;
+            line-height: 1.7;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .fts-callout ul {
+            margin: 10px 0 10px 20px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .split-grid {
+                grid-template-columns: 1fr;
+            }
+            .benchmark-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏢 ABC Corp - GCC Infrastructure Operating Model</h1>
+        <p>Comprehensive Infrastructure Dashboard | Real-time Metrics & Insights</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Executive Snapshot</div>
+            <div class="tab" onclick="switchTab(1)">Workload Portfolio</div>
+            <div class="tab" onclick="switchTab(2)">Compute & Storage Tiers</div>
+            <div class="tab" onclick="switchTab(3)">Reference Architectures</div>
+            <div class="tab" onclick="switchTab(4)">DC • Cloud • Edge</div>
+            <div class="tab" onclick="switchTab(5)">AI/ML Platforms</div>
+            <div class="tab" onclick="switchTab(6)">Operating Model</div>
+            <div class="tab" onclick="switchTab(7)">Governance • Risk • Compliance</div>
+            <div class="tab" onclick="switchTab(8)">Performance Dashboard</div>
+            <div class="tab" onclick="switchTab(9)">Leadership System</div>
+            <div class="tab" onclick="switchTab(10)">Success Scorecard</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Tab 1: Executive Snapshot -->
+        <div class="tab-content active" id="tab-0">
+            <div class="message-box">
+                💡 This operating model transforms infrastructure into measurable business outcomes.
+            </div>
+
+            <div class="executive-insight">
+                <h3>🎯 Core Philosophy: Infrastructure as a Product</h3>
+                <p>We operate infrastructure as a <strong>product portfolio</strong>, not a collection of projects. This approach delivers three critical outcomes: speed to market, predictable reliability, and transparent unit cost governance.</p>
+                <p><strong>Every infrastructure platform is treated as a product with:</strong></p>
+                <ul>
+                    <li><strong>Reference Architecture:</strong> Standardized blueprints that eliminate design iteration and reduce risk</li>
+                    <li><strong>Service Tier Rules:</strong> Clear SLA commitments tied to business criticality (Tier-0 through Tier-4)</li>
+                    <li><strong>Service Level Objectives (SLOs):</strong> Measurable availability, performance, and recovery targets</li>
+                    <li><strong>Unit Economics:</strong> Transparent cost per VM, per TB, per GPU-hour—enabling informed workload placement</li>
+                    <li><strong>Governance Rhythm:</strong> Monthly architecture reviews, quarterly business alignment, continuous optimization</li>
+                </ul>
+                <p>This product-led model is the foundation of our operating discipline. It ensures infrastructure investment is <strong>defensible, scalable, and aligned to business value</strong>.</p>
+            </div>
+
+            <h2 class="section-title">Infrastructure Domains</h2>
+            <div class="grid grid-4">
+                <div class="domain-tile">
+                    <h3>🌐 Network</h3>
+                    <p>Global connectivity & WAN optimization</p>
+                </div>
+                <div class="domain-tile">
+                    <h3>☁️ Cloud/Platform</h3>
+                    <p>Hybrid cloud orchestration</p>
+                </div>
+                <div class="domain-tile">
+                    <h3>🏢 DC/Hybrid</h3>
+                    <p>Data center & edge computing</p>
+                </div>
+                <div class="domain-tile">
+                    <h3>💻 Digital Workplace</h3>
+                    <p>End-user computing & AI</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Key Performance Indicators (LTM)</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <div class="card-title">Availability (LTM)</div>
+                    <div class="card-value" id="availability-val">0%</div>
+                    <div class="card-trend">↑ +0.3% vs target</div>
+                    <canvas class="kpi-sparkline" id="spark-availability"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-title">Change Success Rate</div>
+                    <div class="card-value" id="change-val">0%</div>
+                    <div class="card-trend">↑ +8% YoY</div>
+                    <canvas class="kpi-sparkline" id="spark-change"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-title">Time-to-Provision</div>
+                    <div class="card-value" id="provision-val">0h</div>
+                    <div class="card-trend">↓ 93% reduction</div>
+                    <canvas class="kpi-sparkline" id="spark-provision"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-title">Unit Cost Trend</div>
+                    <div class="card-value" id="cost-val">0%</div>
+                    <div class="card-trend">↓ YoY improvement</div>
+                    <canvas class="kpi-sparkline" id="spark-cost"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-title">Compliance Coverage</div>
+                    <div class="card-value" id="compliance-val">0%</div>
+                    <div class="card-trend">↑ On track to 95%</div>
+                    <canvas class="kpi-sparkline" id="spark-compliance"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-title">Internal NPS</div>
+                    <div class="card-value" id="nps-val">0</div>
+                    <div class="card-trend">↑ +16 pts YoY</div>
+                    <canvas class="kpi-sparkline" id="spark-nps"></canvas>
+                </div>
+            </div>
+
+            <h2 class="section-title">Value Flywheel</h2>
+            <div class="infographic">
+                <h3 style="color: #2a5298; margin-bottom: 20px;">Continuous Improvement Cycle</h3>
+                <div class="flywheel-container">
+                    <div class="flywheel-step">1. Standardize</div>
+                    <span style="font-size: 24px; color: #2a5298;">→</span>
+                    <div class="flywheel-step">2. Automate</div>
+                    <span style="font-size: 24px; color: #2a5298;">→</span>
+                    <div class="flywheel-step">3. Scale</div>
+                    <span style="font-size: 24px; color: #2a5298;">→</span>
+                    <div class="flywheel-step">4. Optimize</div>
+                    <span style="font-size: 24px; color: #2a5298;">→</span>
+                    <div class="flywheel-step">5. Secure</div>
+                </div>
+                <p style="margin-top: 20px; color: #666;">Each phase feeds into the next, creating compounding value</p>
+            </div>
+        </div>
+
+        <!-- Tab 2: Workload Portfolio & Unit Economics -->
+        <div class="tab-content" id="tab-1">
+            <div class="message-box">
+                📊 We manage workloads, not servers. Every workload has unit economics.
+            </div>
+
+            <h2 class="section-title">Workload Portfolio</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Workload</th>
+                            <th>Criticality</th>
+                            <th>Annual Cost</th>
+                            <th>Primary Tier</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ERP</strong></td>
+                            <td><span class="badge badge-danger">Mission Critical</span></td>
+                            <td>$8.5M</td>
+                            <td>Tier-0</td>
+                            <td>320 VMs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Manufacturing</strong></td>
+                            <td><span class="badge badge-danger">Mission Critical</span></td>
+                            <td>$7.2M</td>
+                            <td>Tier-1</td>
+                            <td>145 Sites</td>
+                        </tr>
+                        <tr>
+                            <td><strong>R&D/HPC</strong></td>
+                            <td><span class="badge badge-warning">High</span></td>
+                            <td>$6.8M</td>
+                            <td>Tier-1</td>
+                            <td>180 VMs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI/ML Platform</strong></td>
+                            <td><span class="badge badge-warning">High</span></td>
+                            <td>$5.4M</td>
+                            <td>Tier-1</td>
+                            <td>48 GPU Nodes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Platform</strong></td>
+                            <td><span class="badge badge-warning">High</span></td>
+                            <td>$4.9M</td>
+                            <td>Tier-2</td>
+                            <td>650 TB</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Digital/Web</strong></td>
+                            <td><span class="badge badge-info">Medium</span></td>
+                            <td>$3.8M</td>
+                            <td>Tier-2</td>
+                            <td>420 VMs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Shared Services</strong></td>
+                            <td><span class="badge badge-info">Medium</span></td>
+                            <td>$3.2M</td>
+                            <td>Tier-3</td>
+                            <td>580 VMs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Backup/DR</strong></td>
+                            <td><span class="badge badge-success">Standard</span></td>
+                            <td>$2.4M</td>
+                            <td>Tier-4</td>
+                            <td>1,200 TB</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 class="section-title">Unit Cost Model</h2>
+            <div class="grid grid-4">
+                <div class="metric-item">
+                    <div class="metric-label">Tier-0 VM ($/year)</div>
+                    <div class="metric-value">$8,500</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Tier-1 VM ($/year)</div>
+                    <div class="metric-value">$4,200</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Tier-2 VM ($/year)</div>
+                    <div class="metric-value">$1,800</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Tier-3 VM ($/year)</div>
+                    <div class="metric-value">$850</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Storage Tier-1 ($/TB/mo)</div>
+                    <div class="metric-value">$180</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Storage Tier-2 ($/TB/mo)</div>
+                    <div class="metric-value">$65</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Object Storage ($/TB/mo)</div>
+                    <div class="metric-value">$25</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">GPU-hour On-Prem</div>
+                    <div class="metric-value">$3.50</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">GPU-hour Cloud</div>
+                    <div class="metric-value">$12.50</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Manufacturing Site ($/year)</div>
+                    <div class="metric-value">$145K</div>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Annual Cost by Workload (~$42M Total)</div>
+                    <canvas id="workload-cost-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Cost vs Criticality Analysis</div>
+                    <canvas id="bubble-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Compute & Storage Tiers -->
+        <div class="tab-content" id="tab-3">
+            <div class="message-box">
+                💰 Savings come from correct tier placement + lifecycle rules.
+            </div>
+
+            <h2 class="section-title">Tier Definitions & Policies</h2>
+            <div class="tier-ladder">
+                <div class="tier-box" style="height: 300px;">
+                    <h4>Tier-0</h4>
+                    <p style="font-size: 12px; color: #666;">Mission Critical</p>
+                    <p style="margin: 10px 0;">99.99% SLA</p>
+                    <p style="font-size: 11px;">N+2 redundancy, Active-Active DR</p>
+                    <div class="badge badge-danger">8% workloads</div>
+                </div>
+                <div class="tier-box" style="height: 250px;">
+                    <h4>Tier-1</h4>
+                    <p style="font-size: 12px; color: #666;">Business Critical</p>
+                    <p style="margin: 10px 0;">99.95% SLA</p>
+                    <p style="font-size: 11px;">N+1 redundancy, Warm DR</p>
+                    <div class="badge badge-warning">22% workloads</div>
+                </div>
+                <div class="tier-box" style="height: 200px;">
+                    <h4>Tier-2</h4>
+                    <p style="font-size: 12px; color: #666;">Production</p>
+                    <p style="margin: 10px 0;">99.9% SLA</p>
+                    <p style="font-size: 11px;">N redundancy, Cold DR</p>
+                    <div class="badge badge-info">45% workloads</div>
+                </div>
+                <div class="tier-box" style="height: 150px;">
+                    <h4>Tier-3</h4>
+                    <p style="font-size: 12px; color: #666;">Non-Critical</p>
+                    <p style="margin: 10px 0;">99.5% SLA</p>
+                    <p style="font-size: 11px;">Basic, Backup only</p>
+                    <div class="badge badge-success">20% workloads</div>
+                </div>
+                <div class="tier-box" style="height: 100px;">
+                    <h4>Tier-4</h4>
+                    <p style="font-size: 12px; color: #666;">Dev/Test</p>
+                    <p style="margin: 10px 0;">Best Effort</p>
+                    <div class="badge badge-success">5% workloads</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Optimization Levers</h2>
+            <div class="grid grid-4">
+                <div class="card">
+                    <h4 style="color: #2a5298; margin-bottom: 10px;">Right-sizing</h4>
+                    <p style="font-size: 13px; color: #666;">Continuous analysis of actual vs allocated resources</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 78%;"></div>
+                    </div>
+                    <p style="margin-top: 8px; font-size: 12px;">78% optimized</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298; margin-bottom: 10px;">Scheduling</h4>
+                    <p style="font-size: 13px; color: #666;">Auto-shutdown for non-prod during off-hours</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+                    <p style="margin-top: 8px; font-size: 12px;">65% automated</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298; margin-bottom: 10px;">Storage Tiering</h4>
+                    <p style="font-size: 13px; color: #666;">Lifecycle policies for data aging</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 82%;"></div>
+                    </div>
+                    <p style="margin-top: 8px; font-size: 12px;">82% coverage</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298; margin-bottom: 10px;">DR Posture</h4>
+                    <p style="font-size: 13px; color: #666;">Match recovery to business need</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 91%;"></div>
+                    </div>
+                    <p style="margin-top: 8px; font-size: 12px;">91% aligned</p>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Blended Cost per VM by Tier ($/year)</div>
+                    <canvas id="tier-cost-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Workload Distribution by Tier</div>
+                    <canvas id="tier-distribution-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Reference Architectures -->
+        <div class="tab-content" id="tab-4">
+            <div class="message-box">
+                🏗️ Standard patterns reduce risk and speed delivery.
+            </div>
+
+            <h2 class="section-title">Architecture Patterns</h2>
+            <div class="grid grid-3">
+                <div class="pattern-card">
+                    <h4>🏭 ERP Pattern</h4>
+                    <p style="font-size: 13px; color: #666; margin: 10px 0;">3-tier architecture with HA clustering</p>
+                    <div class="badge badge-danger">Tier-0</div>
+                    <div class="badge badge-info">Active-Active</div>
+                    <p style="margin-top: 15px; font-size: 12px;"><strong>Why:</strong> Zero downtime for global operations</p>
+                </div>
+                <div class="pattern-card">
+                    <h4>⚙️ Manufacturing Pattern</h4>
+                    <p style="font-size: 13px; color: #666; margin: 10px 0;">Edge computing with centralized control</p>
+                    <div class="badge badge-warning">Tier-1</div>
+                    <div class="badge badge-info">Hybrid</div>
+                    <p style="margin-top: 15px; font-size: 12px;"><strong>Why:</strong> Low latency + offline resilience</p>
+                </div>
+                <div class="pattern-card">
+                    <h4>📊 Data Platform Pattern</h4>
+                    <p style="font-size: 13px; color: #666; margin: 10px 0;">Data lake + warehouse + streaming</p>
+                    <div class="badge badge-info">Tier-2</div>
+                    <div class="badge badge-success">Scalable</div>
+                    <p style="margin-top: 15px; font-size: 12px;"><strong>Why:</strong> Cost-effective analytics at scale</p>
+                </div>
+                <div class="pattern-card">
+                    <h4>🌐 Digital/Web Pattern</h4>
+                    <p style="font-size: 13px; color: #666; margin: 10px 0;">CDN + containerized microservices</p>
+                    <div class="badge badge-info">Tier-2</div>
+                    <div class="badge badge-success">Cloud-native</div>
+                    <p style="margin-top: 15px; font-size: 12px;"><strong>Why:</strong> Global reach + rapid deployment</p>
+                </div>
+                <div class="pattern-card">
+                    <h4>🔬 HPC Pattern</h4>
+                    <p style="font-size: 13px; color: #666; margin: 10px 0;">Burst compute with job scheduling</p>
+                    <div class="badge badge-warning">Tier-1</div>
+                    <div class="badge badge-info">Hybrid Burst</div>
+                    <p style="margin-top: 15px; font-size: 12px;"><strong>Why:</strong> Variable workload optimization</p>
+                </div>
+                <div class="pattern-card">
+                    <h4>🤖 AI/ML Pattern</h4>
+                    <p style="font-size: 13px; color: #666; margin: 10px 0;">GPU cluster + MLOps pipeline</p>
+                    <div class="badge badge-warning">Tier-1</div>
+                    <div class="badge badge-danger">GPU-heavy</div>
+                    <p style="margin-top: 15px; font-size: 12px;"><strong>Why:</strong> Training + inference at scale</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Sample Architecture: 3-Tier ERP</h2>
+            <div class="infographic" style="text-align: left;">
+                <svg viewBox="0 0 800 400" style="width: 100%; max-width: 800px;">
+                    <!-- Web Tier -->
+                    <rect x="50" y="50" width="150" height="80" fill="#667eea" rx="8"/>
+                    <text x="125" y="85" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Web Tier</text>
+                    <text x="125" y="105" text-anchor="middle" fill="white" font-size="11">Load Balanced</text>
+                    <text x="125" y="120" text-anchor="middle" fill="white" font-size="11">4x Servers</text>
+                    
+                    <!-- App Tier -->
+                    <rect x="325" y="50" width="150" height="80" fill="#764ba2" rx="8"/>
+                    <text x="400" y="85" text-anchor="middle" fill="white" font-size="14" font-weight="bold">App Tier</text>
+                    <text x="400" y="105" text-anchor="middle" fill="white" font-size="11">HA Clustered</text>
+                    <text x="400" y="120" text-anchor="middle" fill="white" font-size="11">6x Servers</text>
+                    
+                    <!-- DB Tier -->
+                    <rect x="600" y="50" width="150" height="80" fill="#2a5298" rx="8"/>
+                    <text x="675" y="85" text-anchor="middle" fill="white" font-size="14" font-weight="bold">DB Tier</text>
+                    <text x="675" y="105" text-anchor="middle" fill="white" font-size="11">Active-Active</text>
+                    <text x="675" y="120" text-anchor="middle" fill="white" font-size="11">2x Nodes</text>
+                    
+                    <!-- Arrows -->
+                    <path d="M 200 90 L 325 90" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 475 90 L 600 90" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- DR Site -->
+                    <rect x="200" y="200" width="400" height="100" fill="#f3f4f6" stroke="#2a5298" stroke-width="2" rx="8"/>
+                    <text x="400" y="230" text-anchor="middle" fill="#2a5298" font-size="16" font-weight="bold">DR Site (Active-Active)</text>
+                    <text x="400" y="255" text-anchor="middle" fill="#666" font-size="12">Synchronous Replication</text>
+                    <text x="400" y="275" text-anchor="middle" fill="#666" font-size="12">RTO: &lt;5min | RPO: 0</text>
+                    
+                    <!-- Arrow marker -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Tab 5: DC • Cloud • Edge Strategy -->
+        <div class="tab-content" id="tab-5">
+            <div class="message-box">
+                🎯 Placement decisions are systematic, not political.
+            </div>
+
+            <h2 class="section-title">Strategic Placement Framework</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">🏢 Data Center Role</h3>
+                    <ul style="font-size: 13px; line-height: 1.8; color: #666;">
+                        <li>Mission-critical systems</li>
+                        <li>High-performance compute</li>
+                        <li>Data sovereignty requirements</li>
+                        <li>Tier-0 & Tier-1 workloads</li>
+                        <li>Cost: $4.2M/year capacity</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">☁️ Cloud Role</h3>
+                    <ul style="font-size: 13px; line-height: 1.8; color: #666;">
+                        <li>Variable workloads</li>
+                        <li>Digital/web applications</li>
+                        <li>Dev/test environments</li>
+                        <li>Burst capacity</li>
+                        <li>Cost: OpEx, pay-per-use</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">⚡ Edge Role</h3>
+                    <ul style="font-size: 13px; line-height: 1.8; color: #666;">
+                        <li>Manufacturing sites</li>
+                        <li>Low-latency requirements</li>
+                        <li>Offline resilience</li>
+                        <li>Local data processing</li>
+                        <li>Cost: $145K/site/year</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2 class="section-title">Decision Matrix</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Criteria</th>
+                            <th>Data Center</th>
+                            <th>Cloud</th>
+                            <th>Edge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Latency Requirement</strong></td>
+                            <td><span class="heatmap-cell heat-medium">&lt;10ms</span></td>
+                            <td><span class="heatmap-cell heat-high">&lt;50ms</span></td>
+                            <td><span class="heatmap-cell heat-low">&lt;5ms</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Residency</strong></td>
+                            <td><span class="heatmap-cell heat-low">Full Control</span></td>
+                            <td><span class="heatmap-cell heat-medium">Regional</span></td>
+                            <td><span class="heatmap-cell heat-low">Local</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost Structure</strong></td>
+                            <td><span class="heatmap-cell heat-medium">CapEx Heavy</span></td>
+                            <td><span class="heatmap-cell heat-low">OpEx Only</span></td>
+                            <td><span class="heatmap-cell heat-medium">Fixed/Site</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scalability</strong></td>
+                            <td><span class="heatmap-cell heat-medium">Planned</span></td>
+                            <td><span class="heatmap-cell heat-low">Instant</span></td>
+                            <td><span class="heatmap-cell heat-high">Limited</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Resiliency</strong></td>
+                            <td><span class="heatmap-cell heat-low">N+2</span></td>
+                            <td><span class="heatmap-cell heat-low">Multi-AZ</span></td>
+                            <td><span class="heatmap-cell heat-medium">Local Only</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 class="section-title">Interconnect Architecture</h2>
+            <div class="metric-group">
+                <div class="metric-item">
+                    <div class="metric-label">Private Connectivity</div>
+                    <div class="metric-value">10 Gbps</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Network Segmentation</div>
+                    <div class="metric-value">VLAN/VPC</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Encryption</div>
+                    <div class="metric-value">AES-256</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Latency (DC-Cloud)</div>
+                    <div class="metric-value">~15ms</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Workload Placement Distribution</div>
+                <canvas id="placement-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tab 6: AI/ML & Advanced Compute -->
+        <div class="tab-content" id="tab-6">
+            <div class="message-box">
+                🤖 AI is run as an infrastructure product with unit economics and guardrails.
+            </div>
+
+            <h2 class="section-title">AI Workload Types</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h4 style="color: #2a5298;">Model Training</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Large-scale neural network training</p>
+                    <div class="badge badge-danger">GPU-Intensive</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Fine-tuning</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Transfer learning on existing models</p>
+                    <div class="badge badge-warning">Medium GPU</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Batch Inference</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Scheduled prediction runs</p>
+                    <div class="badge badge-info">CPU/GPU Mix</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Real-time Inference</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Low-latency API serving</p>
+                    <div class="badge badge-warning">Optimized GPU</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Feature Engineering</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Data prep & transformation</p>
+                    <div class="badge badge-success">CPU-Heavy</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Model Registry</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Version control & deployment</p>
+                    <div class="badge badge-info">Orchestration</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">GPU Economics (USD)</h2>
+            <div class="grid grid-4">
+                <div class="metric-item" style="border-left-color: #10b981;">
+                    <div class="metric-label">On-Prem GPU-Hour</div>
+                    <div class="metric-value" style="color: #10b981;">$2.80</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #ef4444;">
+                    <div class="metric-label">Cloud GPU-Hour</div>
+                    <div class="metric-value" style="color: #ef4444;">$14.20</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #2a5298;">
+                    <div class="metric-label">GPU Node (All-in/Year)</div>
+                    <div class="metric-value">$185K</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #764ba2;">
+                    <div class="metric-label">Training Run (Avg)</div>
+                    <div class="metric-value">$12K-35K</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #667eea;">
+                    <div class="metric-label">Cost per 1M Inferences</div>
+                    <div class="metric-value">$180</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #10b981;">
+                    <div class="metric-label">GPU Utilization</div>
+                    <div class="metric-value" style="color: #10b981;">78%</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">MLOps Platform Components</h2>
+            <div class="infographic" style="text-align: left;">
+                <svg viewBox="0 0 800 300" style="width: 100%; max-width: 800px;">
+                    <!-- Data Layer -->
+                    <rect x="50" y="40" width="120" height="60" fill="#10b981" rx="6"/>
+                    <text x="110" y="65" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Data Lake</text>
+                    <text x="110" y="82" text-anchor="middle" fill="white" font-size="10">Raw + Processed</text>
+                    
+                    <!-- Training -->
+                    <rect x="220" y="40" width="120" height="60" fill="#667eea" rx="6"/>
+                    <text x="280" y="65" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Training</text>
+                    <text x="280" y="82" text-anchor="middle" fill="white" font-size="10">GPU Cluster</text>
+                    
+                    <!-- Registry -->
+                    <rect x="390" y="40" width="120" height="60" fill="#764ba2" rx="6"/>
+                    <text x="450" y="65" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Model Registry</text>
+                    <text x="450" y="82" text-anchor="middle" fill="white" font-size="10">Versioning</text>
+                    
+                    <!-- Inference -->
+                    <rect x="560" y="40" width="120" height="60" fill="#2a5298" rx="6"/>
+                    <text x="620" y="65" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Inference API</text>
+                    <text x="620" y="82" text-anchor="middle" fill="white" font-size="10">Low Latency</text>
+                    
+                    <!-- Monitoring -->
+                    <rect x="220" y="150" width="360" height="80" fill="#f3f4f6" stroke="#2a5298" stroke-width="2" rx="6"/>
+                    <text x="400" y="180" text-anchor="middle" fill="#2a5298" font-size="14" font-weight="bold">Monitoring & Governance</text>
+                    <text x="400" y="200" text-anchor="middle" fill="#666" font-size="11">Performance • Drift Detection • Compliance • Cost</text>
+                    
+                    <!-- Arrows -->
+                    <path d="M 170 70 L 220 70" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                    <path d="M 340 70 L 390 70" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                    <path d="M 510 70 L 560 70" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                    
+                    <defs>
+                        <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#333"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <h2 class="section-title">Governance Framework</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h4 style="color: #2a5298;">Quota Management</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">GPU hours allocated by project</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 68%;"></div>
+                    </div>
+                    <p style="margin-top: 8px; font-size: 12px;">68% utilized this month</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Showback/Chargeback</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Per-project cost attribution</p>
+                    <div class="badge badge-success">100% tracked</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Data Residency</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Regional compliance enforcement</p>
+                    <div class="badge badge-info">GDPR compliant</div>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">GPU Cost: On-Prem vs Cloud ($/hour)</div>
+                    <canvas id="gpu-cost-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">GPU Utilization Trend (Last 6 Months)</div>
+                    <canvas id="gpu-util-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 7: Operating Model -->
+        <div class="tab-content" id="tab-7">
+            <div class="message-box">
+                🎯 Global sets the WHAT/WHY; Center owns HOW at scale.
+            </div>
+
+            <div class="split-callout">
+                <h4>⚖️ Global IT vs GCC Center: Strategic Split</h4>
+                <div class="split-grid">
+                    <div class="split-section">
+                        <h5>🌍 Global IT</h5>
+                        <div class="percentage">~20–30%</div>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;"><strong>Role:</strong> Strategy & Governance</p>
+                        <ul>
+                            <li>Technology strategy & roadmap</li>
+                            <li>Enterprise architecture & standards</li>
+                            <li>Product direction & prioritization</li>
+                            <li>Risk, policy, and compliance frameworks</li>
+                            <li>Vendor management & partnerships</li>
+                        </ul>
+                    </div>
+                    <div class="split-section">
+                        <h5>🏢 GCC / Center of Excellence</h5>
+                        <div class="percentage">~70–80%</div>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 12px;"><strong>Role:</strong> Execution at Scale</p>
+                        <ul>
+                            <li>Platform engineering & automation</li>
+                            <li>24x7 operations & SRE</li>
+                            <li>Infrastructure delivery & projects</li>
+                            <li>Technical support (L1/L2/L3)</li>
+                            <li>Cost optimization & FinOps execution</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="split-message">
+                    💡 Global sets the <strong>WHAT</strong> and <strong>WHY</strong>. The Center owns the <strong>HOW</strong> at scale.
+                </div>
+            </div>
+
+            <div class="benchmark-box">
+                <h4>📊 Industry Benchmarks: Infrastructure FTE Models</h4>
+                <div class="benchmark-grid">
+                    <div class="benchmark-item">
+                        <h5>🚀 Lean / Highly Automated</h5>
+                        <div class="range">150–200 FTE</div>
+                        <p>Cloud-first, high automation, platform-as-a-service model. Requires mature DevOps culture and self-service capabilities.</p>
+                    </div>
+                    <div class="benchmark-item">
+                        <h5>⚖️ Balanced</h5>
+                        <div class="range">200–300 FTE</div>
+                        <p>Hybrid infrastructure with balance of engineering, operations, and compliance. Mix of automation and manual ops.</p>
+                    </div>
+                    <div class="benchmark-item">
+                        <h5>🏭 Ops-Heavy / Regulated</h5>
+                        <div class="range">300–400+ FTE</div>
+                        <p>Legacy systems, high compliance burden, 24x7 global ops, extensive manual processes. Common in regulated industries.</p>
+                    </div>
+                </div>
+                <div class="target-statement">
+                    <strong>🎯 Our Target Model:</strong> We are targeting a <strong>balanced-to-lean state (~225 FTE)</strong> achieved through progressive automation, platformization, and self-service enablement. This is not a static headcount—it's a maturity-driven operating model. As automation and platform reuse increase, headcount scales down while service quality improves.
+                </div>
+            </div>
+
+            <h2 class="section-title">Organization Pods (~225 FTE Target)</h2>
+            <div class="grid grid-4">
+                <div class="card">
+                    <h4 style="color: #2a5298;">Platform Engineering</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">35 FTEs</p>
+                    <ul style="font-size: 12px; line-height: 1.6;">
+                        <li>Cloud platforms</li>
+                        <li>Automation & IaC</li>
+                        <li>CI/CD pipelines</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">SRE/Ops Excellence</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">48 FTEs</p>
+                    <ul style="font-size: 12px; line-height: 1.6;">
+                        <li>24x7 operations</li>
+                        <li>Incident management</li>
+                        <li>Performance tuning</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">NetOps</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">28 FTEs</p>
+                    <ul style="font-size: 12px; line-height: 1.6;">
+                        <li>WAN/LAN/WiFi</li>
+                        <li>SD-WAN</li>
+                        <li>Security fabric</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Digital Workplace</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">38 FTEs</p>
+                    <ul style="font-size: 12px; line-height: 1.6;">
+                        <li>End-user devices</li>
+                        <li>VDI/DaaS</li>
+                        <li>Collaboration tools</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Security Engineering</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">32 FTEs</p>
+                    <ul style="font-size: 12px; line-height: 1.6;">
+                        <li>Hardening & patching</li>
+                        <li>Vulnerability mgmt</li>
+                        <li>Compliance automation</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">FinOps</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">15 FTEs</p>
+                    <ul style="font-size: 12px; line-height: 1.6;">
+                        <li>Cost optimization</li>
+                        <li>Showback/chargeback</li>
+                        <li>Budget forecasting</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">ITSM</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">22 FTEs</p>
+                    <ul style="font-size: 12px; line-height: 1.6;">
+                        <li>Service desk</li>
+                        <li>Change management</li>
+                        <li>CMDB governance</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Leadership & PMO</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">17 FTEs</p>
+                    <ul style="font-size: 12px; line-height: 1.6;">
+                        <li>Strategy & planning</li>
+                        <li>Architecture</li>
+                        <li>Program management</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="background: #f0f4ff; padding: 20px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #10b981;">
+                <p style="font-size: 14px; color: #1e3c72; line-height: 1.7;">
+                    <strong>💡 Automation Impact:</strong> As automation, self-service portals, and platform reuse mature, headcount requirements decline. Every automated workflow, standardized runbook, and self-service capability reduces operational overhead. This model targets 225 FTE but scales down to ~180-200 FTE at full automation maturity.
+                </p>
+            </div>
+
+            <div class="fts-callout">
+                <h4>🌐 Follow-the-Sun Operating Model</h4>
+                <p>The organization operates on a <strong>Follow-the-Sun (FTS)</strong> model to deliver continuous global operations and support:</p>
+                <ul>
+                    <li><strong>24x7 Coverage:</strong> Three regional hubs (Americas, EMEA, APAC) provide seamless round-the-clock operations</li>
+                    <li><strong>Structured Handoffs:</strong> Standardized shift handoff protocols with incident summaries, priority escalations, and knowledge transfer</li>
+                    <li><strong>Tiered Support Model:</strong> L1 (triage & resolution), L2 (technical troubleshooting), L3 (subject matter experts) aligned across all regions</li>
+                    <li><strong>Global Command Structure:</strong> Unified runbooks, playbooks, and escalation paths ensure consistency regardless of time zone</li>
+                    <li><strong>Benefits:</strong> Faster MTTR, higher availability SLAs, improved business continuity, and reduced incident resolution times</li>
+                </ul>
+                <p style="margin-top: 15px;">This model enables us to respond to critical incidents within minutes, not hours, regardless of when they occur.</p>
+            </div>
+
+            <h2 class="section-title">Engagement Rhythm</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h4 style="color: #2a5298;">Monthly</h4>
+                    <p style="font-size: 14px; font-weight: 600; margin: 10px 0;">Architecture Council</p>
+                    <p style="font-size: 12px; color: #666;">Review patterns, approve exceptions, set standards</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Quarterly</h4>
+                    <p style="font-size: 14px; font-weight: 600; margin: 10px 0;">Product QBR</p>
+                    <p style="font-size: 12px; color: #666;">Business alignment, roadmap, investment review</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Weekly</h4>
+                    <p style="font-size: 14px; font-weight: 600; margin: 10px 0;">Operations Review</p>
+                    <p style="font-size: 12px; color: #666;">Incidents, changes, capacity, performance</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">RACI Matrix (Key Decisions)</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>Global IT</th>
+                            <th>GCC Center</th>
+                            <th>Business</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Set Technical Standards</strong></td>
+                            <td><span class="badge badge-danger">A</span></td>
+                            <td><span class="badge badge-info">C</span></td>
+                            <td><span class="badge badge-success">I</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Design Solutions</strong></td>
+                            <td><span class="badge badge-warning">R</span></td>
+                            <td><span class="badge badge-danger">A</span></td>
+                            <td><span class="badge badge-info">C</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Execute Delivery</strong></td>
+                            <td><span class="badge badge-info">C</span></td>
+                            <td><span class="badge badge-danger">A/R</span></td>
+                            <td><span class="badge badge-info">C</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Run Operations</strong></td>
+                            <td><span class="badge badge-success">I</span></td>
+                            <td><span class="badge badge-danger">A/R</span></td>
+                            <td><span class="badge badge-success">I</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Approve Exceptions</strong></td>
+                            <td><span class="badge badge-danger">A</span></td>
+                            <td><span class="badge badge-warning">R</span></td>
+                            <td><span class="badge badge-info">C</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p style="margin-top: 15px; font-size: 12px; color: #666;"><strong>Legend:</strong> A=Accountable, R=Responsible, C=Consulted, I=Informed</p>
+        </div>
+
+        <!-- Tab 8: Governance • Risk • Compliance -->
+        <div class="tab-content" id="tab-8">
+            <div class="message-box">
+                🔒 Compliance and resilience are built-in, not bolted-on.
+            </div>
+
+            <h2 class="section-title">Policy Framework</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h4 style="color: #2a5298;">Policy-as-Code</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Automated enforcement via infrastructure pipelines</p>
+                    <div class="badge badge-success">87% automated</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Baseline Hardening</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">CIS benchmarks applied at build</p>
+                    <div class="badge badge-success">100% coverage</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Change Governance</h4>
+                    <p style="font-size: 13px; margin: 10px 0;">Risk-based approval workflow</p>
+                    <div class="badge badge-info">4-tier model</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">DR Tiering (RTO/RPO by Workload)</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tier</th>
+                            <th>RTO Target</th>
+                            <th>RPO Target</th>
+                            <th>DR Strategy</th>
+                            <th>Cost Premium</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-danger">Tier-0</span></td>
+                            <td>&lt; 5 minutes</td>
+                            <td>0 (Sync)</td>
+                            <td>Active-Active</td>
+                            <td>+85%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-warning">Tier-1</span></td>
+                            <td>&lt; 1 hour</td>
+                            <td>&lt; 15 min</td>
+                            <td>Warm Standby</td>
+                            <td>+45%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-info">Tier-2</span></td>
+                            <td>&lt; 4 hours</td>
+                            <td>&lt; 1 hour</td>
+                            <td>Cold Standby</td>
+                            <td>+20%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-success">Tier-3</span></td>
+                            <td>&lt; 24 hours</td>
+                            <td>&lt; 24 hours</td>
+                            <td>Backup Only</td>
+                            <td>+5%</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-success">Tier-4</span></td>
+                            <td>Best Effort</td>
+                            <td>Best Effort</td>
+                            <td>Snapshot</td>
+                            <td>Baseline</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 class="section-title">Security Metrics</h2>
+            <div class="grid grid-4">
+                <div class="metric-item" style="border-left-color: #10b981;">
+                    <div class="metric-label">Patch SLA Compliance</div>
+                    <div class="metric-value" style="color: #10b981;">95%</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #ef4444;">
+                    <div class="metric-label">Critical Vulns &gt;30d</div>
+                    <div class="metric-value" style="color: #ef4444;">8</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #2a5298;">
+                    <div class="metric-label">Logging Coverage</div>
+                    <div class="metric-value">92%</div>
+                </div>
+                <div class="metric-item" style="border-left-color: #667eea;">
+                    <div class="metric-label">Security Incidents (MTD)</div>
+                    <div class="metric-value">3</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Risk Heatmap</h2>
+            <div class="grid grid-4">
+                <div class="card heatmap-cell heat-low">
+                    <strong>Network</strong><br>
+                    <small>Low Risk</small>
+                </div>
+                <div class="card heatmap-cell heat-medium">
+                    <strong>Cloud Sprawl</strong><br>
+                    <small>Medium Risk</small>
+                </div>
+                <div class="card heatmap-cell heat-low">
+                    <strong>Data Center</strong><br>
+                    <small>Low Risk</small>
+                </div>
+                <div class="card heatmap-cell heat-high">
+                    <strong>Legacy Systems</strong><br>
+                    <small>High Risk</small>
+                </div>
+                <div class="card heatmap-cell heat-medium">
+                    <strong>Third-Party</strong><br>
+                    <small>Medium Risk</small>
+                </div>
+                <div class="card heatmap-cell heat-low">
+                    <strong>Identity</strong><br>
+                    <small>Low Risk</small>
+                </div>
+                <div class="card heatmap-cell heat-medium">
+                    <strong>Shadow IT</strong><br>
+                    <small>Medium Risk</small>
+                </div>
+                <div class="card heatmap-cell heat-low">
+                    <strong>Backup/DR</strong><br>
+                    <small>Low Risk</small>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Compliance Coverage Progress</div>
+                <canvas id="compliance-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tab 9: Performance Dashboard -->
+        <div class="tab-content" id="tab-9">
+            <div class="message-box">
+                📈 One dashboard language across Network, Cloud, DC, DWP, Agile, ITSM.
+            </div>
+
+            <h2 class="section-title">Network KPIs</h2>
+            <div class="metric-group">
+                <div class="metric-item">
+                    <div class="metric-label">Avg Latency</div>
+                    <div class="metric-value">18ms</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Packet Loss</div>
+                    <div class="metric-value">0.02%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Site Availability</div>
+                    <div class="metric-value">99.8%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Incidents/Month</div>
+                    <div class="metric-value">2.1</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Cloud Platform KPIs</h2>
+            <div class="metric-group">
+                <div class="metric-item">
+                    <div class="metric-label">Provisioning Time</div>
+                    <div class="metric-value">4.2h</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Resource Utilization</div>
+                    <div class="metric-value">72%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Guardrail Violations</div>
+                    <div class="metric-value">3</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Cost vs Budget</div>
+                    <div class="metric-value">-4%</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Data Center KPIs</h2>
+            <div class="metric-group">
+                <div class="metric-item">
+                    <div class="metric-label">Infrastructure Avail</div>
+                    <div class="metric-value">99.7%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Capacity Utilized</div>
+                    <div class="metric-value">68%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Storage Latency</div>
+                    <div class="metric-value">1.8ms</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">IOPS</div>
+                    <div class="metric-value">850K</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Digital Workplace KPIs</h2>
+            <div class="metric-group">
+                <div class="metric-item">
+                    <div class="metric-label">Device Compliance</div>
+                    <div class="metric-value">94%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">User NPS</div>
+                    <div class="metric-value">68</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Incidents/Month</div>
+                    <div class="metric-value">145</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Avg Resolution</div>
+                    <div class="metric-value">2.3h</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Agile Delivery KPIs</h2>
+            <div class="metric-group">
+                <div class="metric-item">
+                    <div class="metric-label">Deployment Freq</div>
+                    <div class="metric-value">2.3/day</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Change Failure Rate</div>
+                    <div class="metric-value">6%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">MTTR</div>
+                    <div class="metric-value">2.1hrs</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Lead Time</div>
+                    <div class="metric-value">5.2d</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">ITSM KPIs</h2>
+            <div class="metric-group">
+                <div class="metric-item">
+                    <div class="metric-label">MTTA</div>
+                    <div class="metric-value">12min</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">SLA Met</div>
+                    <div class="metric-value">96%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Backlog Age</div>
+                    <div class="metric-value">8.5d</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">First-Call Resolution</div>
+                    <div class="metric-value">78%</div>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="chart-container">
+                    <div class="chart-title">Availability Trend (All Domains)</div>
+                    <canvas id="availability-trend-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Incident Volume by Domain</div>
+                    <canvas id="incident-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 10: Leadership System -->
+        <div class="tab-content" id="tab-10">
+            <div class="message-box">
+                🎯 This is how the Infra Head drives outcomes.
+            </div>
+
+            <h2 class="section-title">POLC Framework</h2>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">📋 Planning</h3>
+                    <ul style="font-size: 13px; line-height: 1.8; color: #666;">
+                        <li><strong>Strategy:</strong> 3-year technology roadmap</li>
+                        <li><strong>OKRs:</strong> Quarterly objectives cascade</li>
+                        <li><strong>Investment:</strong> $48M annual budget allocation</li>
+                        <li><strong>Workforce:</strong> Capacity planning for 225 FTEs</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">🏗️ Organizing</h3>
+                    <ul style="font-size: 13px; line-height: 1.8; color: #666;">
+                        <li><strong>Product Teams:</strong> 8 platform pods</li>
+                        <li><strong>Ownership:</strong> Clear RACI for all activities</li>
+                        <li><strong>On-Call:</strong> Follow-the-sun coverage model</li>
+                        <li><strong>Escalation:</strong> Defined severity paths</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">🚀 Leading</h3>
+                    <ul style="font-size: 13px; line-height: 1.8; color: #666;">
+                        <li><strong>Stakeholders:</strong> Monthly business reviews</li>
+                        <li><strong>Culture:</strong> Blameless postmortems, learning</li>
+                        <li><strong>Talent:</strong> Career paths, training budget</li>
+                        <li><strong>Decision-making:</strong> Data-driven, transparent</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">📊 Controlling</h3>
+                    <ul style="font-size: 13px; line-height: 1.8; color: #666;">
+                        <li><strong>Metrics:</strong> Real-time dashboards</li>
+                        <li><strong>QBRs:</strong> Quarterly performance reviews</li>
+                        <li><strong>Audits:</strong> Compliance & security checks</li>
+                        <li><strong>Continuous Improvement:</strong> Kaizen, 5-Whys</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2 class="section-title">Management Frameworks</h2>
+            <div class="grid grid-4">
+                <div class="card">
+                    <h4 style="color: #2a5298;">ITIL 4 + SRE</h4>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">Service management meets reliability engineering</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">FinOps</h4>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">Cloud cost optimization discipline</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">COBIT-lite</h4>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">Governance & risk framework</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">EA Guardrails</h4>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">Architecture decision records</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Decision Tree: Workload Placement</h2>
+            <div class="infographic">
+                <svg viewBox="0 0 700 350" style="width: 100%; max-width: 700px;">
+                    <!-- Root -->
+                    <rect x="275" y="20" width="150" height="50" fill="#2a5298" rx="8"/>
+                    <text x="350" y="50" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Mission Critical?</text>
+                    
+                    <!-- Level 1 -->
+                    <rect x="100" y="120" width="120" height="50" fill="#10b981" rx="6"/>
+                    <text x="160" y="145" text-anchor="middle" fill="white" font-size="12" font-weight="bold">YES</text>
+                    <text x="160" y="160" text-anchor="middle" fill="white" font-size="10">→ Data Center</text>
+                    
+                    <rect x="480" y="120" width="120" height="50" fill="#667eea" rx="6"/>
+                    <text x="540" y="145" text-anchor="middle" fill="white" font-size="12" font-weight="bold">NO</text>
+                    <text x="540" y="160" text-anchor="middle" fill="white" font-size="10">Variable load?</text>
+                    
+                    <!-- Level 2 -->
+                    <rect x="400" y="220" width="100" height="40" fill="#764ba2" rx="6"/>
+                    <text x="450" y="245" text-anchor="middle" fill="white" font-size="11">YES → Cloud</text>
+                    
+                    <rect x="530" y="220" width="100" height="40" fill="#ef4444" rx="6"/>
+                    <text x="580" y="235" text-anchor="middle" fill="white" font-size="11">NO</text>
+                    <text x="580" y="250" text-anchor="middle" fill="white" font-size="9">Edge needed?</text>
+                    
+                    <!-- Arrows -->
+                    <line x1="320" y1="70" x2="160" y2="120" stroke="#333" stroke-width="2"/>
+                    <line x1="380" y1="70" x2="540" y2="120" stroke="#333" stroke-width="2"/>
+                    <line x1="520" y1="170" x2="450" y2="220" stroke="#333" stroke-width="2"/>
+                    <line x1="560" y1="170" x2="580" y2="220" stroke="#333" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <h2 class="section-title">Budget Allocation ($48M Annual)</h2>
+            <div class="chart-container">
+                <canvas id="budget-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tab 11: Success Scorecard -->
+        <div class="tab-content" id="tab-11">
+            <div class="message-box">
+                🎉 Outcomes, not activity.
+            </div>
+
+            <h2 class="section-title">12-18 Month Transformation Targets</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h4 style="color: #2a5298;">Time-to-Provision</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Before</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #ef4444;">6 weeks</p>
+                        </div>
+                        <span style="font-size: 32px; color: #10b981;">→</span>
+                        <div>
+                            <p style="font-size: 12px; color: #666;">After</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #10b981;">4 hours</p>
+                        </div>
+                    </div>
+                    <div class="badge badge-success">93% reduction</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Change Failure Rate</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Before</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #ef4444;">14%</p>
+                        </div>
+                        <span style="font-size: 32px; color: #10b981;">→</span>
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Target</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #10b981;">5%</p>
+                        </div>
+                    </div>
+                    <div class="badge badge-success">64% reduction</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">MTTR</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Before</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #ef4444;">4.5hrs</p>
+                        </div>
+                        <span style="font-size: 32px; color: #10b981;">→</span>
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Target</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #10b981;">1.8hrs</p>
+                        </div>
+                    </div>
+                    <div class="badge badge-success">60% improvement</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Unit Cost per VM</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Before</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #ef4444;">$2,300</p>
+                        </div>
+                        <span style="font-size: 32px; color: #10b981;">→</span>
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Target</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #10b981;">$1,800</p>
+                        </div>
+                    </div>
+                    <div class="badge badge-success">22% reduction</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Compliance Coverage</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Before</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #ef4444;">72%</p>
+                        </div>
+                        <span style="font-size: 32px; color: #10b981;">→</span>
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Target</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #10b981;">95%</p>
+                        </div>
+                    </div>
+                    <div class="badge badge-success">+23 pts</div>
+                </div>
+                <div class="card">
+                    <h4 style="color: #2a5298;">Internal NPS</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Before</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #ef4444;">52</p>
+                        </div>
+                        <span style="font-size: 32px; color: #10b981;">→</span>
+                        <div>
+                            <p style="font-size: 12px; color: #666;">Target</p>
+                            <p style="font-size: 24px; font-weight: 700; color: #10b981;">78</p>
+                        </div>
+                    </div>
+                    <div class="badge badge-success">+26 pts</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">First 90 Days Plan</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Focus</th>
+                            <th>Key Actions</th>
+                            <th>Success Criteria</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Days 1-30</strong></td>
+                            <td>Assess & Listen</td>
+                            <td>Stakeholder interviews, baseline metrics, pain points</td>
+                            <td>Current state documented</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Days 31-60</strong></td>
+                            <td>Quick Wins</td>
+                            <td>Fix top 3 pain points, establish governance</td>
+                            <td>Early credibility gained</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Days 61-90</strong></td>
+                            <td>Foundation</td>
+                            <td>Operating model, RACI, metrics dashboard</td>
+                            <td>Sustainable cadence</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Transformation Progress Tracker</div>
+                <canvas id="transformation-chart"></canvas>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px; border-radius: 12px; text-align: center; margin-top: 40px;">
+                <h2 style="font-size: 28px; margin-bottom: 15px;">🚀 Ready for Transformation</h2>
+                <p style="font-size: 16px; opacity: 0.95;">This operating model transforms infrastructure from a cost center to a strategic enabler.</p>
+                <p style="font-size: 14px; margin-top: 10px; opacity: 0.9;">Measurable outcomes • Data-driven decisions • Business alignment</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            tabs[index].classList.add('active');
+            contents[index].classList.add('active');
+            
+            // Trigger animations for current tab
+            animateCurrentTab(index);
+        }
+
+        // Animated counters
+        function animateValue(id, start, end, duration, suffix = '') {
+            const element = document.getElementById(id);
+            if (!element) return;
+            
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = current.toFixed(1) + suffix;
+            }, 16);
+        }
+
+        // Initialize charts
+        function initCharts() {
+            // Sparklines for Tab 1
+            createSparkline('spark-availability', [99.2, 99.4, 99.5, 99.6, 99.7, 99.7]);
+            createSparkline('spark-change', [86, 88, 90, 92, 93, 94]);
+            createSparkline('spark-provision', [42, 32, 18, 12, 6, 4.2]);
+            createSparkline('spark-cost', [0, -3, -6, -8, -10, -12]);
+            createSparkline('spark-compliance', [72, 76, 80, 83, 85, 87]);
+            createSparkline('spark-nps', [52, 56, 60, 63, 66, 68]);
+
+            // Workload cost chart
+            new Chart(document.getElementById('workload-cost-chart'), {
+                type: 'bar',
+                data: {
+                    labels: ['ERP', 'Manufacturing', 'R&D/HPC', 'AI/ML', 'Data', 'Digital', 'Shared Svc', 'Backup/DR'],
+                    datasets: [{
+                        label: 'Annual Cost ($M)',
+                        data: [8.5, 7.2, 6.8, 5.4, 4.9, 3.8, 3.2, 2.4],
+                        backgroundColor: ['#ef4444', '#ef4444', '#f59e0b', '#f59e0b', '#f59e0b', '#3b82f6', '#3b82f6', '#10b981']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Bubble chart
+            new Chart(document.getElementById('bubble-chart'), {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Workloads',
+                        data: [
+                            {x: 95, y: 8.5, r: 15},
+                            {x: 95, y: 7.2, r: 12},
+                            {x: 85, y: 6.8, r: 10},
+                            {x: 85, y: 5.4, r: 8},
+                            {x: 75, y: 4.9, r: 12},
+                            {x: 65, y: 3.8, r: 10},
+                            {x: 55, y: 3.2, r: 11},
+                            {x: 40, y: 2.4, r: 14}
+                        ],
+                        backgroundColor: 'rgba(102, 126, 234, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { title: { display: true, text: 'Criticality Score' } },
+                        y: { title: { display: true, text: 'Annual Cost ($M)' } }
+                    }
+                }
+            });
+
+            // Tier cost chart
+            new Chart(document.getElementById('tier-cost-chart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Tier-0', 'Tier-1', 'Tier-2', 'Tier-3', 'Tier-4'],
+                    datasets: [{
+                        label: '$/VM/year',
+                        data: [8500, 4200, 1800, 850, 400],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#6b7280']
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Tier distribution
+            new Chart(document.getElementById('tier-distribution-chart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tier-0 (8%)', 'Tier-1 (22%)', 'Tier-2 (45%)', 'Tier-3 (20%)', 'Tier-4 (5%)'],
+                    datasets: [{
+                        data: [8, 22, 45, 20, 5],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#6b7280']
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Placement chart
+            new Chart(document.getElementById('placement-chart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Data Center', 'Cloud', 'Edge'],
+                    datasets: [{
+                        label: 'Workload Count',
+                        data: [480, 320, 145],
+                        backgroundColor: ['#2a5298', '#667eea', '#10b981']
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // GPU cost comparison
+            new Chart(document.getElementById('gpu-cost-chart'), {
+                type: 'bar',
+                data: {
+                    labels: ['On-Premise', 'Cloud'],
+                    datasets: [{
+                        label: '$/GPU-Hour',
+                        data: [2.80, 14.20],
+                        backgroundColor: ['#10b981', '#ef4444']
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // GPU utilization trend
+            new Chart(document.getElementById('gpu-util-chart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Utilization %',
+                        data: [62, 68, 72, 75, 76, 78],
+                        borderColor: '#667eea',
+                        fill: false
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Compliance coverage
+            new Chart(document.getElementById('compliance-chart'), {
+                type: 'line',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1+1', 'Q2+1'],
+                    datasets: [{
+                        label: 'Coverage %',
+                        data: [72, 76, 80, 83, 87, 92],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Availability trend
+            new Chart(document.getElementById('availability-trend-chart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'Network',
+                            data: [99.6, 99.7, 99.8, 99.7, 99.8, 99.8],
+                            borderColor: '#667eea',
+                            fill: false
+                        },
+                        {
+                            label: 'Cloud',
+                            data: [99.5, 99.6, 99.7, 99.8, 99.8, 99.9],
+                            borderColor: '#10b981',
+                            fill: false
+                        },
+                        {
+                            label: 'DC',
+                            data: [99.5, 99.6, 99.6, 99.7, 99.7, 99.7],
+                            borderColor: '#2a5298',
+                            fill: false
+                        }
+                    ]
+                },
+                options: { responsive: true }
+            });
+
+            // Incident chart
+            new Chart(document.getElementById('incident-chart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Network', 'Cloud', 'DC', 'DWP', 'Security'],
+                    datasets: [{
+                        label: 'Incidents (Monthly)',
+                        data: [2.1, 4.5, 3.2, 12, 1.8],
+                        backgroundColor: ['#667eea', '#10b981', '#2a5298', '#f59e0b', '#ef4444']
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Budget allocation
+            new Chart(document.getElementById('budget-chart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Infrastructure (35%)', 'Operations (28%)', 'Projects (22%)', 'Security (10%)', 'Other (5%)'],
+                    datasets: [{
+                        data: [16.8, 13.4, 10.6, 4.8, 2.4],
+                        backgroundColor: ['#2a5298', '#667eea', '#10b981', '#ef4444', '#6b7280']
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Transformation progress
+            new Chart(document.getElementById('transformation-chart'), {
+                type: 'radar',
+                data: {
+                    labels: ['Provision Speed', 'Change Success', 'MTTR', 'Unit Cost', 'Compliance', 'NPS'],
+                    datasets: [
+                        {
+                            label: 'Current',
+                            data: [15, 65, 40, 50, 70, 65],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.2)'
+                        },
+                        {
+                            label: 'Target',
+                            data: [95, 90, 85, 85, 95, 90],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)'
+                        }
+                    ]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        function createSparkline(canvasId, data) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: Array(data.length).fill(''),
+                    datasets: [{
+                        data: data,
+                        borderColor: '#10b981',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: false },
+                        y: { display: false }
+                    }
+                }
+            });
+        }
+
+        function animateCurrentTab(index) {
+            if (index === 0) {
+                // Tab 1 animations
+                setTimeout(() => {
+                    animateValue('availability-val', 0, 99.7, 1000, '%');
+                    animateValue('change-val', 0, 94, 1000, '%');
+                    animateValue('provision-val', 0, 4.2, 1000, 'h');
+                    animateValue('cost-val', 0, -12, 1000, '%');
+                    animateValue('compliance-val', 0, 87, 1000, '%');
+                    animateValue('nps-val', 0, 68, 1000, '');
+                }, 300);
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            initCharts();
+            animateCurrentTab(0);
+        });
+    </script>
+
+      <script>
+        const createFloatingBall = ()=>{let a=document.createElement("style");a.textContent=`
+          .fellou-floating-ball {
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background: #fff;
+              border-radius: 50%;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+              display: flex;
+              gap: 8px;
+              flex-direction: row;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              transition: all 0.15s ease;
+              z-index: 100000;
+              width: 28px;
+              height: 28px;
+              text-align: center;
+              border: 2px solid #f4f4f4;
+          }
+
+          .fellou-floating-ball:hover {
+              width: 140px;
+              border-radius: 99px;
+          }
+
+          .fellou-floating-ball svg {
+              width: 16px;
+              height: 16px;
+          }
+
+          .fellou-floating-ball-text {
+              display: none;
+              width: 0px;
+              transition: width 0.3s ease;
+              color: #595561;
+              font-size: 12px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 20px;
+              white-space: nowrap;
+              overflow: hidden;
+           
+          }
+
+          .fellou-floating-ball:hover .fellou-floating-ball-text {
+              display: block;
+              width: 100px;
+          }
+      `,document.head.appendChild(a);let b=document.createElement("div");b.className="fellou-floating-ball",b.addEventListener("click",()=>{window.open("https://fellou.ai","_blank")}),b.innerHTML=`
+          <svg width="16" height="16" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path opacity="0.72" d="M108.71 15.909C133.671 36.8541 134.337 77.1554 110.197 105.924C86.0565 134.694 46.2518 141.036 21.2904 120.091C-3.67096 99.1459 -4.33674 58.8446 19.8034 30.0755C43.9435 1.30644 83.7482 -5.03614 108.71 15.909ZM102.282 23.5694C81.8118 6.39315 48.2407 11.7425 27.4638 36.5034C6.68694 61.2643 7.24845 95.2543 27.7183 112.431C48.1882 129.607 81.7593 124.258 102.536 99.4966C123.313 74.7357 122.752 40.7457 102.282 23.5694Z" fill="url(#paint0_linear_34_1408)"/>
+              <path d="M116.986 29.3811C141.525 49.9712 143.286 88.2698 120.921 114.924C98.5561 141.577 60.5333 146.493 35.995 125.903C11.4567 105.313 9.69493 67.0139 32.06 40.3602C54.4252 13.7065 92.4479 8.79095 116.986 29.3811ZM110.558 37.0415C90.3987 20.1255 58.6488 24.2301 39.7205 46.788C20.7921 69.346 22.2632 101.326 42.4229 118.242C62.5825 135.158 94.3324 131.054 113.261 108.496C132.189 85.9377 130.718 53.9574 110.558 37.0415Z" fill="url(#paint1_linear_34_1408)"/>
+              <path d="M131.544 35.0694C155.71 55.3471 155.731 95.1074 131.591 123.876C107.451 152.646 68.291 159.529 44.1249 139.251C19.9589 118.974 19.9379 79.2135 44.078 50.4444C68.2182 21.6753 107.378 14.7917 131.544 35.0694ZM125.116 42.7299C105.505 26.2745 72.5526 32.067 51.7385 56.8723C30.9244 81.6776 30.9421 115.136 50.5528 131.591C70.1636 148.046 103.116 142.254 123.931 117.449C144.745 92.6433 144.727 59.1852 125.116 42.7299Z" fill="url(#paint2_linear_34_1408)"/>
+              <defs>
+                  <linearGradient id="paint0_linear_34_1408" x1="108.71" y1="15.909" x2="21.2904" y2="120.091" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint1_linear_34_1408" x1="116.986" y1="29.381" x2="35.995" y2="125.903" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint2_linear_34_1408" x1="131.544" y1="35.0694" x2="44.1249" y2="139.251" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8"/>
+                      <stop offset="0.5" stop-color="#FF9000"/>
+                      <stop offset="1" stop-color="#33B3FF"/>
+                  </linearGradient>
+              </defs>
+          </svg>
+      `;let c=document.createElement("div");c.className="fellou-floating-ball-text",c.textContent="powered by fellou",b.appendChild(c),document.body.appendChild(b)};
+        // Call createFloatingBall when the page loads
+        window.addEventListener('load', createFloatingBall);
+      </script>
+    </body>
+</html>
