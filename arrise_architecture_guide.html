@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arrise Studio Infrastructure — Architecture Deep Dive</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --panel: #111418;
+    --panel2: #161b22;
+    --border: #2a2f3a;
+    --accent: #00d4aa;
+    --accent2: #ff6b35;
+    --accent3: #7c6af7;
+    --accent4: #f0b429;
+    --accent5: #3b9eff;
+    --text: #e2e8f0;
+    --muted: #6b7280;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    position: relative;
+    z-index: 1;
+    padding: 48px 40px 36px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,212,170,0.05) 0%, transparent 100%);
+  }
+
+  header .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  header .tag::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+
+  header h1 {
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  header h1 span { color: var(--accent); }
+
+  header p {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Nav pills */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .nav-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 16px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Main layout */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+
+  /* Sections */
+  .section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Section header */
+  .section-header {
+    margin-bottom: 32px;
+  }
+  .section-header .layer-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-header h2 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .section-header p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 680px;
+    font-family: var(--mono);
+  }
+
+  /* Cards grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--accent-color, var(--accent)); transform: translateY(-2px); }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-color, var(--accent));
+  }
+
+  .card-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    font-family: var(--mono);
+  }
+  .card .subtitle {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent-color, var(--accent));
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-family: var(--mono);
+  }
+
+  /* Data format box */
+  .data-format {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .data-format .df-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .data-format code {
+    color: var(--accent4);
+    display: block;
+    line-height: 1.7;
+  }
+  .data-format .key { color: var(--accent3); }
+  .data-format .val { color: var(--accent4); }
+  .data-format .str { color: var(--accent); }
+  .data-format .num { color: var(--accent2); }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin: 24px 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .flow-box {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    white-space: nowrap;
+    text-align: center;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+  .flow-box:hover { border-color: var(--accent); }
+  .flow-box .flow-label { color: var(--muted); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; }
+  .flow-box .flow-name { color: var(--text); font-weight: 700; }
+  .flow-arrow {
+    color: var(--border);
+    font-size: 18px;
+    padding: 0 8px;
+    flex-shrink: 0;
+  }
+
+  /* Comparison table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+    margin-top: 16px;
+  }
+  .compare-table th {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .compare-table td {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .compare-table tr:hover td { background: var(--panel); }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .pill-green { background: rgba(0,212,170,0.15); color: var(--accent); }
+  .pill-orange { background: rgba(255,107,53,0.15); color: var(--accent2); }
+  .pill-blue { background: rgba(59,158,255,0.15); color: var(--accent5); }
+  .pill-purple { background: rgba(124,106,247,0.15); color: var(--accent3); }
+  .pill-yellow { background: rgba(240,180,41,0.15); color: var(--accent4); }
+
+  /* Info box */
+  .info-box {
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    border-left: 3px solid;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .info-box.tip { background: rgba(0,212,170,0.06); border-color: var(--accent); }
+  .info-box.warn { background: rgba(255,107,53,0.06); border-color: var(--accent2); }
+  .info-box.note { background: rgba(124,106,247,0.06); border-color: var(--accent3); }
+  .info-box strong { display: block; margin-bottom: 4px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+
+  /* SageMaker deep dive */
+  .sm-pipeline {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .sm-stage {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .sm-stage-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--panel2);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .sm-stage-header:hover { background: rgba(0,212,170,0.04); }
+  .sm-stage-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sm-stage-title {
+    font-weight: 700;
+    font-size: 14px;
+    flex: 1;
+  }
+  .sm-stage-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .toggle-icon {
+    font-family: var(--mono);
+    color: var(--muted);
+    transition: transform 0.2s;
+    font-size: 14px;
+  }
+  .sm-stage.open .toggle-icon { transform: rotate(180deg); }
+  .sm-stage-body {
+    display: none;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+  .sm-stage.open .sm-stage-body { display: block; }
+
+  /* Model card */
+  .model-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .model-card {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .model-card h4 {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--accent);
+  }
+  .model-card p {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .model-card .algo-tag {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 8px;
+    background: rgba(124,106,247,0.15);
+    color: var(--accent3);
+    border-radius: 3px;
+    font-size: 10px;
+    font-family: var(--mono);
+  }
+
+  /* Big number stat */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .stat-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-box .stat-num {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-box .stat-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Full pipeline overview */
+  .pipeline-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 24px 0;
+  }
+  .po-layer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .po-layer:hover { border-color: var(--lcolor); background: var(--panel2); }
+  .po-layer-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--lcolor);
+    flex-shrink: 0;
+  }
+  .po-layer-name {
+    font-weight: 700;
+    font-size: 14px;
+    flex: 1;
+  }
+  .po-layer-tools {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .po-arrow {
+    text-align: center;
+    color: var(--border);
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  /* Scrollable code block */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 12px 0;
+  }
+  .code-block .comment { color: #4a5568; }
+  .code-block .keyword { color: var(--accent3); }
+  .code-block .string { color: var(--accent); }
+  .code-block .number { color: var(--accent2); }
+  .code-block .func { color: var(--accent5); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  h3.sub-heading {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  ul.point-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  ul.point-list li {
+    display: flex;
+    gap: 10px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  ul.point-list li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  ul.point-list li strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">Architecture Learning Guide</div>
+  <h1>Arrise Studio <span>Infrastructure</span></h1>
+  <p>Colombia · Malta · Romania — 100+ tables · 500+ servers · End-to-end observability pipeline</p>
+</header>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('overview', this)">Overview</button>
+  <button class="nav-btn" onclick="showSection('collection', this)">Collection Layer</button>
+  <button class="nav-btn" onclick="showSection('ingestion', this)">Ingestion Layer</button>
+  <button class="nav-btn" onclick="showSection('storage', this)">Storage Layer</button>
+  <button class="nav-btn" onclick="showSection('processing', this)">Processing Layer</button>
+  <button class="nav-btn" onclick="showSection('sagemaker', this)">SageMaker Deep Dive</button>
+  <button class="nav-btn" onclick="showSection('insights', this)">Insights &amp; Actions</button>
+  <button class="nav-btn" onclick="showSection('dataformats', this)">Data Formats</button>
+</nav>
+
+<main>
+
+<!-- OVERVIEW -->
+<div class="section active" id="section-overview">
+  <div class="section-header">
+    <div class="layer-tag" style="color:var(--accent)">📡 Full Pipeline</div>
+    <h2>How It All Fits Together</h2>
+    <p>An end-to-end observability and AI/ML intelligence platform. Raw signals from 500+ servers flow through 6 layers to become automated alerts and predictive insights.</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-num" style="color:var(--accent)">500+</div><div class="stat-label">Servers</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--accent2)">100+</div><div class="stat-label">Tables</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--accent3)">3</div><div class="stat-label">Regions</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--accent4)">6</div><div class="stat-label">Pipeline Layers</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--accent5)">3</div><div class="stat-label">ML Models</div></div>
+  </div>
+
+  <h3 class="sub-heading">Pipeline at a Glance — click any layer to explore</h3>
+
+  <div class="pipeline-overview">
+    <div class="po-layer" style="--lcolor: var(--accent)" onclick="showSection('collection')">
+      <div class="po-layer-dot"></div>
+      <div class="po-layer-name">1. Collection Layer</div>
+      <div class="po-layer-tools">Syslog · Fluentd · Filebeat · Prometheus · Jaeger · OpenTelemetry</div>
+    </div>
+    <div class="po-arrow">↓</div>
+    <div class="po-layer" style="--lcolor: var(--accent2)" onclick="showSection('ingestion')">
+      <div class="po-layer-dot"></div>
+      <div class="po-layer-name">2. Ingestion Layer (AWS)</div>
+      <div class="po-layer-tools">Kinesis Data Streams · Kinesis Firehose · MSK (Kafka) · EventBridge</div>
+    </div>
+    <div class="po-arrow">↓</div>
+    <div class="po-layer" style="--lcolor: var(--accent4)" onclick="showSection('storage')">
+      <div class="po-layer-dot"></div>
+      <div class="po-layer-name">3. Storage Layer (Tiered S3)</div>
+      <div class="po-layer-tools">S3 Standard (Hot) · S3 IA (Warm) · S3 Glacier (Cold)</div>
+    </div>
+    <div class="po-arrow">↓</div>
+    <div class="po-layer" style="--lcolor: var(--accent5)" onclick="showSection('processing')">
+      <div class="po-layer-dot"></div>
+      <div class="po-layer-name">4. Processing & Analytics Layer</div>
+      <div class="po-layer-tools">AWS Athena · EMR Serverless (Spark) · Glue ETL</div>
+    </div>
+    <div class="po-arrow">↓</div>
+    <div class="po-layer" style="--lcolor: var(--accent3)" onclick="showSection('sagemaker')">
+      <div class="po-layer-dot"></div>
+      <div class="po-layer-name">5. AI/ML Layer (SageMaker)</div>
+      <div class="po-layer-tools">Feature Engineering · Anomaly Detection · Root Cause · Forecasting</div>
+    </div>
+    <div class="po-arrow">↓</div>
+    <div class="po-layer" style="--lcolor: var(--accent2)" onclick="showSection('insights')">
+      <div class="po-layer-dot"></div>
+      <div class="po-layer-name">6. Insights & Action Layer</div>
+      <div class="po-layer-tools">OpenSearch · Grafana · EventBridge · PagerDuty · Slack · Jira</div>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <strong>💡 Key Concept</strong>
+    This is an <strong>observability pipeline</strong> — it collects Logs, Metrics, and Traces (the three pillars of observability) from a globally distributed gaming infrastructure, and uses ML to automatically detect problems and predict capacity needs — before users are impacted.
+  </div>
+</div>
+
+<!-- COLLECTION LAYER -->
+<div class="section" id="section-collection">
+  <div class="section-header">
+    <div class="layer-tag" style="color:var(--accent)">Layer 1 — Collection</div>
+    <h2>Data Collection Layer</h2>
+    <p>Three signal types captured from every server: Logs (what happened), Metrics (how the system performed), and Traces (how a request travelled through services).</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent-color: var(--accent)">
+      <div class="card-icon">📋</div>
+      <h3>Logs</h3>
+      <div class="subtitle">What happened?</div>
+      <p>Timestamped text records of events. Errors, warnings, access records, application events.</p>
+      <div class="data-format">
+        <div class="df-label">Sample Log Format (JSON)</div>
+        <code>
+{<br>
+&nbsp;&nbsp;<span class="key">"timestamp"</span>: <span class="str">"2025-03-11T10:23:01Z"</span>,<br>
+&nbsp;&nbsp;<span class="key">"level"</span>: <span class="str">"ERROR"</span>,<br>
+&nbsp;&nbsp;<span class="key">"service"</span>: <span class="str">"game-server-co-01"</span>,<br>
+&nbsp;&nbsp;<span class="key">"message"</span>: <span class="str">"DB connection timeout"</span>,<br>
+&nbsp;&nbsp;<span class="key">"trace_id"</span>: <span class="str">"abc123"</span><br>
+}
+        </code>
+      </div>
+    </div>
+
+    <div class="card" style="--accent-color: var(--accent5)">
+      <div class="card-icon">📊</div>
+      <h3>Metrics</h3>
+      <div class="subtitle">How is the system performing?</div>
+      <p>Numeric measurements over time. CPU %, memory usage, requests/sec, latency, error rates.</p>
+      <div class="data-format">
+        <div class="df-label">Sample Metric Format (Prometheus)</div>
+        <code>
+<span class="comment"># HELP cpu_usage CPU usage percent</span><br>
+<span class="comment"># TYPE cpu_usage gauge</span><br>
+cpu_usage{<br>
+&nbsp;host=<span class="str">"server-mt-07"</span>,<br>
+&nbsp;region=<span class="str">"malta"</span><br>
+} <span class="num">87.3</span> <span class="num">1710149000</span>
+        </code>
+      </div>
+    </div>
+
+    <div class="card" style="--accent-color: var(--accent3)">
+      <div class="card-icon">🔗</div>
+      <h3>Traces</h3>
+      <div class="subtitle">How did a request flow?</div>
+      <p>Distributed traces follow a single request across multiple services. Shows where time was spent and where failures occurred.</p>
+      <div class="data-format">
+        <div class="df-label">Sample Trace Format (Jaeger)</div>
+        <code>
+{<br>
+&nbsp;&nbsp;<span class="key">"traceID"</span>: <span class="str">"abc123"</span>,<br>
+&nbsp;&nbsp;<span class="key">"spans"</span>: [<br>
+&nbsp;&nbsp;&nbsp;{<span class="key">"op"</span>: <span class="str">"auth"</span>, <span class="key">"dur"</span>: <span class="num">12</span>},<br>
+&nbsp;&nbsp;&nbsp;{<span class="key">"op"</span>: <span class="str">"db.query"</span>, <span class="key">"dur"</span>: <span class="num">340</span>}<br>
+&nbsp;&nbsp;]<br>
+}
+        </code>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-heading">Collection Tools Explained</h3>
+
+  <table class="compare-table">
+    <tr>
+      <th>Tool</th><th>Type</th><th>What it Does</th><th>Runs On</th>
+    </tr>
+    <tr>
+      <td><strong>Syslog</strong></td>
+      <td><span class="pill pill-green">Logs</span></td>
+      <td>OS-level system log collector. Captures kernel, auth, daemon messages.</td>
+      <td>Every Linux server</td>
+    </tr>
+    <tr>
+      <td><strong>Fluentd</strong></td>
+      <td><span class="pill pill-green">Logs</span></td>
+      <td>Aggregates logs from multiple sources, transforms formats, routes to destinations.</td>
+      <td>Log aggregator nodes</td>
+    </tr>
+    <tr>
+      <td><strong>Filebeat</strong></td>
+      <td><span class="pill pill-green">Logs</span></td>
+      <td>Lightweight agent that ships log files to Fluentd or OpenSearch. Low resource use.</td>
+      <td>Every server (agent)</td>
+    </tr>
+    <tr>
+      <td><strong>Prometheus</strong></td>
+      <td><span class="pill pill-blue">Metrics</span></td>
+      <td>Scrapes metrics endpoints at intervals. Stores time-series data locally.</td>
+      <td>Central metrics server</td>
+    </tr>
+    <tr>
+      <td><strong>Node Exporter</strong></td>
+      <td><span class="pill pill-blue">Metrics</span></td>
+      <td>Exposes OS/hardware metrics (CPU, memory, disk, network) for Prometheus.</td>
+      <td>Every server (agent)</td>
+    </tr>
+    <tr>
+      <td><strong>cAdvisor</strong></td>
+      <td><span class="pill pill-blue">Metrics</span></td>
+      <td>Collects container-level metrics (Docker/K8s CPU, memory per container).</td>
+      <td>Every K8s node</td>
+    </tr>
+    <tr>
+      <td><strong>Jaeger</strong></td>
+      <td><span class="pill pill-purple">Traces</span></td>
+      <td>Distributed tracing backend. Receives spans and reconstructs request journeys.</td>
+      <td>Central tracing service</td>
+    </tr>
+    <tr>
+      <td><strong>OpenTelemetry</strong></td>
+      <td><span class="pill pill-purple">Traces</span></td>
+      <td>Vendor-neutral SDK/collector. Instruments code and sends to Jaeger/Tempo.</td>
+      <td>App code + collector</td>
+    </tr>
+    <tr>
+      <td><strong>Tempo</strong></td>
+      <td><span class="pill pill-purple">Traces</span></td>
+      <td>Scalable trace storage by Grafana. Integrates with Grafana dashboards.</td>
+      <td>Trace storage backend</td>
+    </tr>
+  </table>
+
+  <div class="info-box tip">
+    <strong>💡 Integration Point</strong>
+    All three signal types (Logs, Metrics, Traces) are unified using <strong>OpenTelemetry Protocol (OTLP)</strong> — a common wire format. This means a single collector can forward all signals to the ingestion layer in one standardized format.
+  </div>
+
+  <div class="info-box note">
+    <strong>🔗 How trace_id links everything</strong>
+    The <strong>trace_id</strong> field appears in BOTH logs and traces. When an error log fires, engineers can look up the trace_id to replay the entire request journey — seeing exactly which service and database call caused the failure.
+  </div>
+</div>
+
+<!-- INGESTION LAYER -->
+<div class="section" id="section-ingestion">
+  <div class="section-header">
+    <div class="layer-tag" style="color:var(--accent2)">Layer 2 — Ingestion (AWS)</div>
+    <h2>Ingestion Layer</h2>
+    <p>Receives the firehose of signals from 500+ servers and routes them appropriately. Three services cover different use cases: real-time streaming, batch delivery, and event routing.</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent-color: var(--accent)">
+      <div class="card-icon">⚡</div>
+      <h3>Kinesis Data Streams</h3>
+      <div class="subtitle">Real-time streaming</div>
+      <p>Millisecond-latency ingestion. Used for critical metrics and security events that need immediate ML anomaly detection.</p>
+      <div class="data-format">
+        <div class="df-label">Record format on stream</div>
+        <code>
+{<span class="key">"PartitionKey"</span>: <span class="str">"server-co-01"</span>,<br>
+&nbsp;<span class="key">"Data"</span>: <span class="str">"base64(OTLP payload)"</span>,<br>
+&nbsp;<span class="key">"SequenceNumber"</span>: <span class="str">"..."</span>}
+        </code>
+      </div>
+    </div>
+
+    <div class="card" style="--accent-color: var(--accent4)">
+      <div class="card-icon">🪣</div>
+      <h3>Kinesis Data Firehose</h3>
+      <div class="subtitle">Batch delivery</div>
+      <p>Buffers data (60s or 5MB batches) then delivers directly to S3. No consumer management. Great for logs that don't need real-time processing.</p>
+      <div class="data-format">
+        <div class="df-label">S3 delivery path format</div>
+        <code>
+s3://arrise-logs/<br>
+&nbsp;<span class="str">year=2025/month=03/</span><br>
+&nbsp;<span class="str">day=11/hour=10/</span><br>
+&nbsp;<span class="str">logs-1710149000.gz</span>
+        </code>
+      </div>
+    </div>
+
+    <div class="card" style="--accent-color: var(--accent2)">
+      <div class="card-icon">📨</div>
+      <h3>MSK (Kafka) / EventBridge</h3>
+      <div class="subtitle">Event routing</div>
+      <p>MSK is managed Kafka for high-throughput event streaming. EventBridge routes specific event patterns (e.g. critical alerts) to Lambda functions or other AWS services.</p>
+      <div class="data-format">
+        <div class="df-label">EventBridge rule pattern</div>
+        <code>
+{<span class="key">"source"</span>: [<span class="str">"arrise.infra"</span>],<br>
+&nbsp;<span class="key">"detail-type"</span>: [<span class="str">"CriticalAlert"</span>],<br>
+&nbsp;<span class="key">"detail"</span>: {<span class="key">"severity"</span>: [<span class="str">"P1"</span>]}}
+        </code>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-heading">When to use which?</h3>
+  <table class="compare-table">
+    <tr><th>Scenario</th><th>Best Choice</th><th>Why</th></tr>
+    <tr>
+      <td>Detect server CPU spike in &lt;5 seconds</td>
+      <td><span class="pill pill-green">Kinesis Streams</span></td>
+      <td>Real-time, feeds directly into ML inference</td>
+    </tr>
+    <tr>
+      <td>Archive all application logs to S3 daily</td>
+      <td><span class="pill pill-yellow">Firehose</span></td>
+      <td>Managed batching, no consumer code, auto-compresses</td>
+    </tr>
+    <tr>
+      <td>Route a game session event to 3 consumers</td>
+      <td><span class="pill pill-orange">MSK / Kafka</span></td>
+      <td>Multiple consumers per topic, replay capability</td>
+    </tr>
+    <tr>
+      <td>Trigger a Lambda when a P1 alert fires</td>
+      <td><span class="pill pill-orange">EventBridge</span></td>
+      <td>Pattern matching, serverless fan-out routing</td>
+    </tr>
+  </table>
+</div>
+
+<!-- STORAGE LAYER -->
+<div class="section" id="section-storage">
+  <div class="section-header">
+    <div class="layer-tag" style="color:var(--accent4)">Layer 3 — Storage</div>
+    <h2>Tiered Storage Layer</h2>
+    <p>Data is automatically moved between S3 tiers based on age. Hot data is instantly accessible; cold data is preserved cheaply for compliance and ML model retraining.</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent-color: var(--accent)">
+      <div class="card-icon">🔥</div>
+      <h3>S3 Standard</h3>
+      <div class="subtitle">Hot — 0 to 7 days</div>
+      <p>Immediately accessible. Used by Athena, Spark, and real-time ML inference. Highest cost because of frequent access.</p>
+      <div class="data-format">
+        <div class="df-label">Cost</div>
+        <code><span class="num">$0.023</span> / GB / month<br>
+Retrieval: <span class="num">$0.00</span> (free)<br>
+Latency: <span class="str">milliseconds</span></code>
+      </div>
+    </div>
+    <div class="card" style="--accent-color: var(--accent4)">
+      <div class="card-icon">🌡️</div>
+      <h3>S3 Infrequent Access</h3>
+      <div class="subtitle">Warm — 7 to 30 days</div>
+      <p>Lower storage cost; small retrieval fee. Used for ad-hoc investigations and weekly trend analysis.</p>
+      <div class="data-format">
+        <div class="df-label">Cost</div>
+        <code><span class="num">$0.0125</span> / GB / month<br>
+Retrieval: <span class="num">$0.01</span> / GB<br>
+Latency: <span class="str">milliseconds</span></code>
+      </div>
+    </div>
+    <div class="card" style="--accent-color: var(--accent5)">
+      <div class="card-icon">🧊</div>
+      <h3>S3 Glacier</h3>
+      <div class="subtitle">Cold — 30 days to 1 year+</div>
+      <p>Cheapest storage. Minutes-to-hours retrieval time. Used for compliance archival and long-term ML training datasets.</p>
+      <div class="data-format">
+        <div class="df-label">Cost</div>
+        <code><span class="num">$0.004</span> / GB / month<br>
+Retrieval: <span class="num">$0.03</span> / GB<br>
+Latency: <span class="str">1–12 hours</span></code>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box tip">
+    <strong>💡 S3 Lifecycle Policy (how data moves automatically)</strong>
+    AWS S3 Lifecycle Rules automate tiering:<br><br>
+    Day 0–7: <strong>S3 Standard</strong> → Day 7: transitions to S3-IA → Day 30: transitions to Glacier → Day 365+: optionally deleted or kept for compliance. Zero manual work required after setup.
+  </div>
+
+  <h3 class="sub-heading">Data Formats in Storage</h3>
+  <table class="compare-table">
+    <tr><th>Data Type</th><th>Format on S3</th><th>Why this format</th></tr>
+    <tr><td>Metrics time-series</td><td><span class="pill pill-yellow">Parquet</span></td><td>Columnar — fast aggregations for Athena SQL (e.g. avg CPU per hour)</td></tr>
+    <tr><td>Application logs</td><td><span class="pill pill-green">GZIP JSON</span></td><td>Compressed, human-readable, supports full-text search</td></tr>
+    <tr><td>Traces</td><td><span class="pill pill-purple">Protobuf / OTLP</span></td><td>Binary format from OpenTelemetry — compact and fast to parse</td></tr>
+    <tr><td>ML features</td><td><span class="pill pill-yellow">Parquet</span></td><td>SageMaker natively reads Parquet for training jobs</td></tr>
+  </table>
+</div>
+
+<!-- PROCESSING LAYER -->
+<div class="section" id="section-processing">
+  <div class="section-header">
+    <div class="layer-tag" style="color:var(--accent5)">Layer 4 — Processing</div>
+    <h2>Processing & Analytics Layer</h2>
+    <p>Transforms raw stored data into structured, enriched datasets ready for ML and dashboards. Three tools cover SQL querying, big data processing, and data transformation pipelines.</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent-color: var(--accent5)">
+      <div class="card-icon">🔍</div>
+      <h3>AWS Athena</h3>
+      <div class="subtitle">SQL queries on S3</div>
+      <p>Serverless SQL engine. Query Parquet/JSON files on S3 directly — no databases to manage. Pay per query (per TB scanned).</p>
+      <div class="data-format">
+        <div class="df-label">Example query</div>
+        <code>
+<span class="keyword">SELECT</span> host, <span class="func">AVG</span>(cpu)<br>
+<span class="keyword">FROM</span> s3_metrics<br>
+<span class="keyword">WHERE</span> dt = <span class="str">'2025-03-11'</span><br>
+<span class="keyword">GROUP BY</span> host<br>
+<span class="keyword">HAVING AVG</span>(cpu) &gt; <span class="num">80</span>
+        </code>
+      </div>
+    </div>
+    <div class="card" style="--accent-color: var(--accent2)">
+      <div class="card-icon">⚡</div>
+      <h3>EMR Serverless</h3>
+      <div class="subtitle">Spark big data jobs</div>
+      <p>Runs Apache Spark jobs at scale without managing clusters. Used for heavy ML feature engineering — computing rolling windows across billions of metric rows.</p>
+      <div class="data-format">
+        <div class="df-label">Example Spark operation</div>
+        <code>
+df.<span class="func">groupBy</span>(<span class="str">"host"</span>)<br>
+&nbsp;.<span class="func">window</span>(<span class="str">"5min"</span>)<br>
+&nbsp;.<span class="func">agg</span>(<span class="func">avg</span>(<span class="str">"cpu"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">stddev</span>(<span class="str">"cpu"</span>))<br>
+&nbsp;.<span class="func">write</span>.<span class="func">parquet</span>(s3_features)
+        </code>
+      </div>
+    </div>
+    <div class="card" style="--accent-color: var(--accent4)">
+      <div class="card-icon">🔄</div>
+      <h3>Glue ETL</h3>
+      <div class="subtitle">Extract, Transform, Load</div>
+      <p>Managed ETL service. Crawls S3 for schema, converts formats (JSON → Parquet), deduplicates data, and loads into structured tables for Athena.</p>
+      <div class="data-format">
+        <div class="df-label">ETL Pipeline Steps</div>
+        <code>
+1. <span class="str">EXTRACT</span>: raw JSON from S3<br>
+2. <span class="str">TRANSFORM</span>: parse, clean,<br>
+   enrich with region tags<br>
+3. <span class="str">LOAD</span>: write Parquet to<br>
+   s3://arrise-features/
+        </code>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box note">
+    <strong>🔗 How these three work together</strong>
+    <strong>Glue ETL</strong> runs nightly to convert raw logs → clean Parquet. <strong>Athena</strong> queries those Parquet files for ad-hoc analysis and dashboards. <strong>EMR Spark</strong> handles heavier batch computations (like computing 30-day rolling baselines for anomaly detection) that would be too slow or expensive in SQL.
+  </div>
+</div>
+
+<!-- SAGEMAKER DEEP DIVE -->
+<div class="section" id="section-sagemaker">
+  <div class="section-header">
+    <div class="layer-tag" style="color:var(--accent3)">Layer 5 — AI/ML</div>
+    <h2>SageMaker Deep Dive</h2>
+    <p>The intelligence layer. SageMaker manages the full ML lifecycle: feature engineering, model training, deployment, and real-time inference — all using the processed observability data.</p>
+  </div>
+
+  <div class="sm-pipeline">
+
+    <!-- Stage 1: Feature Engineering -->
+    <div class="sm-stage open" id="sm1">
+      <div class="sm-stage-header" onclick="toggleStage('sm1')">
+        <div class="sm-stage-num" style="background:rgba(0,212,170,0.15); color:var(--accent)">1</div>
+        <div>
+          <div class="sm-stage-title">Feature Engineering</div>
+          <div class="sm-stage-sub">Lambda / Glue · Runs before training & inference</div>
+        </div>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="sm-stage-body">
+        <p style="font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:16px; line-height:1.6;">
+          Raw metrics/logs/traces are not directly usable by ML models. Feature engineering transforms them into numeric vectors that capture patterns.
+        </p>
+        <h3 class="sub-heading">What happens here</h3>
+        <ul class="point-list">
+          <li><strong>Extract from logs/metrics/traces:</strong> Pull relevant numeric fields. E.g. extract error_count, latency_p99, cpu_mean from raw data.</li>
+          <li><strong>Time-series windowing (5min, 1hr, 24hr):</strong> Compute rolling averages, standard deviations, and rates of change at multiple time scales. A CPU spike matters differently over 5min vs 24hrs.</li>
+          <li><strong>Anomaly score pre-calculation:</strong> Compute z-scores (how many standard deviations from the mean) as input features to the model.</li>
+        </ul>
+
+        <div class="data-format" style="margin-top:16px">
+          <div class="df-label">Feature vector example (one row = one server snapshot)</div>
+          <code>
+{<br>
+&nbsp;<span class="key">"host"</span>: <span class="str">"server-mt-07"</span>,<br>
+&nbsp;<span class="key">"cpu_mean_5m"</span>: <span class="num">87.3</span>,&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// avg CPU last 5 min</span><br>
+&nbsp;<span class="key">"cpu_stddev_5m"</span>: <span class="num">12.1</span>,<br>
+&nbsp;<span class="key">"cpu_mean_1h"</span>: <span class="num">65.2</span>,&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// avg CPU last 1 hr</span><br>
+&nbsp;<span class="key">"error_rate_5m"</span>: <span class="num">0.043</span>,<br>
+&nbsp;<span class="key">"latency_p99_5m"</span>: <span class="num">1240</span>,&nbsp;<span class="comment">// ms</span><br>
+&nbsp;<span class="key">"mem_used_pct"</span>: <span class="num">91.2</span>,<br>
+&nbsp;<span class="key">"z_score_cpu"</span>: <span class="num">3.4</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 3.4 std devs above normal</span><br>
+}
+          </code>
+        </div>
+
+        <div class="info-box tip" style="margin-top:12px">
+          <strong>💡 Why multiple time windows?</strong>
+          A server that's been at 90% CPU for 24 hours is less concerning than one that jumped from 20% to 90% in the last 5 minutes. Multi-window features capture both steady-state and change-rate patterns.
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 2: ML Models -->
+    <div class="sm-stage" id="sm2">
+      <div class="sm-stage-header" onclick="toggleStage('sm2')">
+        <div class="sm-stage-num" style="background:rgba(124,106,247,0.15); color:var(--accent3)">2</div>
+        <div>
+          <div class="sm-stage-title">ML Models (Training + Inference)</div>
+          <div class="sm-stage-sub">SageMaker Training Jobs · Endpoints · Batch Transform</div>
+        </div>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="sm-stage-body">
+        <p style="font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:16px; line-height:1.6;">
+          Three distinct models serve three different intelligence purposes. Each is trained separately and deployed as a SageMaker endpoint.
+        </p>
+        <div class="model-cards">
+          <div class="model-card">
+            <h4>🚨 Anomaly Detection</h4>
+            <p>Detects when a server or service is behaving abnormally compared to its historical baseline. No labelled data needed — unsupervised learning.</p>
+            <span class="algo-tag">Isolation Forest</span>
+            <span class="algo-tag">LSTM</span>
+            <div class="data-format" style="margin-top:12px">
+              <div class="df-label">Output</div>
+              <code>
+{<span class="key">"anomaly"</span>: <span class="str">true</span>,<br>
+&nbsp;<span class="key">"score"</span>: <span class="num">0.94</span>,<br>
+&nbsp;<span class="key">"feature"</span>: <span class="str">"cpu_5m"</span>}
+              </code>
+            </div>
+          </div>
+          <div class="model-card">
+            <h4>🔍 Root Cause Analysis</h4>
+            <p>Given an anomaly, finds which upstream service or dependency caused it. Uses graph neural networks to model service dependency topology.</p>
+            <span class="algo-tag">GNN (Graph Neural Network)</span>
+            <span class="algo-tag">GBT</span>
+            <div class="data-format" style="margin-top:12px">
+              <div class="df-label">Output</div>
+              <code>
+{<span class="key">"root_cause"</span>: <span class="str">"db-ro-02"</span>,<br>
+&nbsp;<span class="key">"confidence"</span>: <span class="num">0.87</span>,<br>
+&nbsp;<span class="key">"path"</span>: [<span class="str">"app→db"</span>]}
+              </code>
+            </div>
+          </div>
+          <div class="model-card">
+            <h4>📈 Capacity Forecasting</h4>
+            <p>Predicts future resource usage (CPU, memory, storage) so capacity can be provisioned before a shortage occurs. Time-series forecasting.</p>
+            <span class="algo-tag">Prophet (Facebook)</span>
+            <div class="data-format" style="margin-top:12px">
+              <div class="df-label">Output</div>
+              <code>
+{<span class="key">"host"</span>: <span class="str">"server-ro-11"</span>,<br>
+&nbsp;<span class="key">"disk_full_in"</span>: <span class="str">"14 days"</span>,<br>
+&nbsp;<span class="key">"confidence"</span>: <span class="num">0.91</span>}
+              </code>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="sub-heading">How SageMaker Training Works</h3>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Input</div><div class="flow-name">S3 Parquet features</div></div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Compute</div><div class="flow-name">Training Job (GPU/CPU)</div></div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Output</div><div class="flow-name">Model artifacts (.tar.gz)</div></div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Store</div><div class="flow-name">S3 model registry</div></div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Deploy</div><div class="flow-name">SageMaker Endpoint</div></div>
+          </div>
+        </div>
+
+        <h3 class="sub-heading">How SageMaker Inference Works</h3>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Real-time data</div><div class="flow-name">Kinesis Stream</div></div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Feature calc</div><div class="flow-name">Lambda function</div></div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Invoke</div><div class="flow-name">SageMaker Endpoint</div></div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Result</div><div class="flow-name">Anomaly score JSON</div></div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box"><div class="flow-label">Route</div><div class="flow-name">EventBridge alert</div></div>
+          </div>
+        </div>
+
+        <div class="info-box note">
+          <strong>🧠 Isolation Forest vs LSTM — which when?</strong>
+          <strong>Isolation Forest</strong> is fast, works on tabular data (current snapshot), no temporal context. Good for point-in-time anomalies.<br><br>
+          <strong>LSTM (Long Short-Term Memory)</strong> is a recurrent neural network — it learns temporal patterns. Better at detecting anomalies that only make sense over time (e.g. memory creeping up slowly over 6 hours).
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 3: Model Registry & Retraining -->
+    <div class="sm-stage" id="sm3">
+      <div class="sm-stage-header" onclick="toggleStage('sm3')">
+        <div class="sm-stage-num" style="background:rgba(240,180,41,0.15); color:var(--accent4)">3</div>
+        <div>
+          <div class="sm-stage-title">Model Registry & Retraining</div>
+          <div class="sm-stage-sub">SageMaker Pipelines · Model Monitor · A/B Testing</div>
+        </div>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="sm-stage-body">
+        <ul class="point-list">
+          <li><strong>Model Registry:</strong> Every trained model version is stored with metadata (accuracy, training date, dataset version). Enables rollback if a new model performs worse.</li>
+          <li><strong>Model Monitor:</strong> Continuously checks if the live endpoint's predictions are drifting from training distribution. Triggers retraining when data drift is detected.</li>
+          <li><strong>SageMaker Pipelines:</strong> Automates the full retrain cycle — new data lands in S3 → Glue ETL → feature engineering → training job → evaluation → deploy if better.</li>
+          <li><strong>Retraining schedule:</strong> Anomaly models retrain weekly. Forecasting model retrains monthly (needs more historical data for seasonality patterns).</li>
+        </ul>
+        <div class="info-box warn">
+          <strong>⚠️ Why retraining matters</strong>
+          Infrastructure changes over time (new servers added, software versions changed, traffic patterns shift). A model trained on old data will start producing false positives or missing real anomalies. Regular retraining keeps the model aligned with current reality.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- INSIGHTS LAYER -->
+<div class="section" id="section-insights">
+  <div class="section-header">
+    <div class="layer-tag" style="color:var(--accent2)">Layer 6 — Insights & Actions</div>
+    <h2>Insights & Action Layer</h2>
+    <p>ML outputs are surfaced to humans (dashboards, search) and to automated systems (alerting, ticket creation). The loop closes here: insights trigger real operational actions.</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card" style="--accent-color: var(--accent5)">
+      <div class="card-icon">🔍</div>
+      <h3>OpenSearch</h3>
+      <div class="subtitle">Search & Visualization</div>
+      <p>Full-text search and analytics over all logs. Engineers type natural-language-style queries to investigate incidents. Also powers dashboards and log explorer UI.</p>
+    </div>
+    <div class="card" style="--accent-color: var(--accent)">
+      <div class="card-icon">📊</div>
+      <h3>Grafana</h3>
+      <div class="subtitle">Dashboards & Alerting</div>
+      <p>Real-time metric dashboards. Connects to Prometheus, Athena, and OpenSearch. Displays ML anomaly scores alongside raw metrics so engineers see context immediately.</p>
+    </div>
+    <div class="card" style="--accent-color: var(--accent2)">
+      <div class="card-icon">⚡</div>
+      <h3>EventBridge</h3>
+      <div class="subtitle">Alerting & Automation</div>
+      <p>Routes ML anomaly events to the right destination. High-severity → PagerDuty. Medium → Slack. All → Jira ticket. Can also trigger auto-remediation Lambda functions.</p>
+    </div>
+  </div>
+
+  <h3 class="sub-heading">Alert Routing Flow</h3>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-box"><div class="flow-label">ML Output</div><div class="flow-name">Anomaly score &gt; 0.9</div></div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box"><div class="flow-label">Route</div><div class="flow-name">EventBridge rule</div></div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-box"><div class="flow-label">P1 alert</div><div class="flow-name">PagerDuty (on-call)</div></div>
+    </div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-step">
+      <div class="flow-box"><div class="flow-label">Notify</div><div class="flow-name">Slack #incidents</div></div>
+    </div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-step">
+      <div class="flow-box"><div class="flow-label">Track</div><div class="flow-name">Jira ticket (auto)</div></div>
+    </div>
+  </div>
+
+  <h3 class="sub-heading">Action Routing by Severity</h3>
+  <table class="compare-table">
+    <tr><th>Severity</th><th>Trigger</th><th>PagerDuty</th><th>Slack</th><th>Jira</th><th>Auto-remediate</th></tr>
+    <tr>
+      <td><span class="pill pill-orange">P1 Critical</span></td>
+      <td>Anomaly score &gt; 0.95</td>
+      <td>✅ Immediate page</td>
+      <td>✅ #incidents</td>
+      <td>✅ Priority 1</td>
+      <td>✅ (e.g. restart pod)</td>
+    </tr>
+    <tr>
+      <td><span class="pill pill-yellow">P2 High</span></td>
+      <td>Score 0.85–0.95</td>
+      <td>✅ Paged (15min delay)</td>
+      <td>✅ #alerts</td>
+      <td>✅ Priority 2</td>
+      <td>❌</td>
+    </tr>
+    <tr>
+      <td><span class="pill pill-blue">P3 Medium</span></td>
+      <td>Score 0.70–0.85</td>
+      <td>❌</td>
+      <td>✅ #warnings</td>
+      <td>✅ Priority 3</td>
+      <td>❌</td>
+    </tr>
+    <tr>
+      <td><span class="pill pill-green">Info</span></td>
+      <td>Forecast warning</td>
+      <td>❌</td>
+      <td>✅ #capacity</td>
+      <td>✅ Sprint backlog</td>
+      <td>❌</td>
+    </tr>
+  </table>
+</div>
+
+<!-- DATA FORMATS -->
+<div class="section" id="section-dataformats">
+  <div class="section-header">
+    <div class="layer-tag" style="color:var(--accent4)">Reference</div>
+    <h2>Data Formats Across the Pipeline</h2>
+    <p>Data changes format at every layer — from raw text to binary protocols to columnar storage to ML feature vectors. Here's what it looks like at each stage.</p>
+  </div>
+
+  <h3 class="sub-heading">Format Transformation Timeline</h3>
+  <table class="compare-table">
+    <tr><th>Layer</th><th>Data In</th><th>Format</th><th>Data Out</th><th>Format</th></tr>
+    <tr>
+      <td>Collection</td>
+      <td>Server syslog text</td>
+      <td><span class="pill pill-green">Plain text</span></td>
+      <td>Structured event</td>
+      <td><span class="pill pill-yellow">JSON</span></td>
+    </tr>
+    <tr>
+      <td>Collection</td>
+      <td>Prometheus scrape</td>
+      <td><span class="pill pill-blue">Prometheus text</span></td>
+      <td>OTLP metric</td>
+      <td><span class="pill pill-purple">Protobuf (binary)</span></td>
+    </tr>
+    <tr>
+      <td>Ingestion</td>
+      <td>OTLP Protobuf</td>
+      <td><span class="pill pill-purple">Protobuf</span></td>
+      <td>Kinesis record</td>
+      <td><span class="pill pill-yellow">Base64 JSON</span></td>
+    </tr>
+    <tr>
+      <td>Storage</td>
+      <td>JSON log batch</td>
+      <td><span class="pill pill-yellow">JSON.gz</span></td>
+      <td>S3 object</td>
+      <td><span class="pill pill-yellow">JSON.gz</span></td>
+    </tr>
+    <tr>
+      <td>Processing (Glue)</td>
+      <td>S3 JSON logs</td>
+      <td><span class="pill pill-yellow">JSON</span></td>
+      <td>Athena table</td>
+      <td><span class="pill pill-orange">Parquet (columnar)</span></td>
+    </tr>
+    <tr>
+      <td>Processing (Spark)</td>
+      <td>Parquet metrics</td>
+      <td><span class="pill pill-orange">Parquet</span></td>
+      <td>Feature matrix</td>
+      <td><span class="pill pill-orange">Parquet (float64)</span></td>
+    </tr>
+    <tr>
+      <td>SageMaker Training</td>
+      <td>Feature Parquet</td>
+      <td><span class="pill pill-orange">Parquet</span></td>
+      <td>Model weights</td>
+      <td><span class="pill pill-purple">.tar.gz (binary)</span></td>
+    </tr>
+    <tr>
+      <td>SageMaker Inference</td>
+      <td>Live feature vector</td>
+      <td><span class="pill pill-yellow">JSON</span></td>
+      <td>Prediction result</td>
+      <td><span class="pill pill-yellow">JSON</span></td>
+    </tr>
+    <tr>
+      <td>Action Layer</td>
+      <td>Anomaly event</td>
+      <td><span class="pill pill-yellow">JSON</span></td>
+      <td>PagerDuty alert</td>
+      <td><span class="pill pill-blue">REST API call</span></td>
+    </tr>
+  </table>
+
+  <div class="divider"></div>
+
+  <h3 class="sub-heading">Why Parquet for ML features?</h3>
+  <div class="cards-grid">
+    <div class="card" style="--accent-color: var(--accent4)">
+      <div class="card-icon">📦</div>
+      <h3>Columnar Storage</h3>
+      <p>Parquet stores data column-by-column, not row-by-row. Reading just "cpu_mean" from 10M rows reads only 1 column — 100x faster than reading all columns in JSON.</p>
+    </div>
+    <div class="card" style="--accent-color: var(--accent)">
+      <div class="card-icon">🗜️</div>
+      <h3>Compression</h3>
+      <p>Numeric columns compress 5–10x better than JSON text. Metric time-series data that would be 100GB as JSON becomes 10GB as Parquet.</p>
+    </div>
+    <div class="card" style="--accent-color: var(--accent3)">
+      <div class="card-icon">🤝</div>
+      <h3>SageMaker Native</h3>
+      <p>SageMaker training jobs accept Parquet directly from S3. No conversion step needed — the training job reads features in milliseconds.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function showSection(id, btn) {
+  // Hide all sections
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  // Show target section
+  var target = document.getElementById('section-' + id);
+  if (target) target.classList.add('active');
+
+  // Update nav active state
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn && btn.classList && btn.classList.contains('nav-btn')) {
+    // Called from a nav button directly
+    btn.classList.add('active');
+  } else {
+    // Called from a card/div — find matching nav button by its onclick
+    document.querySelectorAll('.nav-btn').forEach(function(b) {
+      var oc = b.getAttribute('onclick') || '';
+      if (oc.indexOf("'" + id + "'") !== -1) b.classList.add('active');
+    });
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleStage(id) {
+  var stage = document.getElementById(id);
+  if (stage) stage.classList.toggle('open');
+}
+</script>
+</body>
+</html>
