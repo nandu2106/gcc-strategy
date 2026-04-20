@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IaC Network Deployment Pipeline</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #080e1a;
+    font-family: 'Rajdhani', sans-serif;
+    color: #e0e8ff;
+    min-height: 100vh;
+    overflow-x: auto;
+  }
+
+  .page-header {
+    text-align: center;
+    padding: 28px 20px 16px;
+    background: linear-gradient(180deg, #0d1a2e 0%, #080e1a 100%);
+    border-bottom: 1px solid #1a2d4e;
+  }
+
+  .page-header h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #00d4ff, #7c3aed, #00d4ff);
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 0% }
+    100% { background-position: 200% }
+  }
+
+  .page-header p {
+    font-size: 0.85rem;
+    color: #5a7a9e;
+    letter-spacing: 2px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    justify-content: center;
+    padding: 12px 20px;
+    background: #0a1220;
+    border-bottom: 1px solid #1a2d4e;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .diagram-container {
+    padding: 24px 20px 40px;
+    overflow-x: auto;
+  }
+
+  svg {
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 40px rgba(0,180,255,0.06));
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    background: #0d1a2e;
+    border: 1px solid #1e3a5f;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    max-width: 260px;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+    color: #c0d8f0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  .tooltip strong {
+    color: #00d4ff;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Network Infrastructure as Code — Full Deployment Pipeline</h1>
+  <p>Git · CI/CD · Jenkins · Ansible · Jinja2 · Python · Paramiko · Netmiko · Policy as Code · FinOps as Code</p>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#1a6b3c"></div> Source Control</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1a4d8f"></div> CI/CD Pipeline</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6b2d8f"></div> Orchestration</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8f5f1a"></div> Templating / Data</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8f1a1a"></div> Python Automation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1a6b6b"></div> Network Devices</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1a3d6b"></div> Policy as Code</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4a6b1a"></div> FinOps as Code</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5a2d1a"></div> Secrets / Auth</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3a1a6b"></div> Observability</div>
+</div>
+
+<div class="diagram-container">
+<svg width="1600" height="2100" viewBox="0 0 1600 2100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background grid -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#0f1e30" stroke-width="0.5"/>
+    </pattern>
+
+    <!-- Gradients -->
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#060d18"/>
+      <stop offset="100%" stop-color="#080e1a"/>
+    </linearGradient>
+
+    <!-- Section gradients -->
+    <linearGradient id="git-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d2b1a"/>
+      <stop offset="100%" stop-color="#091a0f"/>
+    </linearGradient>
+    <linearGradient id="cicd-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1e38"/>
+      <stop offset="100%" stop-color="#091525"/>
+    </linearGradient>
+    <linearGradient id="ansible-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e0d38"/>
+      <stop offset="100%" stop-color="#140925"/>
+    </linearGradient>
+    <linearGradient id="tmpl-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2b1e0d"/>
+      <stop offset="100%" stop-color="#1a1208"/>
+    </linearGradient>
+    <linearGradient id="python-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2b0d0d"/>
+      <stop offset="100%" stop-color="#1a0808"/>
+    </linearGradient>
+    <linearGradient id="device-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d2b2b"/>
+      <stop offset="100%" stop-color="#081818"/>
+    </linearGradient>
+    <linearGradient id="policy-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1e38"/>
+      <stop offset="100%" stop-color="#060f1e"/>
+    </linearGradient>
+    <linearGradient id="finops-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a2b0d"/>
+      <stop offset="100%" stop-color="#0f1a08"/>
+    </linearGradient>
+    <linearGradient id="obs-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a0d2b"/>
+      <stop offset="100%" stop-color="#0f0818"/>
+    </linearGradient>
+    <linearGradient id="secrets-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2b1a0d"/>
+      <stop offset="100%" stop-color="#1a0f08"/>
+    </linearGradient>
+
+    <!-- Arrow markers -->
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2080e0"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#20c060"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#9060e0"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#e0a020"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#e04040"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#20c0c0"/>
+    </marker>
+    <marker id="arrow-white" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#8090a0"/>
+    </marker>
+
+    <!-- Glow filters -->
+    <filter id="glow-blue">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="glow-green">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="node-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="2100" fill="url(#bg-grad)"/>
+  <rect width="1600" height="2100" fill="url(#grid)"/>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- STAGE LABELS (left rail) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- Stage 1 -->
+  <rect x="8" y="30" width="22" height="360" rx="4" fill="#1a6b3c" opacity="0.8"/>
+  <text transform="translate(19,210) rotate(-90)" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#40ff90" letter-spacing="2">STAGE 1 · SOURCE</text>
+
+  <!-- Stage 2 -->
+  <rect x="8" y="410" width="22" height="360" rx="4" fill="#1a4d8f" opacity="0.8"/>
+  <text transform="translate(19,590) rotate(-90)" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#40a0ff" letter-spacing="2">STAGE 2 · CI/CD PIPELINE</text>
+
+  <!-- Stage 3 -->
+  <rect x="8" y="790" width="22" height="300" rx="4" fill="#6b2d8f" opacity="0.8"/>
+  <text transform="translate(19,940) rotate(-90)" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#c060ff" letter-spacing="2">STAGE 3 · ORCHESTRATION</text>
+
+  <!-- Stage 4 -->
+  <rect x="8" y="1110" width="22" height="260" rx="4" fill="#8f5f1a" opacity="0.8"/>
+  <text transform="translate(19,1240) rotate(-90)" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#ffb040" letter-spacing="2">STAGE 4 · TEMPLATING</text>
+
+  <!-- Stage 5 -->
+  <rect x="8" y="1390" width="22" height="200" rx="4" fill="#8f1a1a" opacity="0.8"/>
+  <text transform="translate(19,1490) rotate(-90)" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#ff6060" letter-spacing="2">STAGE 5 · PYTHON</text>
+
+  <!-- Stage 6 -->
+  <rect x="8" y="1610" width="22" height="220" rx="4" fill="#1a6b6b" opacity="0.8"/>
+  <text transform="translate(19,1720) rotate(-90)" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#40ffff" letter-spacing="2">STAGE 6 · DEVICES</text>
+
+  <!-- Stage 7 -->
+  <rect x="8" y="1850" width="22" height="220" rx="4" fill="#4a6b1a" opacity="0.8"/>
+  <text transform="translate(19,1960) rotate(-90)" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#a0ff40" letter-spacing="2">STAGE 7 · FINOPS</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 1: GIT REPOSITORY STRUCTURE -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="40" y="30" width="1548" height="370" rx="12" fill="url(#git-grad)" stroke="#1a6b3c" stroke-width="1.5"/>
+  <rect x="40" y="30" width="1548" height="38" rx="12" fill="#1a6b3c" opacity="0.5"/>
+  <rect x="40" y="56" width="1548" height="12" fill="#1a6b3c" opacity="0.3"/>
+  <text x="800" y="56" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#40ff90" letter-spacing="3">GIT REPOSITORY STRUCTURE — SOURCE OF TRUTH</text>
+
+  <!-- Git repo central box -->
+  <rect x="55" y="80" width="220" height="300" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="55" y="80" width="220" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="165" y="99" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">📁 network-iac/</text>
+  <!-- Repo tree -->
+  <text x="68" y="122" font-family="JetBrains Mono" font-size="10" fill="#60d080">├── inventories/</text>
+  <text x="78" y="138" font-family="JetBrains Mono" font-size="10" fill="#80e0a0">├── production/</text>
+  <text x="88" y="153" font-family="JetBrains Mono" font-size="10" fill="#a0eac0">├── hosts.ini</text>
+  <text x="88" y="168" font-family="JetBrains Mono" font-size="10" fill="#a0eac0">└── hosts.yaml</text>
+  <text x="78" y="183" font-family="JetBrains Mono" font-size="10" fill="#80e0a0">└── staging/</text>
+  <text x="68" y="198" font-family="JetBrains Mono" font-size="10" fill="#60d080">├── group_vars/</text>
+  <text x="78" y="213" font-family="JetBrains Mono" font-size="10" fill="#80e0a0">├── all.yaml</text>
+  <text x="78" y="228" font-family="JetBrains Mono" font-size="10" fill="#80e0a0">├── routers.yaml</text>
+  <text x="78" y="243" font-family="JetBrains Mono" font-size="10" fill="#80e0a0">└── switches.yaml</text>
+  <text x="68" y="258" font-family="JetBrains Mono" font-size="10" fill="#60d080">├── host_vars/</text>
+  <text x="78" y="273" font-family="JetBrains Mono" font-size="10" fill="#80e0a0">├── router-01.yaml</text>
+  <text x="78" y="288" font-family="JetBrains Mono" font-size="10" fill="#80e0a0">└── switch-01.yaml</text>
+  <text x="68" y="303" font-family="JetBrains Mono" font-size="10" fill="#60d080">├── roles/</text>
+  <text x="68" y="318" font-family="JetBrains Mono" font-size="10" fill="#60d080">├── templates/</text>
+  <text x="68" y="333" font-family="JetBrains Mono" font-size="10" fill="#60d080">├── playbooks/</text>
+  <text x="68" y="348" font-family="JetBrains Mono" font-size="10" fill="#60d080">└── Jenkinsfile</text>
+
+  <!-- group_vars box -->
+  <rect x="295" y="80" width="200" height="195" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="295" y="80" width="200" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="395" y="99" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">group_vars/all.yaml</text>
+  <text x="308" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">ntp_server: 10.0.0.1</text>
+  <text x="308" y="138" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">dns_servers:</text>
+  <text x="318" y="153" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">- 8.8.8.8</text>
+  <text x="318" y="168" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">- 8.8.4.4</text>
+  <text x="308" y="183" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">snmp_community: vault</text>
+  <text x="308" y="198" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">syslog_host: 10.0.0.5</text>
+  <text x="308" y="213" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">domain: corp.net</text>
+  <text x="308" y="228" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">timezone: UTC</text>
+  <text x="308" y="248" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">## Shared by ALL devices</text>
+  <text x="308" y="263" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">## Lowest precedence</text>
+
+  <!-- host_vars box -->
+  <rect x="295" y="290" width="200" height="100" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="295" y="290" width="200" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="395" y="309" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">host_vars/router-01</text>
+  <text x="308" y="332" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">hostname: router-01</text>
+  <text x="308" y="347" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">mgmt_ip: 10.1.0.1</text>
+  <text x="308" y="362" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">interfaces: [...]</text>
+  <text x="308" y="377" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">bgp_asn: 65001</text>
+
+  <!-- Roles structure -->
+  <rect x="515" y="80" width="200" height="250" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="515" y="80" width="200" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="615" y="99" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">roles/ structure</text>
+  <text x="528" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">roles/</text>
+  <text x="538" y="138" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">├── common/</text>
+  <text x="548" y="153" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">├── tasks/main.yaml</text>
+  <text x="548" y="168" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">├── templates/</text>
+  <text x="548" y="183" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">├── defaults/</text>
+  <text x="548" y="198" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">└── handlers/</text>
+  <text x="538" y="213" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">├── bgp/</text>
+  <text x="538" y="228" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">├── ospf/</text>
+  <text x="538" y="243" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">├── acl/</text>
+  <text x="538" y="258" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">├── vlan/</text>
+  <text x="538" y="273" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">├── ntp/</text>
+  <text x="538" y="288" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">├── snmp/</text>
+  <text x="538" y="303" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">└── syslog/</text>
+
+  <!-- Playbooks -->
+  <rect x="515" y="345" width="200" height="50" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="515" y="345" width="200" height="22" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="615" y="360" text-anchor="middle" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#e0ffe0">playbooks/</text>
+  <text x="528" y="381" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">site.yaml · bgp.yaml · vlan.yaml · acl.yaml</text>
+
+  <!-- Git branches -->
+  <rect x="735" y="80" width="195" height="200" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="735" y="80" width="195" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="832" y="99" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">Git Branching Strategy</text>
+  <text x="748" y="122" font-family="JetBrains Mono" font-size="10" fill="#60d080">main</text>
+  <text x="762" y="137" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">→ Production gate</text>
+  <text x="748" y="155" font-family="JetBrains Mono" font-size="10" fill="#60d080">develop</text>
+  <text x="762" y="170" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">→ Integration branch</text>
+  <text x="748" y="188" font-family="JetBrains Mono" font-size="10" fill="#60d080">feature/*</text>
+  <text x="762" y="203" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">→ Change requests</text>
+  <text x="748" y="221" font-family="JetBrains Mono" font-size="10" fill="#60d080">hotfix/*</text>
+  <text x="762" y="236" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">→ Emergency patches</text>
+  <text x="748" y="254" font-family="JetBrains Mono" font-size="10" fill="#60d080">release/*</text>
+  <text x="762" y="269" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">→ Pre-prod staging</text>
+
+  <!-- Git hooks & webhooks -->
+  <rect x="735" y="295" width="195" height="95" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="735" y="295" width="195" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="832" y="314" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">Git Hooks / Webhooks</text>
+  <text x="748" y="337" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">pre-commit: lint + syntax check</text>
+  <text x="748" y="352" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">pre-push: unit tests</text>
+  <text x="748" y="367" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">webhook → trigger Jenkins</text>
+  <text x="748" y="382" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">GitHub/GitLab/Bitbucket</text>
+
+  <!-- Var precedence -->
+  <rect x="950" y="80" width="220" height="150" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="950" y="80" width="220" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="1060" y="99" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">Variable Precedence</text>
+  <text x="963" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">① host_vars/ (highest)</text>
+  <text x="963" y="138" font-family="JetBrains Mono" font-size="9.5" fill="#80e0a0">② group_vars/&lt;group&gt;</text>
+  <text x="963" y="153" font-family="JetBrains Mono" font-size="9.5" fill="#60d080">③ group_vars/all</text>
+  <text x="963" y="168" font-family="JetBrains Mono" font-size="9.5" fill="#40c060">④ role defaults/main</text>
+  <text x="963" y="183" font-family="JetBrains Mono" font-size="9.5" fill="#20a040">⑤ extra_vars -e (CLI)</text>
+  <text x="963" y="203" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">⑥ Vault secrets (any)</text>
+  <text x="963" y="218" font-family="JetBrains Mono" font-size="9.5" fill="#a0eac0">⑦ Inventory vars</text>
+
+  <!-- Jenkinsfile preview -->
+  <rect x="950" y="248" width="220" height="140" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="950" y="248" width="220" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="1060" y="267" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">Jenkinsfile (DSL)</text>
+  <text x="963" y="290" font-family="JetBrains Mono" font-size="9" fill="#60d080">pipeline {</text>
+  <text x="973" y="305" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">agent { label 'ansible' }</text>
+  <text x="973" y="320" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">stages {</text>
+  <text x="983" y="335" font-family="JetBrains Mono" font-size="9" fill="#a0eac0">stage('Lint') {...}</text>
+  <text x="983" y="350" font-family="JetBrains Mono" font-size="9" fill="#a0eac0">stage('Policy') {...}</text>
+  <text x="983" y="365" font-family="JetBrains Mono" font-size="9" fill="#a0eac0">stage('Deploy') {...}</text>
+  <text x="963" y="380" font-family="JetBrains Mono" font-size="9" fill="#60d080">}}</text>
+
+  <!-- Modules list -->
+  <rect x="1190" y="80" width="380" height="310" rx="8" fill="#0a1e0f" stroke="#20a040" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="1190" y="80" width="380" height="28" rx="8" fill="#20a040" opacity="0.7"/>
+  <text x="1380" y="99" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#e0ffe0">Ansible Modules (Network-Specific)</text>
+  <!-- Two column module list -->
+  <text x="1205" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#40ff80">cisco.ios.*</text>
+  <text x="1205" y="137" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">ios_command</text>
+  <text x="1205" y="151" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">ios_config</text>
+  <text x="1205" y="165" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">ios_facts</text>
+  <text x="1205" y="179" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">ios_bgp_global</text>
+  <text x="1205" y="193" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">ios_ospf_interfaces</text>
+  <text x="1205" y="207" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">ios_vlans</text>
+  <text x="1205" y="221" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">ios_acls</text>
+  <text x="1205" y="235" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">ios_interfaces</text>
+  <text x="1360" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#40ff80">junipernetworks.*</text>
+  <text x="1360" y="137" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">junos_command</text>
+  <text x="1360" y="151" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">junos_config</text>
+  <text x="1360" y="165" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">junos_facts</text>
+  <text x="1205" y="258" font-family="JetBrains Mono" font-size="9.5" fill="#40ff80">arista.eos.* / paloalto.*</text>
+  <text x="1205" y="273" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">eos_config · eos_command</text>
+  <text x="1205" y="288" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">panos_security_rule</text>
+  <text x="1205" y="303" font-family="JetBrains Mono" font-size="9.5" fill="#40ff80">ansible.netcommon.*</text>
+  <text x="1205" y="318" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">net_get · net_put · cli_command</text>
+  <text x="1205" y="333" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">netconf_get · restconf_get</text>
+  <text x="1205" y="353" font-family="JetBrains Mono" font-size="9.5" fill="#40ff80">community.general.*</text>
+  <text x="1205" y="368" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">template · copy · assert · uri</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 2: CI/CD PIPELINE (Jenkins) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="40" y="410" width="1548" height="370" rx="12" fill="url(#cicd-grad)" stroke="#1a4d8f" stroke-width="1.5"/>
+  <rect x="40" y="410" width="1548" height="38" rx="12" fill="#1a4d8f" opacity="0.5"/>
+  <rect x="40" y="436" width="1548" height="12" fill="#1a4d8f" opacity="0.3"/>
+  <text x="800" y="436" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#40a0ff" letter-spacing="3">CI/CD PIPELINE — JENKINS STAGES</text>
+
+  <!-- Pipeline flow boxes -->
+  <!-- Stage boxes with connectors -->
+  <!-- 1. Code Commit -->
+  <rect x="60" y="460" width="140" height="80" rx="8" fill="#081530" stroke="#2060c0" stroke-width="1.5"/>
+  <rect x="60" y="460" width="140" height="26" rx="8" fill="#2060c0" opacity="0.7"/>
+  <text x="130" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#c0e0ff">① CODE COMMIT</text>
+  <text x="130" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">git push / PR</text>
+  <text x="130" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">Webhook fires</text>
+  <text x="130" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">Jenkins triggered</text>
+
+  <!-- arrow -->
+  <line x1="200" y1="500" x2="218" y2="500" stroke="#2080e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- 2. Lint/Syntax -->
+  <rect x="220" y="460" width="140" height="80" rx="8" fill="#081530" stroke="#2060c0" stroke-width="1.5"/>
+  <rect x="220" y="460" width="140" height="26" rx="8" fill="#2060c0" opacity="0.7"/>
+  <text x="290" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#c0e0ff">② LINT / VALIDATE</text>
+  <text x="290" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">ansible-lint</text>
+  <text x="290" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">yamllint</text>
+  <text x="290" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">ansible-playbook --syntax</text>
+
+  <line x1="360" y1="500" x2="378" y2="500" stroke="#2080e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- 3. Policy Check -->
+  <rect x="380" y="460" width="140" height="80" rx="8" fill="#081530" stroke="#2060c0" stroke-width="1.5"/>
+  <rect x="380" y="460" width="140" height="26" rx="8" fill="#204080" opacity="0.8"/>
+  <text x="450" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#c0e0ff">③ POLICY CHECK</text>
+  <text x="450" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">OPA / Conftest</text>
+  <text x="450" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">Rego rules eval</text>
+  <text x="450" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">NAPALM validate</text>
+
+  <line x1="520" y1="500" x2="538" y2="500" stroke="#2080e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- 4. FinOps Check -->
+  <rect x="540" y="460" width="140" height="80" rx="8" fill="#081530" stroke="#2060c0" stroke-width="1.5"/>
+  <rect x="540" y="460" width="140" height="26" rx="8" fill="#204a10" opacity="0.9"/>
+  <text x="610" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#c0ffc0">④ FINOPS CHECK</text>
+  <text x="610" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80e080">Cost estimation</text>
+  <text x="610" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80e080">BW budget gate</text>
+  <text x="610" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80e080">License audit</text>
+
+  <line x1="680" y1="500" x2="698" y2="500" stroke="#2080e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- 5. Check-mode / Dry run -->
+  <rect x="700" y="460" width="140" height="80" rx="8" fill="#081530" stroke="#2060c0" stroke-width="1.5"/>
+  <rect x="700" y="460" width="140" height="26" rx="8" fill="#2060c0" opacity="0.7"/>
+  <text x="770" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#c0e0ff">⑤ DRY RUN</text>
+  <text x="770" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">ansible --check</text>
+  <text x="770" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">NAPALM compare</text>
+  <text x="770" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">diff → artifacts</text>
+
+  <line x1="840" y1="500" x2="858" y2="500" stroke="#2080e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- 6. Approval Gate -->
+  <rect x="860" y="460" width="140" height="80" rx="8" fill="#081530" stroke="#c09000" stroke-width="2"/>
+  <rect x="860" y="460" width="140" height="26" rx="8" fill="#a07800" opacity="0.8"/>
+  <text x="930" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#ffe060">⑥ APPROVAL GATE</text>
+  <text x="930" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e0c060">Human review</text>
+  <text x="930" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e0c060">Jira / ServiceNow</text>
+  <text x="930" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e0c060">Change window</text>
+
+  <line x1="1000" y1="500" x2="1018" y2="500" stroke="#2080e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- 7. Deploy -->
+  <rect x="1020" y="460" width="140" height="80" rx="8" fill="#081530" stroke="#2060c0" stroke-width="1.5"/>
+  <rect x="1020" y="460" width="140" height="26" rx="8" fill="#006030" opacity="0.9"/>
+  <text x="1090" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#60ff80">⑦ DEPLOY</text>
+  <text x="1090" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80e080">ansible-playbook</text>
+  <text x="1090" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80e080">site.yaml</text>
+  <text x="1090" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80e080">--limit &lt;subset&gt;</text>
+
+  <line x1="1160" y1="500" x2="1178" y2="500" stroke="#2080e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- 8. Verify -->
+  <rect x="1180" y="460" width="140" height="80" rx="8" fill="#081530" stroke="#2060c0" stroke-width="1.5"/>
+  <rect x="1180" y="460" width="140" height="26" rx="8" fill="#2060c0" opacity="0.7"/>
+  <text x="1250" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#c0e0ff">⑧ VERIFY</text>
+  <text x="1250" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">NAPALM ping</text>
+  <text x="1250" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">Batfish analysis</text>
+  <text x="1250" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">BGP/route verify</text>
+
+  <line x1="1320" y1="500" x2="1338" y2="500" stroke="#2080e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- 9. Notify/Report -->
+  <rect x="1340" y="460" width="230" height="80" rx="8" fill="#081530" stroke="#2060c0" stroke-width="1.5"/>
+  <rect x="1340" y="460" width="230" height="26" rx="8" fill="#2060c0" opacity="0.7"/>
+  <text x="1455" y="477" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#c0e0ff">⑨ NOTIFY / REPORT</text>
+  <text x="1455" y="500" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">Slack · Email · PagerDuty</text>
+  <text x="1455" y="514" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">CMDB update · Audit log</text>
+  <text x="1455" y="528" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#80b0e0">Git tag + release notes</text>
+
+  <!-- Failure rollback arrow -->
+  <path d="M 1250 540 L 1250 570 L 1090 570 L 1090 545" stroke="#e04040" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#arrow-red)"/>
+  <text x="1170" y="585" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#e08080">rollback on failure</text>
+
+  <!-- Jenkins components -->
+  <rect x="60" y="565" width="410" height="200" rx="8" fill="#060e20" stroke="#1a3d8f" stroke-width="1"/>
+  <rect x="60" y="565" width="410" height="24" rx="8" fill="#1a3d8f" opacity="0.6"/>
+  <text x="265" y="582" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#80b0ff">Jenkins Infrastructure</text>
+  <!-- Master -->
+  <rect x="75" y="598" width="120" height="55" rx="6" fill="#0a1530" stroke="#2060c0" stroke-width="1"/>
+  <text x="135" y="618" text-anchor="middle" font-family="Rajdhani" font-size="10" font-weight="700" fill="#80b0ff">Jenkins Master</text>
+  <text x="135" y="632" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#6090d0">Job scheduling</text>
+  <text x="135" y="645" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#6090d0">Pipeline DSL</text>
+
+  <!-- Agents -->
+  <rect x="215" y="598" width="120" height="55" rx="6" fill="#0a1530" stroke="#2060c0" stroke-width="1"/>
+  <text x="275" y="618" text-anchor="middle" font-family="Rajdhani" font-size="10" font-weight="700" fill="#80b0ff">Ansible Agent</text>
+  <text x="275" y="632" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#6090d0">Python venv</text>
+  <text x="275" y="645" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#6090d0">Ansible + libs</text>
+
+  <rect x="355" y="598" width="100" height="55" rx="6" fill="#0a1530" stroke="#2060c0" stroke-width="1"/>
+  <text x="405" y="618" text-anchor="middle" font-family="Rajdhani" font-size="10" font-weight="700" fill="#80b0ff">OPA Agent</text>
+  <text x="405" y="632" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#6090d0">Policy eval</text>
+  <text x="405" y="645" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#6090d0">Conftest</text>
+
+  <text x="75" y="678" font-family="JetBrains Mono" font-size="9" fill="#6090d0">Plugins: git, ansible, credentials, pipeline, slack,</text>
+  <text x="75" y="692" font-family="JetBrains Mono" font-size="9" fill="#6090d0">         blueocean, junit, htmlpublisher, sonarqube</text>
+  <text x="75" y="706" font-family="JetBrains Mono" font-size="9" fill="#6090d0">Secrets: Jenkins Credentials Store → Vault injection</text>
+  <text x="75" y="720" font-family="JetBrains Mono" font-size="9" fill="#6090d0">Artifacts: Diff reports, Audit logs, Config snapshots</text>
+  <text x="75" y="740" font-family="JetBrains Mono" font-size="9" fill="#4070a0">withCredentials([usernamePassword(...)]) { ansible-playbook }</text>
+  <text x="75" y="755" font-family="JetBrains Mono" font-size="9" fill="#4070a0">environment { ANSIBLE_HOST_KEY_CHECKING = 'False' }</text>
+
+  <!-- Scoped deployment box -->
+  <rect x="490" y="565" width="320" height="200" rx="8" fill="#060e20" stroke="#1a3d8f" stroke-width="1"/>
+  <rect x="490" y="565" width="320" height="24" rx="8" fill="#1a3d8f" opacity="0.6"/>
+  <text x="650" y="582" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#80b0ff">Scoped / Subset Deployments</text>
+  <text x="503" y="604" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">## Target specific devices (no full rewrite)</text>
+  <text x="503" y="620" font-family="JetBrains Mono" font-size="9.5" fill="#80b0e0">--limit branch-routers</text>
+  <text x="503" y="635" font-family="JetBrains Mono" font-size="9.5" fill="#80b0e0">--limit "region_us:&amp;role_edge"</text>
+  <text x="503" y="650" font-family="JetBrains Mono" font-size="9.5" fill="#80b0e0">--limit router-01,router-02</text>
+  <text x="503" y="665" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">## Only run specific tasks</text>
+  <text x="503" y="680" font-family="JetBrains Mono" font-size="9.5" fill="#80b0e0">--tags bgp,ospf</text>
+  <text x="503" y="695" font-family="JetBrains Mono" font-size="9.5" fill="#80b0e0">--skip-tags ntp</text>
+  <text x="503" y="710" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">## Canary / rolling deploy</text>
+  <text x="503" y="725" font-family="JetBrains Mono" font-size="9.5" fill="#80b0e0">serial: [1, 5, 50%]  # gradual rollout</text>
+  <text x="503" y="740" font-family="JetBrains Mono" font-size="9.5" fill="#80b0e0">max_fail_percentage: 20</text>
+  <text x="503" y="755" font-family="JetBrains Mono" font-size="9.5" fill="#80b0e0">any_errors_fatal: true</text>
+
+  <!-- Vault box -->
+  <rect x="830" y="565" width="220" height="200" rx="8" fill="#060e20" stroke="#8f4a1a" stroke-width="1.5"/>
+  <rect x="830" y="565" width="220" height="24" rx="8" fill="#8f4a1a" opacity="0.7"/>
+  <text x="940" y="582" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffb060">🔐 Secrets Management</text>
+  <text x="843" y="604" font-family="JetBrains Mono" font-size="9.5" fill="#c08040">HashiCorp Vault</text>
+  <text x="843" y="619" font-family="JetBrains Mono" font-size="9" fill="#e0b070">→ SSH keys / API tokens</text>
+  <text x="843" y="634" font-family="JetBrains Mono" font-size="9" fill="#e0b070">→ SNMP communities</text>
+  <text x="843" y="649" font-family="JetBrains Mono" font-size="9" fill="#e0b070">→ Enable passwords</text>
+  <text x="843" y="669" font-family="JetBrains Mono" font-size="9.5" fill="#c08040">Ansible Vault</text>
+  <text x="843" y="684" font-family="JetBrains Mono" font-size="9" fill="#e0b070">→ ansible-vault encrypt</text>
+  <text x="843" y="699" font-family="JetBrains Mono" font-size="9" fill="#e0b070">→ vault_password_file</text>
+  <text x="843" y="714" font-family="JetBrains Mono" font-size="9" fill="#e0b070">→ !vault tag in YAML</text>
+  <text x="843" y="734" font-family="JetBrains Mono" font-size="9.5" fill="#c08040">Jenkins Credentials</text>
+  <text x="843" y="749" font-family="JetBrains Mono" font-size="9" fill="#e0b070">→ SSHUserPrivateKey</text>
+  <text x="843" y="764" font-family="JetBrains Mono" font-size="9" fill="#e0b070">→ StringBinding, File</text>
+
+  <!-- Artifact storage box -->
+  <rect x="1070" y="565" width="500" height="200" rx="8" fill="#060e20" stroke="#1a3d8f" stroke-width="1"/>
+  <rect x="1070" y="565" width="500" height="24" rx="8" fill="#1a3d8f" opacity="0.6"/>
+  <text x="1320" y="582" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#80b0ff">Pipeline Artifacts &amp; Integrations</text>
+  <text x="1083" y="604" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">Config diff snapshots (before/after)</text>
+  <text x="1083" y="619" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">NAPALM candidate config archive</text>
+  <text x="1083" y="634" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">JUnit XML (lint + test results)</text>
+  <text x="1083" y="649" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">HTML diff reports → Jenkins archive</text>
+  <text x="1083" y="669" font-family="JetBrains Mono" font-size="9.5" fill="#80b0ff">Integrations:</text>
+  <text x="1083" y="684" font-family="JetBrains Mono" font-size="9" fill="#6090d0">Jira: auto-link tickets via commit msg</text>
+  <text x="1083" y="699" font-family="JetBrains Mono" font-size="9" fill="#6090d0">ServiceNow: change request auto-close</text>
+  <text x="1083" y="714" font-family="JetBrains Mono" font-size="9" fill="#6090d0">CMDB: update device config state</text>
+  <text x="1083" y="729" font-family="JetBrains Mono" font-size="9" fill="#6090d0">Prometheus: push pipeline metrics</text>
+  <text x="1083" y="744" font-family="JetBrains Mono" font-size="9" fill="#6090d0">S3 / Nexus: config backup storage</text>
+  <text x="1083" y="759" font-family="JetBrains Mono" font-size="9" fill="#6090d0">NetBox: IPAM/DCIM source of truth</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 3: ANSIBLE ORCHESTRATION -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="40" y="790" width="1548" height="310" rx="12" fill="url(#ansible-grad)" stroke="#6b2d8f" stroke-width="1.5"/>
+  <rect x="40" y="790" width="1548" height="38" rx="12" fill="#6b2d8f" opacity="0.5"/>
+  <rect x="40" y="816" width="1548" height="12" fill="#6b2d8f" opacity="0.3"/>
+  <text x="800" y="816" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#c060ff" letter-spacing="3">ANSIBLE ORCHESTRATION ENGINE</text>
+
+  <!-- Ansible core -->
+  <rect x="60" y="840" width="230" height="240" rx="8" fill="#0e0820" stroke="#7030b0" stroke-width="1.5" filter="url(#node-shadow)"/>
+  <rect x="60" y="840" width="230" height="26" rx="8" fill="#7030b0" opacity="0.7"/>
+  <text x="175" y="858" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#e0b0ff">Ansible Core Flow</text>
+  <text x="73" y="880" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">1. Parse inventory (hosts.ini/yaml)</text>
+  <text x="73" y="895" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">2. Load group_vars + host_vars</text>
+  <text x="73" y="910" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">3. Gather facts (or skip)</text>
+  <text x="73" y="925" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">4. Render Jinja2 templates</text>
+  <text x="73" y="940" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">5. Run tasks → modules</text>
+  <text x="73" y="955" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">6. Handlers on notify</text>
+  <text x="73" y="975" font-family="JetBrains Mono" font-size="9" fill="#b080e0">ansible.cfg</text>
+  <text x="73" y="990" font-family="JetBrains Mono" font-size="9" fill="#9060c0">host_key_checking = False</text>
+  <text x="73" y="1005" font-family="JetBrains Mono" font-size="9" fill="#9060c0">timeout = 30</text>
+  <text x="73" y="1020" font-family="JetBrains Mono" font-size="9" fill="#9060c0">forks = 20</text>
+  <text x="73" y="1035" font-family="JetBrains Mono" font-size="9" fill="#9060c0">callback_plugins = timer,profile</text>
+  <text x="73" y="1050" font-family="JetBrains Mono" font-size="9" fill="#9060c0">strategy = free</text>
+  <text x="73" y="1065" font-family="JetBrains Mono" font-size="9" fill="#9060c0">transport = ssh / netconf</text>
+
+  <!-- Inventory types -->
+  <rect x="310" y="840" width="220" height="240" rx="8" fill="#0e0820" stroke="#7030b0" stroke-width="1.5"/>
+  <rect x="310" y="840" width="220" height="26" rx="8" fill="#7030b0" opacity="0.7"/>
+  <text x="420" y="858" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#e0b0ff">Inventory Types</text>
+  <text x="323" y="880" font-family="JetBrains Mono" font-size="9.5" fill="#c080ff">Static INI / YAML</text>
+  <text x="333" y="895" font-family="JetBrains Mono" font-size="9" fill="#9060c0">[branch_routers]</text>
+  <text x="333" y="910" font-family="JetBrains Mono" font-size="9" fill="#9060c0">router-01 ansible_host=10.1.0.1</text>
+  <text x="333" y="925" font-family="JetBrains Mono" font-size="9" fill="#9060c0">router-02 ansible_host=10.1.0.2</text>
+  <text x="323" y="945" font-family="JetBrains Mono" font-size="9.5" fill="#c080ff">Dynamic Inventory</text>
+  <text x="333" y="960" font-family="JetBrains Mono" font-size="9" fill="#9060c0">NetBox plugin → IPAM</text>
+  <text x="333" y="975" font-family="JetBrains Mono" font-size="9" fill="#9060c0">AWS / Azure inventory</text>
+  <text x="333" y="990" font-family="JetBrains Mono" font-size="9" fill="#9060c0">Custom Python script</text>
+  <text x="323" y="1010" font-family="JetBrains Mono" font-size="9.5" fill="#c080ff">Groups &amp; Children</text>
+  <text x="333" y="1025" font-family="JetBrains Mono" font-size="9" fill="#9060c0">[all:children]</text>
+  <text x="333" y="1040" font-family="JetBrains Mono" font-size="9" fill="#9060c0">branch_routers</text>
+  <text x="333" y="1055" font-family="JetBrains Mono" font-size="9" fill="#9060c0">core_switches</text>
+  <text x="333" y="1070" font-family="JetBrains Mono" font-size="9" fill="#9060c0">firewalls</text>
+
+  <!-- Playbook structure -->
+  <rect x="550" y="840" width="250" height="240" rx="8" fill="#0e0820" stroke="#7030b0" stroke-width="1.5"/>
+  <rect x="550" y="840" width="250" height="26" rx="8" fill="#7030b0" opacity="0.7"/>
+  <text x="675" y="858" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#e0b0ff">Playbook Structure</text>
+  <text x="563" y="878" font-family="JetBrains Mono" font-size="9" fill="#c080ff">---</text>
+  <text x="563" y="893" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- name: Deploy BGP config</text>
+  <text x="573" y="908" font-family="JetBrains Mono" font-size="9" fill="#b080e0">hosts: branch_routers</text>
+  <text x="573" y="923" font-family="JetBrains Mono" font-size="9" fill="#b080e0">gather_facts: false</text>
+  <text x="573" y="938" font-family="JetBrains Mono" font-size="9" fill="#b080e0">become: false</text>
+  <text x="573" y="953" font-family="JetBrains Mono" font-size="9" fill="#b080e0">serial: 5</text>
+  <text x="573" y="968" font-family="JetBrains Mono" font-size="9" fill="#b080e0">vars_files:</text>
+  <text x="583" y="983" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- vault_secrets.yaml</text>
+  <text x="573" y="998" font-family="JetBrains Mono" font-size="9" fill="#b080e0">roles:</text>
+  <text x="583" y="1013" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- common</text>
+  <text x="583" y="1028" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- bgp</text>
+  <text x="583" y="1043" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- acl</text>
+  <text x="573" y="1058" font-family="JetBrains Mono" font-size="9" fill="#b080e0">tags: [bgp, routing]</text>
+  <text x="573" y="1075" font-family="JetBrains Mono" font-size="9" fill="#b080e0">check_mode: "{{ dry_run }}"</text>
+
+  <!-- Transport methods -->
+  <rect x="820" y="840" width="250" height="240" rx="8" fill="#0e0820" stroke="#7030b0" stroke-width="1.5"/>
+  <rect x="820" y="840" width="250" height="26" rx="8" fill="#7030b0" opacity="0.7"/>
+  <text x="945" y="858" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#e0b0ff">Transport / Connection</text>
+  <text x="833" y="880" font-family="JetBrains Mono" font-size="9.5" fill="#c080ff">network_cli (SSH)</text>
+  <text x="843" y="895" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ Paramiko or OpenSSH</text>
+  <text x="843" y="910" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ Enable/Privileged mode</text>
+  <text x="843" y="925" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ Terminal emulation</text>
+  <text x="833" y="945" font-family="JetBrains Mono" font-size="9.5" fill="#c080ff">netconf (XML/YANG)</text>
+  <text x="843" y="960" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ Junos / IOS-XE</text>
+  <text x="843" y="975" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ ncclient library</text>
+  <text x="833" y="995" font-family="JetBrains Mono" font-size="9.5" fill="#c080ff">httpapi (REST)</text>
+  <text x="843" y="1010" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ Arista EOS API</text>
+  <text x="843" y="1025" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ Palo Alto PAN-OS</text>
+  <text x="833" y="1045" font-family="JetBrains Mono" font-size="9.5" fill="#c080ff">local (NAPALM)</text>
+  <text x="843" y="1060" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ napalm_get_facts</text>
+  <text x="843" y="1075" font-family="JetBrains Mono" font-size="9" fill="#9060c0">→ napalm_install_config</text>
+
+  <!-- AWX / Tower -->
+  <rect x="1090" y="840" width="240" height="120" rx="8" fill="#0e0820" stroke="#7030b0" stroke-width="1.5"/>
+  <rect x="1090" y="840" width="240" height="26" rx="8" fill="#7030b0" opacity="0.7"/>
+  <text x="1210" y="858" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#e0b0ff">AWX / Ansible Tower</text>
+  <text x="1103" y="878" font-family="JetBrains Mono" font-size="9" fill="#9060c0">Job Templates per role</text>
+  <text x="1103" y="893" font-family="JetBrains Mono" font-size="9" fill="#9060c0">RBAC: who can deploy what</text>
+  <text x="1103" y="908" font-family="JetBrains Mono" font-size="9" fill="#9060c0">Survey prompts for runtime vars</text>
+  <text x="1103" y="923" font-family="JetBrains Mono" font-size="9" fill="#9060c0">Schedules + webhook triggers</text>
+  <text x="1103" y="938" font-family="JetBrains Mono" font-size="9" fill="#9060c0">Real-time output + audit trail</text>
+  <text x="1103" y="953" font-family="JetBrains Mono" font-size="9" fill="#9060c0">REST API → Jenkins trigger</text>
+
+  <!-- Handlers example -->
+  <rect x="1090" y="975" width="240" height="105" rx="8" fill="#0e0820" stroke="#7030b0" stroke-width="1.5"/>
+  <rect x="1090" y="975" width="240" height="26" rx="8" fill="#7030b0" opacity="0.7"/>
+  <text x="1210" y="993" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#e0b0ff">Handlers / Error Handling</text>
+  <text x="1103" y="1013" font-family="JetBrains Mono" font-size="9" fill="#9060c0">notify: save config</text>
+  <text x="1103" y="1028" font-family="JetBrains Mono" font-size="9" fill="#9060c0">block: / rescue: / always:</text>
+  <text x="1103" y="1043" font-family="JetBrains Mono" font-size="9" fill="#9060c0">failed_when: / ignore_errors:</text>
+  <text x="1103" y="1058" font-family="JetBrains Mono" font-size="9" fill="#9060c0">register: result → assert</text>
+  <text x="1103" y="1073" font-family="JetBrains Mono" font-size="9" fill="#9060c0">retries: 3 delay: 10</text>
+
+  <!-- Collections / Galaxy -->
+  <rect x="1350" y="840" width="228" height="240" rx="8" fill="#0e0820" stroke="#7030b0" stroke-width="1.5"/>
+  <rect x="1350" y="840" width="228" height="26" rx="8" fill="#7030b0" opacity="0.7"/>
+  <text x="1464" y="858" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#e0b0ff">Collections &amp; Galaxy</text>
+  <text x="1363" y="878" font-family="JetBrains Mono" font-size="9" fill="#c080ff">requirements.yaml</text>
+  <text x="1363" y="893" font-family="JetBrains Mono" font-size="9" fill="#9060c0">collections:</text>
+  <text x="1373" y="908" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- cisco.ios:6.0.0</text>
+  <text x="1373" y="923" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- junipernetworks.junos</text>
+  <text x="1373" y="938" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- arista.eos</text>
+  <text x="1373" y="953" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- ansible.netcommon</text>
+  <text x="1373" y="968" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- community.network</text>
+  <text x="1373" y="983" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- paloaltonetworks.panos</text>
+  <text x="1363" y="1003" font-family="JetBrains Mono" font-size="9" fill="#c080ff">roles:</text>
+  <text x="1373" y="1018" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- batfish.base</text>
+  <text x="1373" y="1033" font-family="JetBrains Mono" font-size="9" fill="#9060c0">- networktocode.napalm</text>
+  <text x="1363" y="1053" font-family="JetBrains Mono" font-size="9" fill="#c080ff">Install:</text>
+  <text x="1363" y="1068" font-family="JetBrains Mono" font-size="9" fill="#9060c0">ansible-galaxy collection</text>
+  <text x="1363" y="1083" font-family="JetBrains Mono" font-size="9" fill="#9060c0">  install -r requirements.yaml</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 4: JINJA2 TEMPLATING -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="40" y="1110" width="1548" height="270" rx="12" fill="url(#tmpl-grad)" stroke="#8f5f1a" stroke-width="1.5"/>
+  <rect x="40" y="1110" width="1548" height="38" rx="12" fill="#8f5f1a" opacity="0.5"/>
+  <rect x="40" y="1136" width="1548" height="12" fill="#8f5f1a" opacity="0.3"/>
+  <text x="800" y="1136" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#ffb040" letter-spacing="3">JINJA2 TEMPLATING ENGINE</text>
+
+  <!-- Jinja2 engine -->
+  <rect x="60" y="1160" width="250" height="200" rx="8" fill="#1a0e05" stroke="#c07020" stroke-width="1.5"/>
+  <rect x="60" y="1160" width="250" height="26" rx="8" fill="#c07020" opacity="0.7"/>
+  <text x="185" y="1178" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffe0a0">Jinja2 Syntax Essentials</text>
+  <text x="73" y="1200" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Variables:  {{ hostname }}</text>
+  <text x="73" y="1215" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Blocks:     {%  %}</text>
+  <text x="73" y="1230" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Comments:   {# #}</text>
+  <text x="73" y="1250" font-family="JetBrains Mono" font-size="9.5" fill="#c08030">{% for intf in interfaces %}</text>
+  <text x="73" y="1265" font-family="JetBrains Mono" font-size="9.5" fill="#c08030">  interface {{ intf.name }}</text>
+  <text x="73" y="1280" font-family="JetBrains Mono" font-size="9.5" fill="#c08030">  ip addr {{ intf.ip }}</text>
+  <text x="73" y="1295" font-family="JetBrains Mono" font-size="9.5" fill="#c08030">{% endfor %}</text>
+  <text x="73" y="1315" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">{% if bgp_enabled %}</text>
+  <text x="73" y="1330" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">  router bgp {{ bgp_asn }}</text>
+  <text x="73" y="1345" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">{% endif %}</text>
+
+  <!-- Template examples -->
+  <rect x="330" y="1160" width="280" height="200" rx="8" fill="#1a0e05" stroke="#c07020" stroke-width="1.5"/>
+  <rect x="330" y="1160" width="280" height="26" rx="8" fill="#c07020" opacity="0.7"/>
+  <text x="470" y="1178" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffe0a0">BGP Template (router.j2)</text>
+  <text x="343" y="1200" font-family="JetBrains Mono" font-size="9" fill="#e0a040">router bgp {{ bgp_asn }}</text>
+  <text x="343" y="1215" font-family="JetBrains Mono" font-size="9" fill="#e0a040"> bgp router-id {{ router_id }}</text>
+  <text x="343" y="1230" font-family="JetBrains Mono" font-size="9" fill="#e0a040"> bgp log-neighbor-changes</text>
+  <text x="343" y="1248" font-family="JetBrains Mono" font-size="9" fill="#c08030">{% for peer in bgp_peers %}</text>
+  <text x="343" y="1263" font-family="JetBrains Mono" font-size="9" fill="#c08030"> neighbor {{ peer.ip }}</text>
+  <text x="343" y="1278" font-family="JetBrains Mono" font-size="9" fill="#c08030">  remote-as {{ peer.asn }}</text>
+  <text x="343" y="1293" font-family="JetBrains Mono" font-size="9" fill="#c08030">  description {{ peer.desc }}</text>
+  <text x="343" y="1308" font-family="JetBrains Mono" font-size="9" fill="#c08030">{% if peer.auth %}</text>
+  <text x="343" y="1323" font-family="JetBrains Mono" font-size="9" fill="#c08030">  password {{ peer.auth }}</text>
+  <text x="343" y="1338" font-family="JetBrains Mono" font-size="9" fill="#c08030">{% endif %}</text>
+  <text x="343" y="1353" font-family="JetBrains Mono" font-size="9" fill="#c08030">{% endfor %}</text>
+
+  <!-- NAPALM -->
+  <rect x="630" y="1160" width="250" height="200" rx="8" fill="#1a0e05" stroke="#c07020" stroke-width="1.5"/>
+  <rect x="630" y="1160" width="250" height="26" rx="8" fill="#c07020" opacity="0.7"/>
+  <text x="755" y="1178" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffe0a0">NAPALM Integration</text>
+  <text x="643" y="1200" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Multi-vendor abstraction</text>
+  <text x="643" y="1218" font-family="JetBrains Mono" font-size="9" fill="#c08030">driver = get_network_driver('ios')</text>
+  <text x="643" y="1233" font-family="JetBrains Mono" font-size="9" fill="#c08030">device = driver(host, user, pw)</text>
+  <text x="643" y="1248" font-family="JetBrains Mono" font-size="9" fill="#c08030">device.open()</text>
+  <text x="643" y="1263" font-family="JetBrains Mono" font-size="9" fill="#c08030">device.load_merge_candidate(</text>
+  <text x="643" y="1278" font-family="JetBrains Mono" font-size="9" fill="#c08030">  filename='config.txt')</text>
+  <text x="643" y="1293" font-family="JetBrains Mono" font-size="9" fill="#c08030">diff = device.compare_config()</text>
+  <text x="643" y="1308" font-family="JetBrains Mono" font-size="9" fill="#c08030">device.commit_config()</text>
+  <text x="643" y="1328" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Supports: IOS·JunOS·EOS·NXOS</text>
+  <text x="643" y="1343" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">get_facts · get_bgp_neighbors</text>
+  <text x="643" y="1358" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">get_interfaces · get_route_to</text>
+
+  <!-- Template flow diagram -->
+  <rect x="900" y="1160" width="330" height="200" rx="8" fill="#1a0e05" stroke="#c07020" stroke-width="1.5"/>
+  <rect x="900" y="1160" width="330" height="26" rx="8" fill="#c07020" opacity="0.7"/>
+  <text x="1065" y="1178" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffe0a0">Data → Template → Config Flow</text>
+  <!-- Flow boxes -->
+  <rect x="913" y="1193" width="90" height="38" rx="5" fill="#2a1a05" stroke="#c07020" stroke-width="1"/>
+  <text x="958" y="1207" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e0a040">host_vars/</text>
+  <text x="958" y="1222" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e0a040">router-01.yaml</text>
+  <line x1="1003" y1="1212" x2="1015" y2="1212" stroke="#e0a040" stroke-width="1.2" marker-end="url(#arrow-amber)"/>
+  <rect x="1017" y="1193" width="90" height="38" rx="5" fill="#2a1a05" stroke="#c07020" stroke-width="1"/>
+  <text x="1062" y="1207" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e0a040">Jinja2</text>
+  <text x="1062" y="1222" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e0a040">router.j2</text>
+  <line x1="1107" y1="1212" x2="1119" y2="1212" stroke="#e0a040" stroke-width="1.2" marker-end="url(#arrow-amber)"/>
+  <rect x="1121" y="1193" width="100" height="38" rx="5" fill="#2a1a05" stroke="#c07020" stroke-width="1"/>
+  <text x="1171" y="1207" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e0a040">rendered</text>
+  <text x="1171" y="1222" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e0a040">config.txt</text>
+  <text x="913" y="1250" font-family="JetBrains Mono" font-size="9" fill="#c08030">bgp_asn: 65001</text>
+  <text x="913" y="1265" font-family="JetBrains Mono" font-size="9" fill="#c08030">bgp_peers:</text>
+  <text x="923" y="1280" font-family="JetBrains Mono" font-size="9" fill="#c08030">- ip: 10.0.0.2</text>
+  <text x="923" y="1295" font-family="JetBrains Mono" font-size="9" fill="#c08030">  asn: 65002</text>
+  <text x="913" y="1315" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Filters: default() | join()</text>
+  <text x="913" y="1330" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Tests: defined · iterable · string</text>
+  <text x="913" y="1345" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Macros: reusable config blocks</text>
+  <text x="913" y="1360" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">include/import: modular templates</text>
+
+  <!-- Batfish -->
+  <rect x="1250" y="1160" width="328" height="200" rx="8" fill="#1a0e05" stroke="#c07020" stroke-width="1.5"/>
+  <rect x="1250" y="1160" width="328" height="26" rx="8" fill="#c07020" opacity="0.7"/>
+  <text x="1414" y="1178" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffe0a0">Batfish — Pre-Deploy Analysis</text>
+  <text x="1263" y="1200" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Network model-based analysis</text>
+  <text x="1263" y="1218" font-family="JetBrains Mono" font-size="9" fill="#c08030">bf = Session(host='localhost')</text>
+  <text x="1263" y="1233" font-family="JetBrains Mono" font-size="9" fill="#c08030">bf.set_network('prod')</text>
+  <text x="1263" y="1248" font-family="JetBrains Mono" font-size="9" fill="#c08030">bf.init_snapshot('./configs')</text>
+  <text x="1263" y="1263" font-family="JetBrains Mono" font-size="9" fill="#c08030">result = bf.q.routes().answer()</text>
+  <text x="1263" y="1283" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Answers: loop detection · BGP</text>
+  <text x="1263" y="1298" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">ACL impact · reachability</text>
+  <text x="1263" y="1313" font-family="JetBrains Mono" font-size="9.5" fill="#e0a040">Unused structures · undefined</text>
+  <text x="1263" y="1330" font-family="JetBrains Mono" font-size="9" fill="#c08030">## Zero config push needed</text>
+  <text x="1263" y="1345" font-family="JetBrains Mono" font-size="9" fill="#c08030">## Pure static analysis</text>
+  <text x="1263" y="1360" font-family="JetBrains Mono" font-size="9" fill="#c08030">## CI gate before deploy</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 5: PYTHON AUTOMATION -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="40" y="1390" width="1548" height="210" rx="12" fill="url(#python-grad)" stroke="#8f1a1a" stroke-width="1.5"/>
+  <rect x="40" y="1390" width="1548" height="38" rx="12" fill="#8f1a1a" opacity="0.5"/>
+  <rect x="40" y="1416" width="1548" height="12" fill="#8f1a1a" opacity="0.3"/>
+  <text x="800" y="1416" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#ff6060" letter-spacing="3">PYTHON AUTOMATION LAYER — Paramiko · Netmiko · Nornir · RESTCONF</text>
+
+  <!-- Paramiko -->
+  <rect x="60" y="1440" width="220" height="145" rx="8" fill="#1a0505" stroke="#c02020" stroke-width="1.5"/>
+  <rect x="60" y="1440" width="220" height="26" rx="8" fill="#c02020" opacity="0.7"/>
+  <text x="170" y="1458" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffa0a0">Paramiko (SSH)</text>
+  <text x="73" y="1478" font-family="JetBrains Mono" font-size="9" fill="#e06060">import paramiko</text>
+  <text x="73" y="1493" font-family="JetBrains Mono" font-size="9" fill="#e06060">ssh = paramiko.SSHClient()</text>
+  <text x="73" y="1508" font-family="JetBrains Mono" font-size="9" fill="#e06060">ssh.set_missing_host_key_policy(</text>
+  <text x="73" y="1523" font-family="JetBrains Mono" font-size="9" fill="#e06060">  AutoAddPolicy())</text>
+  <text x="73" y="1538" font-family="JetBrains Mono" font-size="9" fill="#e06060">ssh.connect(host, user, key)</text>
+  <text x="73" y="1553" font-family="JetBrains Mono" font-size="9" fill="#e06060">stdin,stdout,stderr = ssh.exec()</text>
+  <text x="73" y="1568" font-family="JetBrains Mono" font-size="9" fill="#e06060">sftp = ssh.open_sftp() # file xfr</text>
+
+  <!-- Netmiko -->
+  <rect x="300" y="1440" width="240" height="145" rx="8" fill="#1a0505" stroke="#c02020" stroke-width="1.5"/>
+  <rect x="300" y="1440" width="240" height="26" rx="8" fill="#c02020" opacity="0.7"/>
+  <text x="420" y="1458" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffa0a0">Netmiko (CLI Multi-vendor)</text>
+  <text x="313" y="1478" font-family="JetBrains Mono" font-size="9" fill="#e06060">from netmiko import ConnectHandler</text>
+  <text x="313" y="1493" font-family="JetBrains Mono" font-size="9" fill="#e06060">device = {</text>
+  <text x="323" y="1508" font-family="JetBrains Mono" font-size="9" fill="#e06060">  'device_type': 'cisco_ios',</text>
+  <text x="323" y="1523" font-family="JetBrains Mono" font-size="9" fill="#e06060">  'host': '10.1.0.1',</text>
+  <text x="323" y="1538" font-family="JetBrains Mono" font-size="9" fill="#e06060">  'username': 'admin'}</text>
+  <text x="313" y="1553" font-family="JetBrains Mono" font-size="9" fill="#e06060">net = ConnectHandler(**device)</text>
+  <text x="313" y="1568" font-family="JetBrains Mono" font-size="9" fill="#e06060">out = net.send_config_set([cmds])</text>
+  <text x="313" y="1583" font-family="JetBrains Mono" font-size="9" fill="#e06060">net.save_config()</text>
+
+  <!-- Nornir -->
+  <rect x="560" y="1440" width="240" height="145" rx="8" fill="#1a0505" stroke="#c02020" stroke-width="1.5"/>
+  <rect x="560" y="1440" width="240" height="26" rx="8" fill="#c02020" opacity="0.7"/>
+  <text x="680" y="1458" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffa0a0">Nornir (Python Automation)</text>
+  <text x="573" y="1478" font-family="JetBrains Mono" font-size="9" fill="#e06060">nr = InitNornir(config_file=cfg)</text>
+  <text x="573" y="1493" font-family="JetBrains Mono" font-size="9" fill="#e06060">result = nr.run(</text>
+  <text x="573" y="1508" font-family="JetBrains Mono" font-size="9" fill="#e06060">  task=netmiko_send_command,</text>
+  <text x="573" y="1523" font-family="JetBrains Mono" font-size="9" fill="#e06060">  command='show bgp sum')</text>
+  <text x="573" y="1540" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">Parallel by default (forks)</text>
+  <text x="573" y="1555" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">Plugins: netmiko,scrapli,napalm</text>
+  <text x="573" y="1570" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">Inventory from NetBox/Ansible</text>
+  <text x="573" y="1585" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">Filter: F(site="NYC")</text>
+
+  <!-- Scrapli / REST -->
+  <rect x="820" y="1440" width="250" height="145" rx="8" fill="#1a0505" stroke="#c02020" stroke-width="1.5"/>
+  <rect x="820" y="1440" width="250" height="26" rx="8" fill="#c02020" opacity="0.7"/>
+  <text x="945" y="1458" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffa0a0">Scrapli / REST / RESTCONF</text>
+  <text x="833" y="1478" font-family="JetBrains Mono" font-size="9" fill="#e06060">scrapli: async-first SSH/telnet</text>
+  <text x="833" y="1493" font-family="JetBrains Mono" font-size="9" fill="#e06060">requests.get(yang_url,</text>
+  <text x="833" y="1508" font-family="JetBrains Mono" font-size="9" fill="#e06060">  auth=(u,p), verify=False)</text>
+  <text x="833" y="1525" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">RESTCONF: RFC 8040</text>
+  <text x="833" y="1540" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">GET /restconf/data/ietf-interfaces</text>
+  <text x="833" y="1555" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">gNMI: telemetry streaming</text>
+  <text x="833" y="1570" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">Yang + NETCONF validation</text>
+  <text x="833" y="1585" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">pyangbind model binding</text>
+
+  <!-- Python libs -->
+  <rect x="1090" y="1440" width="500" height="145" rx="8" fill="#1a0505" stroke="#c02020" stroke-width="1.5"/>
+  <rect x="1090" y="1440" width="500" height="26" rx="8" fill="#c02020" opacity="0.7"/>
+  <text x="1340" y="1458" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffa0a0">Python Libraries &amp; Tools</text>
+  <text x="1103" y="1478" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">textfsm / ntc-templates  — parse CLI output → structured data</text>
+  <text x="1103" y="1493" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">ciscoconfparse           — parse/modify IOS configs programmatically</text>
+  <text x="1103" y="1508" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">netaddr / ipaddress      — IP manipulation, CIDR, supernetting</text>
+  <text x="1103" y="1523" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">pynetbox / pynetboxplus  — NetBox IPAM/DCIM API client</text>
+  <text x="1103" y="1538" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">pyang / yangson           — YANG model validation</text>
+  <text x="1103" y="1553" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">ncclient                 — NETCONF XML sessions</text>
+  <text x="1103" y="1568" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">jinja2 / yaml / json     — data serialization core</text>
+  <text x="1103" y="1583" font-family="JetBrains Mono" font-size="9.5" fill="#e06060">pytest / nornir-test     — unit + integration test framework</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 6: NETWORK DEVICES -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="40" y="1610" width="1548" height="230" rx="12" fill="url(#device-grad)" stroke="#1a6b6b" stroke-width="1.5"/>
+  <rect x="40" y="1610" width="1548" height="38" rx="12" fill="#1a6b6b" opacity="0.5"/>
+  <rect x="40" y="1636" width="1548" height="12" fill="#1a6b6b" opacity="0.3"/>
+  <text x="800" y="1636" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#40ffff" letter-spacing="3">TARGET NETWORK DEVICES — MULTI-VENDOR</text>
+
+  <!-- Device types -->
+  <!-- Core Routers -->
+  <rect x="60" y="1660" width="180" height="165" rx="8" fill="#051a1a" stroke="#20a0a0" stroke-width="1.5"/>
+  <rect x="60" y="1660" width="180" height="26" rx="8" fill="#20a0a0" opacity="0.7"/>
+  <text x="150" y="1678" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#a0ffff">Core Routers</text>
+  <text x="73" y="1698" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Cisco IOS / IOS-XE</text>
+  <text x="73" y="1713" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Cisco IOS-XR</text>
+  <text x="73" y="1728" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Juniper JunOS</text>
+  <text x="73" y="1743" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Config: BGP, OSPF, MPLS</text>
+  <text x="73" y="1758" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Protocol: network_cli</text>
+  <text x="73" y="1773" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Verify: route tables, BFD</text>
+  <text x="73" y="1790" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">100-500 branch devices</text>
+  <text x="73" y="1808" font-family="JetBrains Mono" font-size="9" fill="#40e0e0">⬆ SSH / NETCONF</text>
+
+  <!-- Switches -->
+  <rect x="260" y="1660" width="180" height="165" rx="8" fill="#051a1a" stroke="#20a0a0" stroke-width="1.5"/>
+  <rect x="260" y="1660" width="180" height="26" rx="8" fill="#20a0a0" opacity="0.7"/>
+  <text x="350" y="1678" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#a0ffff">Campus Switches</text>
+  <text x="273" y="1698" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Cisco Catalyst</text>
+  <text x="273" y="1713" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Arista EOS</text>
+  <text x="273" y="1728" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Juniper EX Series</text>
+  <text x="273" y="1743" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Config: VLANs, STP, LACP</text>
+  <text x="273" y="1758" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Protocol: network_cli/eapi</text>
+  <text x="273" y="1773" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Verify: MAC table, spanning</text>
+  <text x="273" y="1790" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Modules: ios_vlans, eos_vlans</text>
+  <text x="273" y="1808" font-family="JetBrains Mono" font-size="9" fill="#40e0e0">⬆ SSH / eAPI</text>
+
+  <!-- DC Fabric -->
+  <rect x="460" y="1660" width="180" height="165" rx="8" fill="#051a1a" stroke="#20a0a0" stroke-width="1.5"/>
+  <rect x="460" y="1660" width="180" height="26" rx="8" fill="#20a0a0" opacity="0.7"/>
+  <text x="550" y="1678" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#a0ffff">DC Fabric</text>
+  <text x="473" y="1698" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Cisco NXOS (Nexus)</text>
+  <text x="473" y="1713" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Arista spine/leaf</text>
+  <text x="473" y="1728" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Config: VXLAN, EVPN, BGP</text>
+  <text x="473" y="1743" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Protocol: network_cli/nxapi</text>
+  <text x="473" y="1758" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Fabric automation roles</text>
+  <text x="473" y="1773" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">nxos_vlan · nxos_bgp</text>
+  <text x="473" y="1788" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Verify: VTEP, overlay</text>
+  <text x="473" y="1808" font-family="JetBrains Mono" font-size="9" fill="#40e0e0">⬆ SSH / NX-API</text>
+
+  <!-- Firewalls -->
+  <rect x="660" y="1660" width="180" height="165" rx="8" fill="#051a1a" stroke="#20a0a0" stroke-width="1.5"/>
+  <rect x="660" y="1660" width="180" height="26" rx="8" fill="#20a0a0" opacity="0.7"/>
+  <text x="750" y="1678" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#a0ffff">Firewalls / Security</text>
+  <text x="673" y="1698" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Palo Alto NGFW</text>
+  <text x="673" y="1713" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Cisco ASA / FTD</text>
+  <text x="673" y="1728" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Fortinet FortiGate</text>
+  <text x="673" y="1743" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Config: policies, NAT, VPN</text>
+  <text x="673" y="1758" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Protocol: httpapi / REST</text>
+  <text x="673" y="1773" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">panos_* modules</text>
+  <text x="673" y="1788" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Verify: hit-count, rulebase</text>
+  <text x="673" y="1808" font-family="JetBrains Mono" font-size="9" fill="#40e0e0">⬆ REST / SSH</text>
+
+  <!-- WAN / SD-WAN -->
+  <rect x="860" y="1660" width="190" height="165" rx="8" fill="#051a1a" stroke="#20a0a0" stroke-width="1.5"/>
+  <rect x="860" y="1660" width="190" height="26" rx="8" fill="#20a0a0" opacity="0.7"/>
+  <text x="955" y="1678" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#a0ffff">SD-WAN / WAN Edge</text>
+  <text x="873" y="1698" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Cisco Viptela / SDWAN</text>
+  <text x="873" y="1713" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">VMware VeloCloud</text>
+  <text x="873" y="1728" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Config via REST API</text>
+  <text x="873" y="1743" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">vManage API integration</text>
+  <text x="873" y="1758" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Policy push + templates</text>
+  <text x="873" y="1773" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">QoS / traffic shaping</text>
+  <text x="873" y="1788" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Verify: tunnel status</text>
+  <text x="873" y="1808" font-family="JetBrains Mono" font-size="9" fill="#40e0e0">⬆ REST API</text>
+
+  <!-- Load Balancers -->
+  <rect x="1070" y="1660" width="190" height="165" rx="8" fill="#051a1a" stroke="#20a0a0" stroke-width="1.5"/>
+  <rect x="1070" y="1660" width="190" height="26" rx="8" fill="#20a0a0" opacity="0.7"/>
+  <text x="1165" y="1678" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#a0ffff">Load Balancers</text>
+  <text x="1083" y="1698" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">F5 BIG-IP</text>
+  <text x="1083" y="1713" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">NetScaler / ADC</text>
+  <text x="1083" y="1728" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">f5networks.f5_modules</text>
+  <text x="1083" y="1743" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">bigip_virtual_server</text>
+  <text x="1083" y="1758" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">bigip_pool / node</text>
+  <text x="1083" y="1773" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">iControl REST API</text>
+  <text x="1083" y="1788" font-family="JetBrains Mono" font-size="9" fill="#60d0d0">Verify: pool health</text>
+  <text x="1083" y="1808" font-family="JetBrains Mono" font-size="9" fill="#40e0e0">⬆ REST / iControl</text>
+
+  <!-- NMS / CMDB -->
+  <rect x="1280" y="1660" width="298" height="165" rx="8" fill="#051a1a" stroke="#20a0a0" stroke-width="1.5"/>
+  <rect x="1280" y="1660" width="298" height="26" rx="8" fill="#20a0a0" opacity="0.7"/>
+  <text x="1429" y="1678" text-anchor="middle" font-family="Rajdhani" font-size="11" font-weight="700" fill="#a0ffff">NMS / CMDB / Source of Truth</text>
+  <text x="1293" y="1698" font-family="JetBrains Mono" font-size="9.5" fill="#60d0d0">NetBox — IPAM · DCIM · VLAN mgmt</text>
+  <text x="1293" y="1713" font-family="JetBrains Mono" font-size="9.5" fill="#60d0d0">LibreNMS / PRTG — monitoring</text>
+  <text x="1293" y="1728" font-family="JetBrains Mono" font-size="9.5" fill="#60d0d0">SolarWinds NMS integration</text>
+  <text x="1293" y="1743" font-family="JetBrains Mono" font-size="9.5" fill="#60d0d0">Oxidized — config backup</text>
+  <text x="1293" y="1758" font-family="JetBrains Mono" font-size="9.5" fill="#60d0d0">RANCID — version control backup</text>
+  <text x="1293" y="1773" font-family="JetBrains Mono" font-size="9.5" fill="#60d0d0">ServiceNow CMDB — auto-update</text>
+  <text x="1293" y="1788" font-family="JetBrains Mono" font-size="9.5" fill="#60d0d0">Ansible → pynetbox → NetBox</text>
+  <text x="1293" y="1808" font-family="JetBrains Mono" font-size="9" fill="#40e0e0">⬆ REST / SNMP / Syslog</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 7: POLICY + FINOPS + OBSERVABILITY -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <rect x="40" y="1850" width="1548" height="230" rx="12" fill="#06080e" stroke="#2a2a40" stroke-width="1.5"/>
+  <rect x="40" y="1850" width="1548" height="38" rx="12" fill="#1a1a30" opacity="0.8"/>
+  <text x="800" y="1876" text-anchor="middle" font-family="Rajdhani" font-size="14" font-weight="700" fill="#d0d0ff" letter-spacing="2">GOVERNANCE LAYER — Policy as Code · FinOps as Code · Observability</text>
+
+  <!-- Policy as Code -->
+  <rect x="60" y="1900" width="380" height="165" rx="8" fill="#060b18" stroke="#1a3d8f" stroke-width="1.5"/>
+  <rect x="60" y="1900" width="380" height="26" rx="8" fill="#1a3d8f" opacity="0.8"/>
+  <text x="250" y="1918" text-anchor="middle" font-family="Rajdhani" font-size="13" font-weight="700" fill="#80b0ff">🛡 Policy as Code (OPA / Conftest)</text>
+  <text x="73" y="1940" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">Rego rules enforce standards:</text>
+  <text x="73" y="1956" font-family="JetBrains Mono" font-size="9" fill="#6080e0">deny["No SSH v1"] { input.ssh_version == 1 }</text>
+  <text x="73" y="1971" font-family="JetBrains Mono" font-size="9" fill="#6080e0">deny["ACL required"] { count(input.acls)==0 }</text>
+  <text x="73" y="1986" font-family="JetBrains Mono" font-size="9" fill="#6080e0">deny["NTP missing"] { not input.ntp_server }</text>
+  <text x="73" y="2003" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">Enforces: NTP, SNMP v3, SSH keys,</text>
+  <text x="73" y="2018" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">          ACL standards, BGP auth,</text>
+  <text x="73" y="2033" font-family="JetBrains Mono" font-size="9.5" fill="#4090c0">          banner text, logging config</text>
+  <text x="73" y="2050" font-family="JetBrains Mono" font-size="9" fill="#3070b0">conftest test ./playbooks/ --policy ./policy/</text>
+
+  <!-- FinOps -->
+  <rect x="460" y="1900" width="380" height="165" rx="8" fill="#060e08" stroke="#2a5a10" stroke-width="1.5"/>
+  <rect x="460" y="1900" width="380" height="26" rx="8" fill="#2a5a10" opacity="0.8"/>
+  <text x="650" y="1918" text-anchor="middle" font-family="Rajdhani" font-size="13" font-weight="700" fill="#80e060">💰 FinOps as Code</text>
+  <text x="473" y="1940" font-family="JetBrains Mono" font-size="9.5" fill="#50a030">Cost tagging enforced via templates:</text>
+  <text x="473" y="1956" font-family="JetBrains Mono" font-size="9" fill="#70c050">snmp_location: "{{ cost_center }}"</text>
+  <text x="473" y="1971" font-family="JetBrains Mono" font-size="9" fill="#70c050">description: "{{ project_code }}"</text>
+  <text x="473" y="1988" font-family="JetBrains Mono" font-size="9.5" fill="#50a030">Bandwidth budget gates in Jenkins:</text>
+  <text x="473" y="2003" font-family="JetBrains Mono" font-size="9" fill="#70c050">if bandwidth_increase &gt; budget:</text>
+  <text x="473" y="2018" font-family="JetBrains Mono" font-size="9" fill="#70c050">  raise ApprovalRequired()</text>
+  <text x="473" y="2033" font-family="JetBrains Mono" font-size="9.5" fill="#50a030">License tracking: qty of managed</text>
+  <text x="473" y="2048" font-family="JetBrains Mono" font-size="9.5" fill="#50a030">  devices vs license entitlement</text>
+  <text x="473" y="2063" font-family="JetBrains Mono" font-size="9" fill="#3a8020">Infracost / custom scripts → Slack</text>
+
+  <!-- Observability -->
+  <rect x="860" y="1900" width="380" height="165" rx="8" fill="#0a060e" stroke="#402a6b" stroke-width="1.5"/>
+  <rect x="860" y="1900" width="380" height="26" rx="8" fill="#402a6b" opacity="0.8"/>
+  <text x="1050" y="1918" text-anchor="middle" font-family="Rajdhani" font-size="13" font-weight="700" fill="#c080ff">📊 Observability Stack</text>
+  <text x="873" y="1940" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Prometheus + Alertmanager</text>
+  <text x="873" y="1956" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ pipeline metrics: deploy time, fail rate</text>
+  <text x="873" y="1971" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ device reachability, BGP state</text>
+  <text x="873" y="1988" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Grafana dashboards</text>
+  <text x="873" y="2003" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ IaC run history · compliance %</text>
+  <text x="873" y="2018" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ Config drift detection</text>
+  <text x="873" y="2035" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">ELK Stack / Splunk</text>
+  <text x="873" y="2050" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ Syslog centralization</text>
+  <text x="873" y="2065" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ Ansible run logs + audit trail</text>
+
+  <!-- Drift Detection -->
+  <rect x="1260" y="1900" width="318" height="165" rx="8" fill="#0a0608" stroke="#5a2a10" stroke-width="1.5"/>
+  <rect x="1260" y="1900" width="318" height="26" rx="8" fill="#5a2a10" opacity="0.8"/>
+  <text x="1419" y="1918" text-anchor="middle" font-family="Rajdhani" font-size="13" font-weight="700" fill="#ffa060">🔄 Config Drift &amp; Compliance</text>
+  <text x="1273" y="1940" font-family="JetBrains Mono" font-size="9.5" fill="#c07040">Scheduled ansible --check runs</text>
+  <text x="1273" y="1956" font-family="JetBrains Mono" font-size="9" fill="#e09060">→ Detect out-of-band changes</text>
+  <text x="1273" y="1971" font-family="JetBrains Mono" font-size="9" fill="#e09060">→ Alert on drift via PagerDuty</text>
+  <text x="1273" y="1988" font-family="JetBrains Mono" font-size="9.5" fill="#c07040">Oxidized / RANCID</text>
+  <text x="1273" y="2003" font-family="JetBrains Mono" font-size="9" fill="#e09060">→ Config version control</text>
+  <text x="1273" y="2018" font-family="JetBrains Mono" font-size="9" fill="#e09060">→ Git diff on device configs</text>
+  <text x="1273" y="2035" font-family="JetBrains Mono" font-size="9.5" fill="#c07040">CIS / DISA STIG compliance</text>
+  <text x="1273" y="2050" font-family="JetBrains Mono" font-size="9" fill="#e09060">→ Security baseline checks</text>
+  <text x="1273" y="2065" font-family="JetBrains Mono" font-size="9" fill="#e09060">→ Auto-remediate via playbook</text>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- INTER-SECTION ARROWS -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- Git → Jenkins -->
+  <path d="M 800 400 L 800 410" stroke="#20c060" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+  <!-- Jenkins → Ansible -->
+  <path d="M 800 780 L 800 790" stroke="#9060e0" stroke-width="2" marker-end="url(#arrow-purple)"/>
+
+  <!-- Ansible → Jinja2 -->
+  <path d="M 800 1100 L 800 1110" stroke="#e0a020" stroke-width="2" marker-end="url(#arrow-amber)"/>
+
+  <!-- Jinja2 → Python -->
+  <path d="M 800 1380 L 800 1390" stroke="#e04040" stroke-width="2" marker-end="url(#arrow-red)"/>
+
+  <!-- Python → Devices -->
+  <path d="M 800 1600 L 800 1610" stroke="#20c0c0" stroke-width="2" marker-end="url(#arrow-teal)"/>
+
+  <!-- Devices → FinOps/Policy -->
+  <path d="M 800 1840 L 800 1850" stroke="#8090a0" stroke-width="2" marker-end="url(#arrow-white)"/>
+
+  <!-- Secrets to Jenkins (side arrow) -->
+  <path d="M 830 640 L 700 690 L 700 610 L 858 555" stroke="#e0a020" stroke-width="1.5" stroke-dasharray="6,3" fill="none" marker-end="url(#arrow-amber)"/>
+
+  <!-- OPA Policy to Jenkins policy stage -->
+  <path d="M 250 1900 L 250 1850 L 450 780 L 450 540" stroke="#2060c0" stroke-width="1.2" stroke-dasharray="4,3" fill="none" marker-end="url(#arrow-blue)" opacity="0.5"/>
+
+  <!-- Batfish to Jenkins dry-run -->
+  <path d="M 1380 1160 L 1380 1100 L 770 795 L 770 540" stroke="#c07020" stroke-width="1.2" stroke-dasharray="4,3" fill="none" marker-end="url(#arrow-amber)" opacity="0.5"/>
+
+  <!-- Observability feedback loop -->
+  <path d="M 1050 1900 L 1050 1840 L 1540 1840 L 1540 420 L 1572 420" stroke="#9060c0" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#arrow-purple)" opacity="0.4"/>
+
+  <!-- Labels for main flow arrows -->
+  <rect x="760" y="395" width="80" height="16" rx="3" fill="#080e1a"/>
+  <text x="800" y="407" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#20c060">Webhook / API</text>
+
+  <rect x="748" y="785" width="104" height="16" rx="3" fill="#080e1a"/>
+  <text x="800" y="797" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#9060e0">ansible-playbook</text>
+
+  <rect x="748" y="1105" width="104" height="16" rx="3" fill="#080e1a"/>
+  <text x="800" y="1117" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e0a020">template module</text>
+
+  <rect x="754" y="1385" width="92" height="16" rx="3" fill="#080e1a"/>
+  <text x="800" y="1397" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e04040">SSH / NETCONF</text>
+
+  <rect x="748" y="1605" width="104" height="16" rx="3" fill="#080e1a"/>
+  <text x="800" y="1617" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#20c0c0">CLI push / REST</text>
+
+  <rect x="748" y="1845" width="104" height="16" rx="3" fill="#080e1a"/>
+  <text x="800" y="1857" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#8090a0">telemetry / logs</text>
+
+</svg>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+  // Simple hover info could be added here
+  document.querySelectorAll('rect[data-tip]').forEach(el => {
+    el.style.cursor = 'pointer';
+  });
+</script>
+</body>
+</html>

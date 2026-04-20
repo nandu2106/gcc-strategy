@@ -1,0 +1,891 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0e14;--bg2:#0f1520;--bg3:#141c28;--surface:#1a2235;--surface2:#1f2940;
+  --border:#243048;--border2:#2e3d5c;
+  --cyan:#00d4ff;--cyan2:#0099bb;--amber:#f59e0b;--green:#10b981;--red:#ef4444;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#4a5568;
+  --syne:'Syne',sans-serif;--mono:'IBM Plex Mono',monospace;--lora:'Lora',serif;
+}
+body{font-family:var(--syne);background:var(--bg);color:var(--text);line-height:1.6;font-size:14px;min-height:100vh;overflow-x:hidden}
+
+/* GRID BG */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,14,20,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:50px}
+.nav-brand{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;opacity:.7}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{font-family:var(--mono);font-size:10px;padding:6px 14px;border-radius:3px;cursor:pointer;color:var(--text2);transition:all .2s;border:none;background:transparent;letter-spacing:1px;text-transform:uppercase}
+.nav-tab:hover,.nav-tab.active{color:var(--cyan);background:rgba(0,212,255,0.08);border-bottom:1px solid var(--cyan)}
+
+/* PAGES */
+.page{display:none;animation:fadeIn .3s ease;position:relative;z-index:1}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO */
+.hero{padding:56px 44px 48px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(0,212,255,0.06) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'NETWORK';position:absolute;right:40px;top:50%;transform:translateY(-50%);font-family:var(--syne);font-size:120px;font-weight:800;color:rgba(0,212,255,0.03);letter-spacing:-4px;pointer-events:none}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--cyan);margin-bottom:16px;text-transform:uppercase;opacity:.8}
+.hero-eyebrow::before{content:'> ';opacity:.4}
+.hero-title{font-family:var(--syne);font-size:46px;font-weight:800;line-height:1.05;margin-bottom:16px;max-width:680px;letter-spacing:-1px}
+.hero-title span{color:var(--cyan)}
+.hero-sub{font-family:var(--lora);font-size:15px;color:var(--text2);max-width:540px;line-height:1.75;margin-bottom:36px;font-style:italic}
+.hero-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.hero-stat{background:var(--bg2);padding:18px 14px;text-align:center;position:relative}
+.hero-stat-val{font-family:var(--mono);font-size:22px;color:var(--cyan);margin-bottom:3px;font-weight:500}
+.hero-stat-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)}
+
+/* SECTION */
+.section{padding:40px 44px 36px;border-bottom:1px solid var(--border)}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.section-num{font-family:var(--mono);font-size:10px;color:var(--cyan);opacity:.5}
+.section-title{font-family:var(--syne);font-size:26px;font-weight:700;color:var(--text);letter-spacing:-.5px}
+.section-tag{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-left:auto;border:1px solid var(--border2);padding:3px 10px;border-radius:2px}
+
+/* CARDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.card-cyan::before{background:var(--cyan)}
+.card-amber::before{background:var(--amber)}
+.card-green::before{background:var(--green)}
+.card-red::before{background:var(--red)}
+.card-dim::before{background:var(--border2)}
+.card-title{font-family:var(--syne);font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;letter-spacing:.2px}
+.card-body{font-size:12px;color:var(--text2);line-height:1.7}
+
+/* PILL */
+.pill{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:2px;letter-spacing:.5px;margin:2px}
+.pill-cyan{background:rgba(0,212,255,0.1);color:var(--cyan);border:1px solid rgba(0,212,255,0.2)}
+.pill-amber{background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.2)}
+.pill-green{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.2)}
+.pill-red{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.pill-dim{background:rgba(74,85,104,0.2);color:var(--text2);border:1px solid var(--border2)}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{text-align:left;font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-weight:400}
+.data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(0,212,255,0.02)}
+
+/* PROGRESS */
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.prog-label{font-size:11px;color:var(--text2);min-width:180px;font-family:var(--mono)}
+.prog-bar{flex:1;height:3px;background:var(--bg);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px}
+.prog-val{font-family:var(--mono);font-size:10px;color:var(--text3);min-width:44px;text-align:right}
+
+/* TIMELINE */
+.timeline{padding-left:20px;border-left:1px solid var(--border2)}
+.tl-item{position:relative;margin-bottom:24px;padding-left:20px}
+.tl-dot{position:absolute;left:-24px;top:5px;width:8px;height:8px;border-radius:50%;border:1px solid var(--border2)}
+.tl-dot.cyan{background:var(--cyan);border-color:var(--cyan)}
+.tl-dot.amber{background:var(--amber);border-color:var(--amber)}
+.tl-dot.green{background:var(--green);border-color:var(--green)}
+.tl-phase{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:4px;opacity:.7}
+.tl-title{font-weight:600;font-size:13px;margin-bottom:6px;color:var(--text)}
+.tl-body{font-size:12px;color:var(--text2);line-height:1.7}
+
+/* TOPOLOGY */
+.topo-row{display:flex;align-items:center;gap:0;margin:16px 0}
+.topo-node{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:12px 10px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text2)}
+.topo-node.active{background:rgba(0,212,255,0.08);border-color:var(--cyan);color:var(--cyan)}
+.topo-node .sub{font-size:9px;color:var(--text3);margin-top:3px;display:block;font-family:var(--syne)}
+.topo-arrow{width:24px;text-align:center;color:var(--border2);font-size:14px;flex-shrink:0}
+.topo-arrow.active{color:var(--cyan)}
+
+/* RISK */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.risk-card{padding:14px;border-radius:4px;font-size:12px;border:1px solid}
+.risk-high{background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.2)}
+.risk-med{background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.2)}
+.risk-low{background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.2)}
+.risk-title{font-weight:600;margin-bottom:6px;font-size:12px;font-family:var(--syne)}
+.risk-mit{color:var(--text2);margin-top:8px;font-size:11px;line-height:1.6}
+
+/* INSIGHT */
+.insight{background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(0,212,255,0.02));border:1px solid rgba(0,212,255,0.15);border-radius:6px;padding:20px 24px;margin:16px 0;border-left:3px solid var(--cyan)}
+.insight p{font-family:var(--lora);font-size:16px;color:var(--text);line-height:1.6;font-style:italic;margin-bottom:6px}
+.insight span{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase}
+
+/* STAT CARD */
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;text-align:center}
+.stat-val{font-family:var(--mono);font-size:28px;color:var(--cyan);margin-bottom:4px;font-weight:500}
+.stat-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);font-family:var(--mono)}
+.stat-delta{font-family:var(--mono);font-size:10px;margin-top:8px}
+.stat-up{color:var(--green)}
+.stat-target{color:var(--amber)}
+
+/* ORG */
+.org-box{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px}
+.org-box h4{font-family:var(--syne);font-size:11px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.org-box ul{list-style:none;font-size:11px;color:var(--text2);font-family:var(--mono)}
+.org-box ul li{padding:2px 0}
+.org-box ul li::before{content:'> ';color:var(--cyan);opacity:.4}
+
+/* MATURITY BAR */
+.mat-row{display:grid;grid-template-columns:160px 1fr 60px;gap:10px;align-items:center;margin-bottom:10px}
+.mat-label{font-family:var(--mono);font-size:10px;color:var(--text2)}
+.mat-track{height:6px;background:var(--bg2);border-radius:3px;position:relative;border:1px solid var(--border)}
+.mat-fill{height:100%;border-radius:2px;position:relative}
+.mat-fill::after{content:'';position:absolute;right:-1px;top:-3px;width:2px;height:12px;border-radius:1px}
+.mat-fill.cyan::after{background:var(--cyan)}
+.mat-fill.amber::after{background:var(--amber)}
+.mat-fill.green::after{background:var(--green)}
+.mat-score{font-family:var(--mono);font-size:10px;text-align:right}
+
+/* FOOTER */
+.footer{background:var(--bg2);border-top:1px solid var(--border);color:var(--text3);text-align:center;padding:16px;font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;position:relative;z-index:1}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">DIR // GLOBAL NETWORKS // STRATEGY</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="show('vision')">Vision</button>
+    <button class="nav-tab" onclick="show('arch')">Architecture</button>
+    <button class="nav-tab" onclick="show('roadmap')">Roadmap</button>
+    <button class="nav-tab" onclick="show('stakeholders')">Stakeholders</button>
+    <button class="nav-tab" onclick="show('ops')">Team &amp; Ops</button>
+    <button class="nav-tab" onclick="show('risk')">Risk &amp; Cost</button>
+  </div>
+</nav>
+
+<!-- ══════════════ VISION ══════════════ -->
+<div class="page active" id="page-vision">
+  <div class="hero">
+    <div class="hero-eyebrow">Director, Technology Global Networks · Enterprise Strategy</div>
+    <h1 class="hero-title">From Hardware-Centric<br>to <span>Software-Defined</span> Global Networks</h1>
+    <p class="hero-sub">A unified global network strategy — SD-WAN, hybrid cloud, zero-trust, and intelligent automation — enabling a $10B→$20B enterprise across 1,000+ sites worldwide.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val">1,000+</div><div class="hero-stat-label">Global Sites</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">AWS+Azure</div><div class="hero-stat-label">Cloud Platforms</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">99.99%</div><div class="hero-stat-label">Availability Target</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">3–4</div><div class="hero-stat-label">Direct Reports</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">2×</div><div class="hero-stat-label">Revenue Scale Goal</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01 //</span>
+      <h2 class="section-title">The Strategic Imperative</h2>
+      <span class="section-tag">Context</span>
+    </div>
+    <div class="grid-3">
+      <div class="card card-cyan">
+        <div class="card-title">The Scale Problem</div>
+        <div class="card-body">
+          Scaling from $10B to $20B revenue doubles the network load — more stores, more DCs, more cloud workloads, more SaaS. The legacy hardware-centric model cannot scale linearly without unsustainable capex. SD-WAN + cloud-native networking is the only path.
+          <br><br>
+          <div class="pill pill-cyan">1,000+ sites today</div>
+          <div class="pill pill-amber">2× site growth expected</div>
+          <div class="pill pill-dim">Hardware COGS unsustainable</div>
+        </div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-title">The Business Case</div>
+        <div class="card-body">
+          Every minute of network downtime at a retail site = lost transactions. Every latency spike in SAP or ServiceNow = productivity loss. Network is not infrastructure — it is revenue infrastructure.
+          <br><br>
+          <div class="pill pill-green">30–45% WAN cost reduction via SD-WAN</div>
+          <div class="pill pill-cyan">60% faster site deployments</div>
+          <div class="pill pill-amber">40% reduction in MTTR</div>
+          <br>
+          Direct network modernization ROI visible within 18 months.
+        </div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">The Architecture Shift</div>
+        <div class="card-body">
+          Three transformational shifts define the Director's mandate:
+          <br><br>
+          <strong style="color:var(--text)">Hardware → Software Defined</strong><br>
+          Physical routers → SD-WAN fabric with centralized policy control.
+          <br><br>
+          <strong style="color:var(--text)">MPLS → Hybrid Broadband</strong><br>
+          Dual broadband + 4G/5G backup + cloud on-ramps replace expensive MPLS.
+          <br><br>
+          <strong style="color:var(--text)">Perimeter → Zero-Trust</strong><br>
+          Network segmentation baked into policy, not topology.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">Five Strategic Pillars</h2>
+      <span class="section-tag">Framework</span>
+    </div>
+    <div class="grid-2">
+      <div>
+        <div class="card card-cyan" style="margin-bottom:10px">
+          <div class="card-title">01 · SD-WAN Global Fabric</div>
+          <div class="card-body">Unified SD-WAN platform across all 1,000+ sites — stores, offices, distribution centers. Centralized policy, application-aware routing, and automated failover. Eliminate per-site manual configuration. Reduce WAN spend by 35%+ through broadband replacement of MPLS circuits.</div>
+        </div>
+        <div class="card card-amber" style="margin-bottom:10px">
+          <div class="card-title">02 · Hybrid Cloud Connectivity</div>
+          <div class="card-body">AWS Transit Gateway + Direct Connect + Azure ExpressRoute as the cloud backbone. Seamless connectivity for SAP S/4HANA, ServiceNow, and data platforms. Sub-10ms latency SLA for enterprise application tiers. SD-WAN edge integrated with cloud on-ramps natively.</div>
+        </div>
+        <div class="card card-green">
+          <div class="card-title">03 · Zero-Trust Network Architecture</div>
+          <div class="card-body">Micro-segmentation across all site types. SASE framework combining SD-WAN + SSE. Identity-based access enforced at the network layer. Zero implicit trust — every device, every session, every workload verified. Continuous compliance posture monitoring.</div>
+        </div>
+      </div>
+      <div>
+        <div class="card card-red" style="margin-bottom:10px">
+          <div class="card-title">04 · Network Automation &amp; Observability</div>
+          <div class="card-body">Infrastructure as Code for all network configuration. GitOps-driven change management — version control for every policy change. AIOps-powered anomaly detection and predictive failure identification. Single-pane-of-glass observability across WAN, LAN, cloud, and wireless. Target: 80% of changes fully automated.</div>
+        </div>
+        <div class="card card-dim" style="margin-bottom:10px">
+          <div class="card-title">05 · Intelligent Orchestration</div>
+          <div class="card-body">Self-healing network policies triggered by telemetry events. Auto-remediation for common failure patterns eliminates manual Tier-1 triage. ML-driven traffic engineering optimizes application performance in real time. Capacity planning driven by predictive analytics, not reactive expansion.</div>
+        </div>
+        <div class="insight">
+          <p>"The network is no longer a utility — it is a programmable platform that accelerates business velocity."</p>
+          <span>Global Networks Strategic North Star</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03 //</span>
+      <h2 class="section-title">Capability Maturity: Current → Target</h2>
+      <span class="section-tag">Assessment</span>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:24px">
+      <div style="display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr 1fr;gap:8px;margin-bottom:16px;font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase">
+        <div>Domain</div><div>L1 Ad-Hoc</div><div>L2 Defined</div><div style="color:var(--amber)">L3 Managed ◄ NOW</div><div>L4 Optimized</div><div style="color:var(--green)">L5 Autonomous ◄ TARGET</div>
+      </div>
+      <div style="height:1px;background:var(--border);margin-bottom:16px"></div>
+      <div class="data-table-wrap">
+        <table class="data-table" style="font-size:11px">
+          <tbody>
+            <tr><td style="color:var(--text);font-weight:600">WAN Architecture</td><td>MPLS only</td><td>Dual circuits</td><td style="color:var(--amber)">SD-WAN pilot</td><td>Full SD-WAN fabric</td><td style="color:var(--green)">SASE-integrated fabric</td></tr>
+            <tr><td style="color:var(--text);font-weight:600">Cloud Connectivity</td><td>VPN tunnels</td><td>Dedicated lines</td><td style="color:var(--amber)">TGW + Direct Connect</td><td>Cloud-native integration</td><td style="color:var(--green)">Self-optimizing cloud mesh</td></tr>
+            <tr><td style="color:var(--text);font-weight:600">Change Management</td><td>CLI per device</td><td>Templates</td><td style="color:var(--amber)">Partial automation</td><td>GitOps pipelines</td><td style="color:var(--green)">Intent-based, 80%+ automated</td></tr>
+            <tr><td style="color:var(--text);font-weight:600">Observability</td><td>Ping/SNMP</td><td>NMS dashboards</td><td style="color:var(--amber)">Streaming telemetry</td><td>AIOps correlation</td><td style="color:var(--green)">Predictive intelligence</td></tr>
+            <tr><td style="color:var(--text);font-weight:600">Security Posture</td><td>Perimeter FW</td><td>VLAN segmentation</td><td style="color:var(--amber)">SSE / CASB</td><td>Micro-segmentation</td><td style="color:var(--green)">Full zero-trust, continuous verify</td></tr>
+            <tr><td style="color:var(--text);font-weight:600">Site Provisioning</td><td>14+ days manual</td><td>7-day templates</td><td style="color:var(--amber)">ZTP partial</td><td>ZTP full, &lt;48hr</td><td style="color:var(--green)">Day-0 automation, &lt;4hr</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ARCHITECTURE ══════════════ -->
+<div class="page" id="page-arch">
+  <div class="hero">
+    <div class="hero-eyebrow">Global Network Architecture · Hybrid Cloud · SD-WAN · Zero-Trust</div>
+    <h1 class="hero-title">The Global <span>Network Fabric</span></h1>
+    <p class="hero-sub">A unified, software-defined network topology connecting every store, DC, office, and cloud platform — with intelligence built into every layer.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01 //</span>
+      <h2 class="section-title">Network Topology Stack</h2>
+      <span class="section-tag">Architecture</span>
+    </div>
+    <div class="topo-row">
+      <div class="topo-node active">Enterprise Apps<span class="sub">SAP · ServiceNow · SaaS</span></div>
+      <div class="topo-arrow active">⇄</div>
+      <div class="topo-node active">Cloud Fabric<span class="sub">AWS TGW · Azure vWAN</span></div>
+      <div class="topo-arrow active">⇄</div>
+      <div class="topo-node active">SD-WAN Controller<span class="sub">Centralized policy engine</span></div>
+      <div class="topo-arrow active">⇄</div>
+      <div class="topo-node active">SASE Edge<span class="sub">SSE · CASB · FWaaS</span></div>
+      <div class="topo-arrow active">⇄</div>
+      <div class="topo-node active">Site Edge<span class="sub">1,000+ stores / DCs / offices</span></div>
+    </div>
+    <div style="text-align:center;margin:8px 0 24px;font-family:var(--mono);font-size:9px;color:var(--cyan);opacity:.5;letter-spacing:2px">↑↓ AIOps Telemetry + Observability + Automated Remediation Loop ↑↓</div>
+
+    <div class="grid-3">
+      <div class="card card-cyan">
+        <div class="card-title">SD-WAN Fabric Layer</div>
+        <div class="card-body">
+          Application-aware routing across broadband, 4G/5G, and MPLS circuits. Policy-based traffic steering — POS transactions on dedicated QoS path, guest Wi-Fi isolated, video conferencing traffic prioritized.
+          <br><br>
+          <div class="pill pill-cyan">35% MPLS cost reduction</div>
+          <div class="pill pill-cyan">Dual broadband + 4G/5G</div>
+          <div class="pill pill-cyan">Sub-second failover</div>
+          <div class="pill pill-cyan">Zero-touch provisioning</div>
+        </div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-title">Hybrid Cloud Connectivity</div>
+        <div class="card-body">
+          AWS Transit Gateway as the cloud hub. Direct Connect (10Gbps) for latency-sensitive workloads. Azure ExpressRoute for M365, Dynamics, and Azure-hosted services. SD-WAN edges integrate natively with cloud on-ramps.
+          <br><br>
+          <div class="pill pill-amber">AWS Direct Connect 10G</div>
+          <div class="pill pill-amber">Azure ExpressRoute</div>
+          <div class="pill pill-amber">&lt;10ms cloud latency SLA</div>
+          <div class="pill pill-amber">BGP route optimization</div>
+        </div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">SASE / Zero-Trust Layer</div>
+        <div class="card-body">
+          Security and networking converged at the edge. SSE enforces policy at the point of access — cloud, on-prem, or remote. ZTNA replaces VPN for third-party and remote access. Continuous device posture verification.
+          <br><br>
+          <div class="pill pill-green">Zero implicit trust</div>
+          <div class="pill pill-green">Identity-aware access</div>
+          <div class="pill pill-green">CASB + DLP integrated</div>
+          <div class="pill pill-green">Micro-segmentation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">Site Typology &amp; Network Requirements</h2>
+      <span class="section-tag">Design Standards</span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Site Type</th><th>Count</th><th>WAN Design</th><th>Bandwidth</th><th>Critical Systems</th><th>Provisioning SLA</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong style="color:var(--text)">Retail Stores</strong></td><td>~800+</td><td>Dual broadband + 4G/5G backup</td><td>100–500Mbps</td><td>POS, payments, loyalty, inventory</td><td>&lt;4 hours (ZTP)</td></tr>
+        <tr><td><strong style="color:var(--text)">Distribution Centers</strong></td><td>~50</td><td>Dedicated fiber + SD-WAN</td><td>1–10Gbps</td><td>WMS, ERP (SAP), robotics, CCTV</td><td>&lt;24 hours</td></tr>
+        <tr><td><strong style="color:var(--text)">Corporate Offices</strong><br><span style="font-size:10px;color:var(--text3)">HQ + regional</span></td><td>~150</td><td>MPLS + broadband + Direct Connect</td><td>1–10Gbps</td><td>SAP, ServiceNow, collaboration</td><td>&lt;48 hours</td></tr>
+        <tr><td><strong style="color:var(--text)">Cloud Regions</strong></td><td>4 regions</td><td>Direct Connect + ExpressRoute</td><td>10Gbps dedicated</td><td>All enterprise platforms</td><td>Automated (IaC)</td></tr>
+        <tr><td><strong style="color:var(--text)">Remote / Kiosks</strong></td><td>Variable</td><td>4G/5G + ZTNA</td><td>50–100Mbps</td><td>POS, digital displays</td><td>&lt;2 hours (eSIM)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03 //</span>
+      <h2 class="section-title">Platform Integration: SAP &amp; ServiceNow</h2>
+      <span class="section-tag">Enterprise Platforms</span>
+    </div>
+    <div class="grid-2">
+      <div class="card card-cyan">
+        <div class="card-title">SAP Network Requirements</div>
+        <div class="card-body">
+          SAP S/4HANA is latency-critical. Every 10ms of additional latency degrades ERP performance measurably. Network design mandates:
+          <br><br>
+          — Dedicated QoS markings (DSCP EF) for SAP DIAG/RFC traffic<br>
+          — Direct Connect circuits for SAP RISE cloud instances<br>
+          — WAN optimization / application acceleration at DC sites<br>
+          — Network change freeze windows aligned to SAP release calendar<br>
+          — Latency SLA: &lt;5ms site-to-SAP for tier-1 DCs, &lt;25ms for stores
+        </div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-title">ServiceNow Network Requirements</div>
+        <div class="card-body">
+          ServiceNow is the ITSM and automation backbone. Network dependencies include:
+          <br><br>
+          — HTTPS/API traffic prioritized in SD-WAN policy<br>
+          — MID Server connectivity from on-prem to cloud instance<br>
+          — Webhook integrations require stable outbound connectivity<br>
+          — Network events must feed into ServiceNow Event Management<br>
+          — Automated incident creation from AIOps network alerts<br>
+          — CMDB auto-discovery from network telemetry
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ROADMAP ══════════════ -->
+<div class="page" id="page-roadmap">
+  <div class="hero">
+    <div class="hero-eyebrow">36-Month Network Transformation Roadmap</div>
+    <h1 class="hero-title">Phased <span>Execution</span></h1>
+    <p class="hero-sub">Three phases — Assess &amp; Stabilize, Transform &amp; Automate, Lead &amp; Optimize — aligned to business growth milestones and risk tolerance.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val">M1–6</div><div class="hero-stat-label">Assess + Stabilize</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">M7–18</div><div class="hero-stat-label">Transform + Automate</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">M19–36</div><div class="hero-stat-label">Lead + Optimize</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">35%+</div><div class="hero-stat-label">WAN Cost Reduction</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">&lt;4hr</div><div class="hero-stat-label">Site Deploy Target</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01 //</span>
+      <h2 class="section-title">Phase 1 · Assess &amp; Stabilize</h2>
+      <span class="section-tag">Month 1–6</span>
+    </div>
+    <div class="grid-2">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot cyan"></div>
+          <div class="tl-phase">Month 1–2</div>
+          <div class="tl-title">Network Audit &amp; Inventory</div>
+          <div class="tl-body">Full topology discovery across all 1,000+ sites. Circuit inventory, contract review, cost baseline by site tier. Identify top 20 reliability pain points by incident frequency. Establish latency, packet loss, and availability baselines per app.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot cyan"></div>
+          <div class="tl-phase">Month 2–4</div>
+          <div class="tl-title">SD-WAN Proof of Concept</div>
+          <div class="tl-body">Pilot SD-WAN in 25–50 stores. A/B test broadband vs MPLS performance. Validate application steering policies for POS, SAP, and O365. Document TCO model — projection for full rollout savings. Vendor selection finalized: Cisco Viptela, VMware VeloCloud, or Fortinet.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot amber"></div>
+          <div class="tl-phase">Month 3–6</div>
+          <div class="tl-title">Observability Foundation</div>
+          <div class="tl-body">Deploy streaming telemetry (gNMI/gRPC) across all critical sites. Establish single-pane-of-glass monitoring. Define SLA dashboards per site type. Integrate alerts into ServiceNow Event Management for auto-ticket creation.</div>
+        </div>
+      </div>
+      <div>
+        <div class="card card-cyan" style="margin-bottom:10px">
+          <div class="card-title">Phase 1 Deliverables</div>
+          <div class="card-body">
+            <div class="prog-row"><div class="prog-label">Network inventory complete</div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:var(--cyan)"></div></div><div class="prog-val" style="color:var(--cyan)">100%</div></div>
+            <div class="prog-row"><div class="prog-label">SD-WAN PoC sites</div><div class="prog-bar"><div class="prog-fill" style="width:50%;background:var(--amber)"></div></div><div class="prog-val" style="color:var(--amber)">50 sites</div></div>
+            <div class="prog-row"><div class="prog-label">Observability coverage</div><div class="prog-bar"><div class="prog-fill" style="width:80%;background:var(--green)"></div></div><div class="prog-val" style="color:var(--green)">80%</div></div>
+            <div class="prog-row"><div class="prog-label">MTTR baseline set</div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:var(--cyan)"></div></div><div class="prog-val" style="color:var(--cyan)">Done</div></div>
+            <div class="prog-row"><div class="prog-label">Vendor selection</div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:var(--cyan)"></div></div><div class="prog-val" style="color:var(--cyan)">Done</div></div>
+          </div>
+        </div>
+        <div class="card card-amber">
+          <div class="card-title">Phase 1 Investment</div>
+          <div class="card-body">
+            Audit &amp; tooling: <strong style="color:var(--text)">$180K</strong><br>
+            PoC hardware + licensing: <strong style="color:var(--text)">$420K</strong><br>
+            Observability platform: <strong style="color:var(--text)">$260K</strong><br>
+            <div style="height:1px;background:var(--border);margin:10px 0"></div>
+            <strong style="color:var(--text)">Total Phase 1: ~$860K</strong><br>
+            <span style="color:var(--text2)">Expected payback: &lt;12 months via MPLS savings from PoC sites</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">Phase 2 · Transform &amp; Automate</h2>
+      <span class="section-tag">Month 7–18</span>
+    </div>
+    <div class="grid-3">
+      <div class="card card-cyan">
+        <div class="card-title">SD-WAN Global Rollout</div>
+        <div class="card-body">Deploy SD-WAN to all 1,000+ sites in regional waves: APAC → EU → AMER. Zero-touch provisioning: pre-staged devices ship directly to sites, auto-configure on first boot. Store network ready in &lt;4 hours from unboxing. Eliminates travel-to-site for engineers.</div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-title">Cloud Network Integration</div>
+        <div class="card-body">AWS Transit Gateway architecture finalized. Direct Connect circuits (10Gbps) at 4 global regions. Azure ExpressRoute for EU data sovereignty compliance. SD-WAN edges integrated with cloud on-ramps. All SAP and ServiceNow traffic routed direct-to-cloud, bypassing datacenter backhauling.</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Network Automation Platform</div>
+        <div class="card-body">GitOps pipeline for all network configuration changes. Ansible + Terraform for IaC. Automated testing before production push. Zero manual CLI changes for standard operations. 80% of all changes executed without human touch by Month 18. RBAC on all change workflows.</div>
+      </div>
+      <div class="card card-red">
+        <div class="card-title">SASE Deployment</div>
+        <div class="card-body">SSE platform deployed globally. ZTNA replaces legacy VPN for all remote and third-party access. CASB enforces SaaS usage policy. DNS security layer blocks C2 and phishing at the network edge. All traffic inspected at policy enforcement point — no hairpinning to DC.</div>
+      </div>
+      <div class="card card-dim">
+        <div class="card-title">AIOps Integration</div>
+        <div class="card-body">ML-driven anomaly detection across WAN, LAN, and wireless. Predictive failure identification 30–60 minutes before impact. Auto-remediation for 40+ common failure scenarios. Network events correlated with application performance data. Mean Time to Detect: 45min → &lt;3min.</div>
+      </div>
+      <div class="card card-dim">
+        <div class="card-title">Vendor Rationalization</div>
+        <div class="card-body">Consolidate ISP contracts from 80+ regional carriers to &lt;15 global preferred partners. Eliminate duplicate tooling — single observability platform, single SD-WAN vendor, single SASE vendor. Renegotiate bandwidth pricing at scale. Estimated savings: $8–12M annually.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03 //</span>
+      <h2 class="section-title">Phase 3 · Lead &amp; Optimize</h2>
+      <span class="section-tag">Month 19–36</span>
+    </div>
+    <div class="grid-2">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot green"></div>
+          <div class="tl-phase">Month 19–24</div>
+          <div class="tl-title">Intelligent Orchestration</div>
+          <div class="tl-body">Intent-based networking: define business outcomes, platform translates to network policy automatically. Self-healing: 80%+ of failures auto-resolved before ITSM ticket created. Capacity auto-scaling triggered by ML demand signals — no manual bandwidth upgrades.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot green"></div>
+          <div class="tl-phase">Month 24–30</div>
+          <div class="tl-title">Developer &amp; Platform Self-Service</div>
+          <div class="tl-body">Network-as-a-Service portal for engineering teams. Cloud engineers provision network connectivity via API — no tickets to network team for standard requests. SD-WAN policy changes available via self-service for approved use cases. Shift network team from operators to platform engineers.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot green"></div>
+          <div class="tl-phase">Month 30–36</div>
+          <div class="tl-title">Continuous Optimization Engine</div>
+          <div class="tl-body">Ongoing AI-driven optimization of routing, QoS, and bandwidth allocation. Quarterly network strategy review replacing annual — real-time data enables faster pivots. Network capability becomes a commercial differentiator for faster store openings and DC expansions globally.</div>
+        </div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">36-Month Target State Metrics</div>
+        <div class="card-body">
+          <table class="data-table" style="font-size:11px">
+            <thead><tr><th>Metric</th><th>Baseline</th><th>Year 1</th><th>Year 2</th><th>Year 3</th></tr></thead>
+            <tbody>
+              <tr><td>WAN cost/site/mo</td><td>$1,200</td><td>$950</td><td>$720</td><td>$600</td></tr>
+              <tr><td>Site provision time</td><td>14 days</td><td>4 hours</td><td>2 hours</td><td>&lt;1 hour</td></tr>
+              <tr><td>MTTR (network)</td><td>4.5 hrs</td><td>1.5 hrs</td><td>45 min</td><td>&lt;20 min</td></tr>
+              <tr><td>Automation rate</td><td>15%</td><td>55%</td><td>75%</td><td>85%+</td></tr>
+              <tr><td>Availability SLA</td><td>99.7%</td><td>99.9%</td><td>99.95%</td><td>99.99%</td></tr>
+              <tr><td>P1 incidents/mo</td><td>18</td><td>9</td><td>4</td><td>&lt;2</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--green)">3-Year WAN Savings: $8–12M annually at scale</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ STAKEHOLDERS ══════════════ -->
+<div class="page" id="page-stakeholders">
+  <div class="hero">
+    <div class="hero-eyebrow">Stakeholder Management · Cross-Functional Influence</div>
+    <h1 class="hero-title">Navigating the <span>Enterprise Ecosystem</span></h1>
+    <p class="hero-sub">The Director of Global Networks operates at the intersection of technology, business, security, and finance — managing up, across, and outward simultaneously.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01 //</span>
+      <h2 class="section-title">Stakeholder Map</h2>
+      <span class="section-tag">Influence Matrix</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div class="card card-cyan">
+        <div class="card-title" style="color:var(--cyan)">Technology Leadership (VP+)</div>
+        <div class="card-body">
+          Primary reporting line. Requires board-ready narrative — business impact, not tech specs. Monthly: network health, cost performance, and strategic milestone status.
+          <br><br>
+          <div class="pill pill-cyan">KPI: Cost/site · Availability · MTTR</div>
+          <br>
+          Frame every network decision as a business outcome: "SD-WAN saves $9M annually and opens new stores 14 days faster."
+        </div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-title" style="color:var(--amber)">Cloud &amp; Platform Engineering</div>
+        <div class="card-body">
+          Co-owners of the cloud network. Joint design authority for AWS TGW, Direct Connect, and cloud-native networking. Network Director must speak fluent cloud architecture — not just traditional networking.
+          <br><br>
+          <div class="pill pill-amber">Forum: Weekly cloud network sync</div>
+          <br>
+          Key friction point: cloud teams want speed; network team wants stability. Resolution: network policy as code, enabling agile change with guardrails.
+        </div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title" style="color:var(--green)">Cybersecurity</div>
+        <div class="card-body">
+          Non-negotiable co-owner of the network. Zero-trust architecture, segmentation, and SASE are shared deliverables. CISO is an ally, not a gating function — embed security from design, not bolt-on.
+          <br><br>
+          <div class="pill pill-green">Forum: Monthly SecNet review</div>
+          <br>
+          Joint KPIs: patch posture, segmentation coverage, mean time to contain lateral movement.
+        </div>
+      </div>
+      <div class="card card-red">
+        <div class="card-title" style="color:var(--red)">Store Operations &amp; Retail Tech</div>
+        <div class="card-body">
+          The most demanding internal customer. For stores, the network IS the business — POS downtime = lost revenue. $180K+ per hour per major store cluster. Proactive outreach before outages, not post-mortems after.
+          <br><br>
+          <div class="pill pill-red">KPI: POS uptime · Store open success rate</div>
+          <br>
+          Monthly store operations review — translate network SLAs into retail business language.
+        </div>
+      </div>
+      <div class="card card-dim">
+        <div class="card-title">Finance &amp; Procurement</div>
+        <div class="card-body">
+          Controls capex and vendor contract authority. Build a rigorous TCO model — cost per site, cost per circuit, cost per Mbps over time. SD-WAN business case must show NPV positive within 24 months.
+          <br><br>
+          <div class="pill pill-dim">Forum: Quarterly network P&amp;L review</div>
+          <br>
+          Vendor consolidation and renegotiation are shared wins with procurement — present jointly to leadership.
+        </div>
+      </div>
+      <div class="card card-dim">
+        <div class="card-title">ISP &amp; Technology Vendors</div>
+        <div class="card-body">
+          SD-WAN vendor, ISPs, hardware OEMs, and cloud providers. Manage via structured QBRs and escalation paths. Vendor scorecards enforce SLA accountability. Strategic partners get co-innovation investment; transactional vendors get competitive pricing pressure.
+          <br><br>
+          <div class="pill pill-dim">Forum: Quarterly vendor QBR</div>
+          <br>
+          Consolidate from 80+ ISPs to &lt;15 global preferred partners.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">Engagement Cadence</h2>
+      <span class="section-tag">Communication Model</span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Stakeholder</th><th>Forum</th><th>Freq</th><th>Format</th><th>Agenda Focus</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong style="color:var(--text)">VP / CTO</strong></td><td>Technology Leadership Review</td><td>Monthly</td><td>2-pager + 10-min brief</td><td>EBITDA impact, availability SLA, roadmap milestones</td></tr>
+        <tr><td><strong style="color:var(--text)">Cloud Engineering</strong></td><td>Cloud Network Sync</td><td>Weekly</td><td>30-min standup</td><td>Change coordination, circuit status, platform dependencies</td></tr>
+        <tr><td><strong style="color:var(--text)">Cybersecurity</strong></td><td>SecNet Joint Review</td><td>Monthly</td><td>Threat + posture briefing</td><td>Segmentation health, CVE exposure, zero-trust progress</td></tr>
+        <tr><td><strong style="color:var(--text)">Store Ops / Retail Tech</strong></td><td>Store Network Review</td><td>Monthly</td><td>Site health dashboard</td><td>POS uptime, open store readiness, incident postmortems</td></tr>
+        <tr><td><strong style="color:var(--text)">Finance / Procurement</strong></td><td>Network P&amp;L Review</td><td>Quarterly</td><td>Cost model presentation</td><td>Spend vs budget, vendor savings, capex forecast</td></tr>
+        <tr><td><strong style="color:var(--text)">Major ISPs / SD-WAN Vendor</strong></td><td>Vendor QBR</td><td>Quarterly</td><td>Scorecard review</td><td>SLA performance, roadmap alignment, renegotiation</td></tr>
+        <tr><td><strong style="color:var(--text)">Network Team (all)</strong></td><td>Team All-Hands</td><td>Monthly</td><td>Town hall</td><td>Strategy cascade, wins, culture, career development</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════ TEAM & OPS ══════════════ -->
+<div class="page" id="page-ops">
+  <div class="hero">
+    <div class="hero-eyebrow">Team Operating Model · Global Network Engineering</div>
+    <h1 class="hero-title">Leading a <span>High-Velocity</span> Network Team</h1>
+    <p class="hero-sub">A lean, high-impact global team — 3–4 direct reports, dotted-line cross-functional partners, and offshore engineering capacity — operating with platform-engineer discipline, not operator mindset.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01 //</span>
+      <h2 class="section-title">Team Structure</h2>
+      <span class="section-tag">Organization</span>
+    </div>
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px">
+      <div style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:4px;padding:16px 20px;min-width:180px;text-align:center">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Director</div>
+        <div style="font-family:var(--syne);font-weight:700;font-size:14px;color:var(--text)">Global Networks</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px">P&amp;L · Strategy · VP Interface</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;flex:1">
+        <div class="org-box">
+          <h4 style="color:var(--cyan)">Sr. Network Architect</h4>
+          <ul><li>SD-WAN design authority</li><li>Cloud network architecture</li><li>Zero-trust framework</li><li>Standards &amp; reference designs</li></ul>
+        </div>
+        <div class="org-box">
+          <h4 style="color:var(--amber)">Network Operations Lead</h4>
+          <ul><li>Global NOC oversight</li><li>SLA management</li><li>Incident &amp; problem mgmt</li><li>AIOps platform</li></ul>
+        </div>
+        <div class="org-box">
+          <h4 style="color:var(--green)">Network Automation Lead</h4>
+          <ul><li>IaC / GitOps pipelines</li><li>Ansible / Terraform</li><li>CI/CD for network</li><li>Self-service portal</li></ul>
+        </div>
+        <div class="org-box">
+          <h4 style="color:var(--text2)">Vendor &amp; Cost Lead</h4>
+          <ul><li>ISP contract mgmt</li><li>SD-WAN vendor QBR</li><li>ITAM / circuit inventory</li><li>Cost optimization</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="card card-dim">
+      <div class="card-title">Dotted-Line &amp; Cross-Functional Partners</div>
+      <div class="card-body">
+        <div class="pill pill-cyan">Cloud Engineering (AWS/Azure)</div>
+        <div class="pill pill-amber">Cybersecurity / SecOps</div>
+        <div class="pill pill-green">Retail Technology</div>
+        <div class="pill pill-dim">DC / Facilities Engineering</div>
+        <div class="pill pill-dim">Finance Business Partner</div>
+        <div class="pill pill-dim">Procurement</div>
+        <div class="pill pill-dim">HR / Talent</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">Operating Rhythm</h2>
+      <span class="section-tag">Cadence</span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Cadence</th><th>Forum</th><th>Participants</th><th>Duration</th><th>Outputs</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="pill pill-cyan">Daily</span></td><td>Network Ops Standup</td><td>NOC + On-call</td><td>15 min</td><td>P1/P2 status, change window review, blockers</td></tr>
+        <tr><td><span class="pill pill-green">Weekly</span></td><td>Director Leadership Sync</td><td>4 direct reports</td><td>45 min</td><td>KPI review, sprint progress, cross-dependencies</td></tr>
+        <tr><td><span class="pill pill-amber">Bi-weekly</span></td><td>Automation Sprint Review</td><td>Automation + Ops</td><td>60 min</td><td>Demo, backlog grooming, IaC pipeline health</td></tr>
+        <tr><td><span class="pill pill-amber">Monthly</span></td><td>Network Performance Review</td><td>All leads + stakeholders</td><td>90 min</td><td>SLA scorecard, cost vs budget, incident analysis</td></tr>
+        <tr><td><span class="pill pill-red">Quarterly</span></td><td>Strategy &amp; Roadmap Review</td><td>Director + VP + peers</td><td>3 hrs</td><td>OKR scoring, roadmap adjustment, budget reforecast</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03 //</span>
+      <h2 class="section-title">Leadership Philosophy &amp; Culture</h2>
+      <span class="section-tag">People</span>
+    </div>
+    <div class="grid-3">
+      <div class="card card-cyan">
+        <div class="card-title">Platform Engineer Mindset</div>
+        <div class="card-body">
+          The best network engineers make themselves obsolete — by automating everything they once did manually. Culture rewards the engineer who writes the playbook that eliminates 10 hours/week of toil. Network operations is a product, not a firefighting service.
+          <br><br>
+          <div class="pill pill-cyan">Automate before escalating</div>
+          <div class="pill pill-cyan">IaC-first culture</div>
+        </div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-title">Radical Transparency</div>
+        <div class="card-body">
+          Network health is visible to all stakeholders in real time — no hiding outages, no spin on SLA breaches. Blameless postmortems after every P1. The team learns faster than it fails. Leaders who surface problems early are rewarded — not penalized.
+          <br><br>
+          <div class="pill pill-amber">Psychological safety</div>
+          <div class="pill pill-amber">Blameless culture</div>
+        </div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Entrepreneurial Energy</div>
+        <div class="card-body">
+          Network team members are encouraged to propose, prototype, and prove new approaches. Quarterly innovation time: 10% of capacity reserved for experimentation. Network hackathon annually — best automation wins fund implementation budget.
+          <br><br>
+          <div class="pill pill-green">10% innovation time</div>
+          <div class="pill pill-green">Annual hackathon</div>
+        </div>
+      </div>
+    </div>
+    <div class="insight" style="margin-top:16px">
+      <p>"A network that requires heroics to keep running is a network that hasn't been engineered well enough."</p>
+      <span>Global Networks Leadership Philosophy</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ RISK & COST ══════════════ -->
+<div class="page" id="page-risk">
+  <div class="hero">
+    <div class="hero-eyebrow">Risk Management · Cost Optimization · Compliance</div>
+    <h1 class="hero-title">Resilience &amp; <span>Financial Discipline</span></h1>
+    <p class="hero-sub">Network risk is business risk. Every circuit failure, every security gap, every over-contracted ISP deal is a cost and a threat. The Director owns the full risk and cost stack.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val">99.99%</div><div class="hero-stat-label">Availability Target</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">$8–12M</div><div class="hero-stat-label">WAN Savings Target</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">&lt;20min</div><div class="hero-stat-label">MTTR Year 3</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">&lt;15</div><div class="hero-stat-label">ISP Partners (from 80+)</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">Zero</div><div class="hero-stat-label">Implicit Trust Posture</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01 //</span>
+      <h2 class="section-title">Risk Register</h2>
+      <span class="section-tag">Risk Governance</span>
+    </div>
+    <div class="risk-grid">
+      <div class="risk-card risk-high">
+        <div class="risk-title" style="color:var(--red)">Single ISP Dependency</div>
+        High · Probability: High
+        <div class="risk-mit">Mitigation: Dual-ISP mandatory at all tier-1 sites. 4G/5G as tertiary. SD-WAN automates failover in &lt;1 second. No single ISP &gt;30% of total WAN spend.</div>
+      </div>
+      <div class="risk-card risk-high">
+        <div class="risk-title" style="color:var(--red)">Cloud Connectivity Failure</div>
+        High · Probability: Medium
+        <div class="risk-mit">Mitigation: Dual Direct Connect circuits in diverse facilities. SD-WAN internet breakout as emergency backup for cloud SaaS. SAP graceful degradation tested quarterly.</div>
+      </div>
+      <div class="risk-card risk-high">
+        <div class="risk-title" style="color:var(--red)">SD-WAN Migration Risk</div>
+        High · Probability: Medium
+        <div class="risk-mit">Mitigation: Parallel-run MPLS + SD-WAN for minimum 30 days per site. Rollback procedure rehearsed. Site migration waves — 50 sites max per sprint. NOC on standby during cutovers.</div>
+      </div>
+      <div class="risk-card risk-med">
+        <div class="risk-title" style="color:var(--amber)">Lateral Movement / Breach</div>
+        Medium · Probability: Medium
+        <div class="risk-mit">Mitigation: Zero-trust micro-segmentation isolates POS, corporate, and IoT traffic. ZTNA for all remote access. Real-time anomaly detection flags east-west traffic deviations. 15-min MTTC target.</div>
+      </div>
+      <div class="risk-card risk-med">
+        <div class="risk-title" style="color:var(--amber)">Talent / Skills Gap</div>
+        Medium · Probability: High
+        <div class="risk-mit">Mitigation: Structured upskilling in SD-WAN, cloud networking, and automation. Retain key architects via growth roadmap. Strategic SI partnership for surge capacity. Knowledge management platform mandated.</div>
+      </div>
+      <div class="risk-card risk-low">
+        <div class="risk-title" style="color:var(--green)">Regulatory / Data Residency</div>
+        Low · Probability: Low
+        <div class="risk-mit">Mitigation: EU data traffic stays within ExpressRoute boundary. GDPR-compliant DNS and traffic logging. Legal review before any new cloud region activation. Quarterly compliance audit.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">Cost Optimization Framework</h2>
+      <span class="section-tag">Financial Performance</span>
+    </div>
+    <div class="grid-2">
+      <div class="card card-cyan">
+        <div class="card-title">WAN Cost Reduction Model</div>
+        <div class="card-body">
+          <div class="prog-row"><div class="prog-label">MPLS → SD-WAN savings</div><div class="prog-bar"><div class="prog-fill" style="width:80%;background:var(--cyan)"></div></div><div class="prog-val" style="color:var(--cyan)">$5.8M</div></div>
+          <div class="prog-row"><div class="prog-label">ISP rationalization</div><div class="prog-bar"><div class="prog-fill" style="width:60%;background:var(--amber)"></div></div><div class="prog-val" style="color:var(--amber)">$2.4M</div></div>
+          <div class="prog-row"><div class="prog-label">Tooling consolidation</div><div class="prog-bar"><div class="prog-fill" style="width:30%;background:var(--green)"></div></div><div class="prog-val" style="color:var(--green)">$1.1M</div></div>
+          <div class="prog-row"><div class="prog-label">Hardware refresh deferral</div><div class="prog-bar"><div class="prog-fill" style="width:35%;background:var(--text3)"></div></div><div class="prog-val" style="color:var(--text3)">$1.3M</div></div>
+          <div style="height:1px;background:var(--border);margin:10px 0"></div>
+          <div class="prog-row"><div class="prog-label" style="color:var(--cyan);font-weight:600">Total annual savings</div><div class="prog-bar"><div class="prog-fill" style="width:95%;background:var(--cyan)"></div></div><div class="prog-val" style="color:var(--cyan);font-weight:600">$10.6M</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="card card-amber" style="margin-bottom:10px">
+          <div class="card-title">Unit Cost Economics (Target)</div>
+          <div class="card-body">
+            <div class="prog-row"><div class="prog-label">Cost/site/month</div><div class="prog-bar"><div class="prog-fill" style="width:50%;background:var(--amber)"></div></div><div class="prog-val" style="color:var(--amber)">$1.2K→$600</div></div>
+            <div class="prog-row"><div class="prog-label">Cost/Mbps/month</div><div class="prog-bar"><div class="prog-fill" style="width:40%;background:var(--green)"></div></div><div class="prog-val" style="color:var(--green)">$18→$7</div></div>
+            <div class="prog-row"><div class="prog-label">Incident cost (P1)</div><div class="prog-bar"><div class="prog-fill" style="width:45%;background:var(--red)"></div></div><div class="prog-val" style="color:var(--red)">−55%</div></div>
+          </div>
+        </div>
+        <div class="card card-dim">
+          <div class="card-title">Executive KPI Dashboard</div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="stat-card" style="padding:12px;background:var(--bg2)"><div class="stat-val" style="font-size:20px">99.99%</div><div class="stat-label">WAN Availability</div><div class="stat-delta stat-target">Target Y3</div></div>
+              <div class="stat-card" style="padding:12px;background:var(--bg2)"><div class="stat-val" style="font-size:20px">&lt;20min</div><div class="stat-label">MTTR</div><div class="stat-delta stat-target">Target Y3</div></div>
+              <div class="stat-card" style="padding:12px;background:var(--bg2)"><div class="stat-val" style="font-size:20px">85%+</div><div class="stat-label">Automation Rate</div><div class="stat-delta stat-target">Target Y3</div></div>
+              <div class="stat-card" style="padding:12px;background:var(--bg2)"><div class="stat-val" style="font-size:20px">$10.6M</div><div class="stat-label">Annual Savings</div><div class="stat-delta stat-up">At Scale</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">GLOBAL NETWORKS // DIRECTOR-LEVEL STRATEGY // ENTERPRISE TECHNOLOGY // CONFIDENTIAL</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Observability — AI/ML Ops on AWS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #080e1a;
+    font-family: 'Rajdhani', sans-serif;
+    color: #e0e8ff;
+    min-height: 100vh;
+    overflow-x: auto;
+  }
+
+  .page-header {
+    text-align: center;
+    padding: 28px 20px 16px;
+    background: linear-gradient(180deg, #0d1a2e 0%, #080e1a 100%);
+    border-bottom: 1px solid #1a2d4e;
+  }
+
+  .page-header h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #00d4ff, #00ff88, #ff6b35, #00d4ff);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 5s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 0% }
+    100% { background-position: 300% }
+  }
+
+  .page-header p {
+    font-size: 0.82rem;
+    color: #5a7a9e;
+    letter-spacing: 2px;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    justify-content: center;
+    padding: 12px 20px;
+    background: #0a1220;
+    border-bottom: 1px solid #1a2d4e;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .diagram-container {
+    padding: 24px 20px 40px;
+    overflow-x: auto;
+  }
+
+  svg {
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 40px rgba(0,200,140,0.05));
+  }
+
+  .tooltip {
+    position: fixed;
+    background: #0d1a2e;
+    border: 1px solid #1e3a5f;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    max-width: 280px;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+    color: #c0d8f0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  .tooltip strong {
+    color: #00ff88;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Network Observability — AI / ML Ops · AWS Cloud-Native</h1>
+  <p>VPC Flow Logs · CloudWatch · Kinesis · OpenSearch · SageMaker · Bedrock · Lambda · SNS · EventBridge · GuardDuty · Network Manager</p>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#0e4a2a"></div> Data Collection</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#0e2e5a"></div> Streaming / Ingestion</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1a0e4a"></div> Storage / Lake</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4a2a0e"></div> ML / AI Engine</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3a0e1a"></div> Anomaly Detection</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#0e3a3a"></div> Visualization</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2a3a0e"></div> Automated Remediation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3a1a0e"></div> Alerting / ITSM</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1a1a3a"></div> Security / Compliance</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#2a0e3a"></div> GenAI / Bedrock</div>
+</div>
+
+<div class="diagram-container">
+<svg width="1600" height="2260" viewBox="0 0 1600 2260" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#0a1520" stroke-width="0.5"/>
+    </pattern>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#060d18"/>
+      <stop offset="100%" stop-color="#080e1a"/>
+    </linearGradient>
+    <!-- Arrow markers -->
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#00c870"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2080e0"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#9060e0"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#e0a020"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#00c8c8"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#e04060"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#ff6b35"/>
+    </marker>
+    <marker id="arrow-lime" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#80c020"/>
+    </marker>
+    <marker id="arrow-white" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#8090a0"/>
+    </marker>
+    <marker id="arrow-pink" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#e060a0"/>
+    </marker>
+  </defs>
+
+  <!-- Full background -->
+  <rect width="1600" height="2260" fill="url(#bg-grad)"/>
+  <rect width="1600" height="2260" fill="url(#grid)"/>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 1: DATA COLLECTION LAYER -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="30" width="1528" height="360" rx="12" fill="#04100a" stroke="#0e5a2e" stroke-width="1.5"/>
+  <rect x="40" y="30" width="1528" height="38" rx="12" fill="#0e3a1e" opacity="0.9"/>
+  <text x="804" y="56" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#40ff90" letter-spacing="2">SECTION 1 — DATA COLLECTION LAYER · Network Telemetry Sources</text>
+
+  <!-- VPC Flow Logs -->
+  <rect x="60" y="82" width="280" height="288" rx="8" fill="#041208" stroke="#0e6030" stroke-width="1.5"/>
+  <rect x="60" y="82" width="280" height="26" rx="8" fill="#0e5a28" opacity="0.8"/>
+  <text x="200" y="100" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#60ff80">📡 VPC Flow Logs</text>
+  <text x="73" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#40c060">aws ec2 enable-vpc-classic-link-dns-support</text>
+  <text x="73" y="137" font-family="JetBrains Mono" font-size="9" fill="#60e080">→ src/dst IP, port, protocol, action</text>
+  <text x="73" y="152" font-family="JetBrains Mono" font-size="9" fill="#60e080">→ bytes/packets, start/end time</text>
+  <text x="73" y="167" font-family="JetBrains Mono" font-size="9" fill="#60e080">→ ENI-level granularity</text>
+  <text x="73" y="184" font-family="JetBrains Mono" font-size="9.5" fill="#40c060">Destinations:</text>
+  <text x="73" y="199" font-family="JetBrains Mono" font-size="9" fill="#30a050">→ S3 (partition: account/region/day)</text>
+  <text x="73" y="214" font-family="JetBrains Mono" font-size="9" fill="#30a050">→ CloudWatch Logs group</text>
+  <text x="73" y="229" font-family="JetBrains Mono" font-size="9" fill="#30a050">→ Kinesis Data Firehose (direct)</text>
+  <text x="73" y="246" font-family="JetBrains Mono" font-size="9.5" fill="#40c060">Custom fields v5 format:</text>
+  <text x="73" y="261" font-family="JetBrains Mono" font-size="9" fill="#30a050">  pkt-src-aws-service</text>
+  <text x="73" y="276" font-family="JetBrains Mono" font-size="9" fill="#30a050">  flow-direction, traffic-path</text>
+  <text x="73" y="291" font-family="JetBrains Mono" font-size="9" fill="#30a050">  subnet-id, vpc-id, region</text>
+  <text x="73" y="308" font-family="JetBrains Mono" font-size="9" fill="#20a040">Volume: ~10M flows/hr per busy VPC</text>
+  <text x="73" y="358" font-family="JetBrains Mono" font-size="9" fill="#00c060">⬇ → Kinesis / S3 / CW Logs</text>
+
+  <!-- CloudWatch Network Metrics -->
+  <rect x="360" y="82" width="280" height="288" rx="8" fill="#04100e" stroke="#0e5060" stroke-width="1.5"/>
+  <rect x="360" y="82" width="280" height="26" rx="8" fill="#0e4050" opacity="0.8"/>
+  <text x="500" y="100" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#60c0ff">📊 CloudWatch Metrics</text>
+  <text x="373" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#40a0c0">AWS/NetworkELB namespace:</text>
+  <text x="373" y="137" font-family="JetBrains Mono" font-size="9" fill="#60c0e0">ActiveFlowCount, ProcessedBytes</text>
+  <text x="373" y="152" font-family="JetBrains Mono" font-size="9" fill="#60c0e0">NewFlowCount, TCP_Client_Reset</text>
+  <text x="373" y="169" font-family="JetBrains Mono" font-size="9.5" fill="#40a0c0">AWS/TransitGateway:</text>
+  <text x="373" y="184" font-family="JetBrains Mono" font-size="9" fill="#60c0e0">BytesIn/Out, PacketDropCountBlackhole</text>
+  <text x="373" y="199" font-family="JetBrains Mono" font-size="9" fill="#60c0e0">PacketsIn/Out per attachment</text>
+  <text x="373" y="216" font-family="JetBrains Mono" font-size="9.5" fill="#40a0c0">AWS/DirectConnect:</text>
+  <text x="373" y="231" font-family="JetBrains Mono" font-size="9" fill="#60c0e0">ConnectionBpsIngress/Egress</text>
+  <text x="373" y="246" font-family="JetBrains Mono" font-size="9" fill="#60c0e0">ConnectionState, ConnectionCRCError</text>
+  <text x="373" y="263" font-family="JetBrains Mono" font-size="9.5" fill="#40a0c0">Custom metrics via PutMetricData:</text>
+  <text x="373" y="278" font-family="JetBrains Mono" font-size="9" fill="#30a0c0">  BGP session state (0/1)</text>
+  <text x="373" y="293" font-family="JetBrains Mono" font-size="9" fill="#30a0c0">  SD-WAN tunnel health score</text>
+  <text x="373" y="310" font-family="JetBrains Mono" font-size="9" fill="#30a0c0">  Site latency p50/p95/p99</text>
+  <text x="373" y="358" font-family="JetBrains Mono" font-size="9" fill="#00a0c0">⬇ → Metric Streams → Firehose</text>
+
+  <!-- AWS Network Manager -->
+  <rect x="660" y="82" width="280" height="288" rx="8" fill="#0a0810" stroke="#4a1a7a" stroke-width="1.5"/>
+  <rect x="660" y="82" width="280" height="26" rx="8" fill="#3a1a6a" opacity="0.8"/>
+  <text x="800" y="100" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#c080ff">🌐 AWS Network Manager</text>
+  <text x="673" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Global Network topology graph:</text>
+  <text x="673" y="137" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ TGW + VPN + Direct Connect</text>
+  <text x="673" y="152" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ SD-WAN device registration</text>
+  <text x="673" y="167" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ Site / Link / Connection objects</text>
+  <text x="673" y="184" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Route Analyzer:</text>
+  <text x="673" y="199" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ Path analysis src→dst</text>
+  <text x="673" y="214" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ Reachability validation</text>
+  <text x="673" y="231" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Network Events (EventBridge):</text>
+  <text x="673" y="246" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ VPN tunnel up/down</text>
+  <text x="673" y="261" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ BGP peer state change</text>
+  <text x="673" y="276" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ TGW route table update</text>
+  <text x="673" y="291" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ DX connection state</text>
+  <text x="673" y="310" font-family="JetBrains Mono" font-size="9" fill="#8050c0">CloudWatch integrations:</text>
+  <text x="673" y="325" font-family="JetBrains Mono" font-size="9" fill="#b080e0">  Topology change metrics</text>
+  <text x="673" y="358" font-family="JetBrains Mono" font-size="9" fill="#8050c0">⬇ → EventBridge → Lambda</text>
+
+  <!-- Device Telemetry (gNMI/SNMP) -->
+  <rect x="960" y="82" width="280" height="288" rx="8" fill="#100808" stroke="#6a2020" stroke-width="1.5"/>
+  <rect x="960" y="82" width="280" height="26" rx="8" fill="#5a1818" opacity="0.8"/>
+  <text x="1100" y="100" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ff8080">📶 Device Telemetry</text>
+  <text x="973" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#c06060">gNMI / gRPC Streaming:</text>
+  <text x="973" y="137" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ Cisco IOS-XE / IOS-XR models</text>
+  <text x="973" y="152" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ Junos YANG telemetry</text>
+  <text x="973" y="167" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ Arista eAPI streaming</text>
+  <text x="973" y="184" font-family="JetBrains Mono" font-size="9.5" fill="#c06060">SNMP → CloudWatch:</text>
+  <text x="973" y="199" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ SNMP Exporter → Prometheus</text>
+  <text x="973" y="214" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ AWS AMP (Managed Prometheus)</text>
+  <text x="973" y="229" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ Grafana Agent on EC2 collector</text>
+  <text x="973" y="246" font-family="JetBrains Mono" font-size="9.5" fill="#c06060">Syslog / Netflow:</text>
+  <text x="973" y="261" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ Fluent Bit → Kinesis Firehose</text>
+  <text x="973" y="276" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ OpenTelemetry Collector (ADOT)</text>
+  <text x="973" y="291" font-family="JetBrains Mono" font-size="9" fill="#e08080">→ CloudWatch EMF (structured logs)</text>
+  <text x="973" y="310" font-family="JetBrains Mono" font-size="9" fill="#c06060">SD-WAN telemetry via REST API</text>
+  <text x="973" y="358" font-family="JetBrains Mono" font-size="9" fill="#e05050">⬇ → MSK / Kinesis Data Streams</text>
+
+  <!-- CloudTrail / Config / GuardDuty -->
+  <rect x="1260" y="82" width="288" height="288" rx="8" fill="#080810" stroke="#2a2a6a" stroke-width="1.5"/>
+  <rect x="1260" y="82" width="288" height="26" rx="8" fill="#1e1e5a" opacity="0.8"/>
+  <text x="1404" y="100" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#8080ff">🔐 Audit &amp; Security Sources</text>
+  <text x="1273" y="122" font-family="JetBrains Mono" font-size="9.5" fill="#6060c0">AWS CloudTrail:</text>
+  <text x="1273" y="137" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ API call history (mgmt events)</text>
+  <text x="1273" y="152" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ Network config changes (TGW, SG)</text>
+  <text x="1273" y="167" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ S3 + CloudWatch Logs destination</text>
+  <text x="1273" y="184" font-family="JetBrains Mono" font-size="9.5" fill="#6060c0">AWS Config:</text>
+  <text x="1273" y="199" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ Config timeline per resource</text>
+  <text x="1273" y="214" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ Conformance pack (CIS/NIST)</text>
+  <text x="1273" y="229" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ Rules: vpc-sg-open-only-auth-ports</text>
+  <text x="1273" y="246" font-family="JetBrains Mono" font-size="9.5" fill="#6060c0">Amazon GuardDuty:</text>
+  <text x="1273" y="261" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ Threat intel on flow logs</text>
+  <text x="1273" y="276" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ UnauthorizedAccess:EC2/SSHBruteForce</text>
+  <text x="1273" y="291" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ Recon:EC2/PortProbeUnprotectedPort</text>
+  <text x="1273" y="310" font-family="JetBrains Mono" font-size="9" fill="#8080e0">→ Findings → EventBridge → SNS</text>
+  <text x="1273" y="358" font-family="JetBrains Mono" font-size="9" fill="#6060b0">⬇ → Security Lake / OpenSearch</text>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 2: STREAMING INGESTION LAYER -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="420" width="1528" height="310" rx="12" fill="#04080e" stroke="#0e2a5a" stroke-width="1.5"/>
+  <rect x="40" y="420" width="1528" height="38" rx="12" fill="#0e1e3a" opacity="0.9"/>
+  <text x="804" y="446" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#40a0ff" letter-spacing="2">SECTION 2 — STREAMING INGESTION LAYER · Real-Time Data Pipeline</text>
+
+  <!-- Kinesis Data Streams -->
+  <rect x="60" y="472" width="320" height="238" rx="8" fill="#04080c" stroke="#104080" stroke-width="1.5"/>
+  <rect x="60" y="472" width="320" height="26" rx="8" fill="#0e3060" opacity="0.8"/>
+  <text x="220" y="490" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#60a0ff">🌊 Kinesis Data Streams</text>
+  <text x="73" y="512" font-family="JetBrains Mono" font-size="9.5" fill="#4080c0">High-throughput ingest:</text>
+  <text x="73" y="527" font-family="JetBrains Mono" font-size="9" fill="#6090d0">network-flows-stream (10 shards)</text>
+  <text x="73" y="542" font-family="JetBrains Mono" font-size="9" fill="#6090d0">device-telemetry-stream (5 shards)</text>
+  <text x="73" y="557" font-family="JetBrains Mono" font-size="9" fill="#6090d0">security-events-stream (3 shards)</text>
+  <text x="73" y="574" font-family="JetBrains Mono" font-size="9.5" fill="#4080c0">Shard: 1 MB/s write, 2 MB/s read</text>
+  <text x="73" y="589" font-family="JetBrains Mono" font-size="9" fill="#6090d0">Retention: 7 days (extended)</text>
+  <text x="73" y="606" font-family="JetBrains Mono" font-size="9.5" fill="#4080c0">Enhanced fan-out consumers:</text>
+  <text x="73" y="621" font-family="JetBrains Mono" font-size="9" fill="#3070b0">→ Lambda (real-time anomaly check)</text>
+  <text x="73" y="636" font-family="JetBrains Mono" font-size="9" fill="#3070b0">→ Kinesis Analytics (Flink)</text>
+  <text x="73" y="651" font-family="JetBrains Mono" font-size="9" fill="#3070b0">→ Firehose (S3 archive)</text>
+  <text x="73" y="698" font-family="JetBrains Mono" font-size="9" fill="#2060a0">⬇ → Analytics / Lambda / Firehose</text>
+
+  <!-- Kinesis Data Firehose -->
+  <rect x="400" y="472" width="320" height="238" rx="8" fill="#06080c" stroke="#104878" stroke-width="1.5"/>
+  <rect x="400" y="472" width="320" height="26" rx="8" fill="#0e2e5a" opacity="0.8"/>
+  <text x="560" y="490" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#50b0ff">🔥 Kinesis Data Firehose</text>
+  <text x="413" y="512" font-family="JetBrains Mono" font-size="9.5" fill="#3080c0">Delivery streams:</text>
+  <text x="413" y="527" font-family="JetBrains Mono" font-size="9" fill="#5090d0">flow-logs → S3 (Parquet + Glue)</text>
+  <text x="413" y="542" font-family="JetBrains Mono" font-size="9" fill="#5090d0">metrics → OpenSearch (direct)</text>
+  <text x="413" y="557" font-family="JetBrains Mono" font-size="9" fill="#5090d0">alerts → Splunk HTTP endpoint</text>
+  <text x="413" y="574" font-family="JetBrains Mono" font-size="9.5" fill="#3080c0">Lambda transformation inline:</text>
+  <text x="413" y="589" font-family="JetBrains Mono" font-size="9" fill="#5090d0">→ Enrich with GeoIP (MaxMind)</text>
+  <text x="413" y="604" font-family="JetBrains Mono" font-size="9" fill="#5090d0">→ Parse &amp; normalize IPFIX/NetFlow</text>
+  <text x="413" y="619" font-family="JetBrains Mono" font-size="9" fill="#5090d0">→ Add metadata (site, DC, env tag)</text>
+  <text x="413" y="636" font-family="JetBrains Mono" font-size="9.5" fill="#3080c0">Buffering: 5min / 128MB</text>
+  <text x="413" y="651" font-family="JetBrains Mono" font-size="9" fill="#5090d0">Format: Parquet (columnar, 10× faster)</text>
+  <text x="413" y="698" font-family="JetBrains Mono" font-size="9" fill="#2060a0">⬇ → S3 Data Lake / OpenSearch</text>
+
+  <!-- Amazon MSK (Kafka) -->
+  <rect x="740" y="472" width="320" height="238" rx="8" fill="#080608" stroke="#502a70" stroke-width="1.5"/>
+  <rect x="740" y="472" width="320" height="26" rx="8" fill="#3a1a56" opacity="0.8"/>
+  <text x="900" y="490" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#d080ff">⚡ Amazon MSK (Managed Kafka)</text>
+  <text x="753" y="512" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Topics (high-throughput paths):</text>
+  <text x="753" y="527" font-family="JetBrains Mono" font-size="9" fill="#b080e0">network.flows.raw (48h retention)</text>
+  <text x="753" y="542" font-family="JetBrains Mono" font-size="9" fill="#b080e0">network.events.topology</text>
+  <text x="753" y="557" font-family="JetBrains Mono" font-size="9" fill="#b080e0">network.anomalies.detected</text>
+  <text x="753" y="572" font-family="JetBrains Mono" font-size="9" fill="#b080e0">network.remediation.actions</text>
+  <text x="753" y="589" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">MSK Connect (Kafka Connect):</text>
+  <text x="753" y="604" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ S3 Sink connector (archive)</text>
+  <text x="753" y="619" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ OpenSearch Sink connector</text>
+  <text x="753" y="636" font-family="JetBrains Mono" font-size="9" fill="#b080e0">→ DynamoDB Sink (state cache)</text>
+  <text x="753" y="653" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Schema Registry (Glue):</text>
+  <text x="753" y="668" font-family="JetBrains Mono" font-size="9" fill="#b080e0">  Avro / Protobuf schema validation</text>
+  <text x="753" y="698" font-family="JetBrains Mono" font-size="9" fill="#8050c0">⬇ → Flink / Lambda / OpenSearch</text>
+
+  <!-- Kinesis Data Analytics (Flink) -->
+  <rect x="1080" y="472" width="468" height="238" rx="8" fill="#060c08" stroke="#1a5030" stroke-width="1.5"/>
+  <rect x="1080" y="472" width="468" height="26" rx="8" fill="#0e3a1e" opacity="0.8"/>
+  <text x="1314" y="490" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#60e090">⚙ Kinesis Data Analytics — Apache Flink</text>
+  <text x="1093" y="512" font-family="JetBrains Mono" font-size="9.5" fill="#40c060">Real-time stream processing jobs:</text>
+  <text x="1093" y="527" font-family="JetBrains Mono" font-size="9" fill="#60d080">// Tumbling window: flow aggregation</text>
+  <text x="1093" y="542" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">SELECT src_ip, dst_ip, sum(bytes)</text>
+  <text x="1093" y="557" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">FROM flow_stream</text>
+  <text x="1093" y="572" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">GROUP BY TUMBLE(5 MINUTES),</text>
+  <text x="1093" y="587" font-family="JetBrains Mono" font-size="9" fill="#80e0a0">  src_ip, dst_ip</text>
+  <text x="1093" y="604" font-family="JetBrains Mono" font-size="9.5" fill="#40c060">ML inference inline (Flink UDF):</text>
+  <text x="1093" y="619" font-family="JetBrains Mono" font-size="9" fill="#60d080">→ Call SageMaker endpoint per window</text>
+  <text x="1093" y="634" font-family="JetBrains Mono" font-size="9" fill="#60d080">→ Anomaly score &gt; 0.8 → emit alert</text>
+  <text x="1093" y="651" font-family="JetBrains Mono" font-size="9.5" fill="#40c060">Session windows (BGP flap detect):</text>
+  <text x="1093" y="666" font-family="JetBrains Mono" font-size="9" fill="#60d080">→ &gt;3 state changes in 60s = alert</text>
+  <text x="1093" y="698" font-family="JetBrains Mono" font-size="9" fill="#30a050">⬇ → OpenSearch / S3 / SNS / SageMaker</text>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 3: STORAGE / DATA LAKE -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="760" width="1528" height="300" rx="12" fill="#08060e" stroke="#2a1a5a" stroke-width="1.5"/>
+  <rect x="40" y="760" width="1528" height="38" rx="12" fill="#1a1030" opacity="0.9"/>
+  <text x="804" y="786" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#a060ff" letter-spacing="2">SECTION 3 — STORAGE &amp; DATA LAKE · S3 · OpenSearch · Timestream · Glue</text>
+
+  <!-- S3 Data Lake -->
+  <rect x="60" y="812" width="360" height="228" rx="8" fill="#060408" stroke="#3a1a5a" stroke-width="1.5"/>
+  <rect x="60" y="812" width="360" height="26" rx="8" fill="#2a1048" opacity="0.8"/>
+  <text x="240" y="830" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#c080ff">🗄 S3 Network Data Lake</text>
+  <text x="73" y="852" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Bucket structure:</text>
+  <text x="73" y="867" font-family="JetBrains Mono" font-size="9" fill="#a070d0">s3://net-observability-lake/</text>
+  <text x="73" y="882" font-family="JetBrains Mono" font-size="9" fill="#a070d0">  raw/vpc-flow/year=24/month=01/</text>
+  <text x="73" y="897" font-family="JetBrains Mono" font-size="9" fill="#a070d0">  enriched/flows/parquet/</text>
+  <text x="73" y="912" font-family="JetBrains Mono" font-size="9" fill="#a070d0">  ml-features/training/</text>
+  <text x="73" y="927" font-family="JetBrains Mono" font-size="9" fill="#a070d0">  anomalies/detected/</text>
+  <text x="73" y="944" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Glue Catalog (schema-on-read):</text>
+  <text x="73" y="959" font-family="JetBrains Mono" font-size="9" fill="#a070d0">→ Glue Crawler: auto-discover schema</text>
+  <text x="73" y="974" font-family="JetBrains Mono" font-size="9" fill="#a070d0">→ Athena: SQL on-demand queries</text>
+  <text x="73" y="991" font-family="JetBrains Mono" font-size="9.5" fill="#9060c0">Storage classes:</text>
+  <text x="73" y="1006" font-family="JetBrains Mono" font-size="9" fill="#8050b0">  0–30d: S3 Standard (hot)</text>
+  <text x="73" y="1021" font-family="JetBrains Mono" font-size="9" fill="#8050b0">  30–90d: S3-IA (warm)</text>
+  <text x="73" y="1036" font-family="JetBrains Mono" font-size="9" fill="#8050b0">  90d+: Glacier Instant (cold)</text>
+
+  <!-- Amazon OpenSearch -->
+  <rect x="440" y="812" width="360" height="228" rx="8" fill="#06080c" stroke="#105878" stroke-width="1.5"/>
+  <rect x="440" y="812" width="360" height="26" rx="8" fill="#0e3858" opacity="0.8"/>
+  <text x="620" y="830" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#40c8ff">🔍 Amazon OpenSearch Service</text>
+  <text x="453" y="852" font-family="JetBrains Mono" font-size="9.5" fill="#2090b0">Indices &amp; mappings:</text>
+  <text x="453" y="867" font-family="JetBrains Mono" font-size="9" fill="#40a0c0">network-flows-YYYY.MM.DD</text>
+  <text x="453" y="882" font-family="JetBrains Mono" font-size="9" fill="#40a0c0">network-anomalies (no rollover)</text>
+  <text x="453" y="897" font-family="JetBrains Mono" font-size="9" fill="#40a0c0">network-topology-state</text>
+  <text x="453" y="914" font-family="JetBrains Mono" font-size="9.5" fill="#2090b0">OpenSearch ML plugin:</text>
+  <text x="453" y="929" font-family="JetBrains Mono" font-size="9" fill="#40a0c0">→ Anomaly Detector (built-in)</text>
+  <text x="453" y="944" font-family="JetBrains Mono" font-size="9" fill="#40a0c0">→ HDBSCAN clustering on flows</text>
+  <text x="453" y="959" font-family="JetBrains Mono" font-size="9" fill="#40a0c0">→ k-NN similarity search (ANN)</text>
+  <text x="453" y="976" font-family="JetBrains Mono" font-size="9.5" fill="#2090b0">OpenSearch Dashboards:</text>
+  <text x="453" y="991" font-family="JetBrains Mono" font-size="9" fill="#3090b0">  Network topology map</text>
+  <text x="453" y="1006" font-family="JetBrains Mono" font-size="9" fill="#3090b0">  Flow heatmaps per subnet</text>
+  <text x="453" y="1021" font-family="JetBrains Mono" font-size="9" fill="#3090b0">  Top-talkers, port analysis</text>
+  <text x="453" y="1036" font-family="JetBrains Mono" font-size="9" fill="#3090b0">  Alert timeline, anomaly trends</text>
+
+  <!-- Amazon Timestream -->
+  <rect x="820" y="812" width="340" height="228" rx="8" fill="#060a08" stroke="#1a4a28" stroke-width="1.5"/>
+  <rect x="820" y="812" width="340" height="26" rx="8" fill="#0e3018" opacity="0.8"/>
+  <text x="990" y="830" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#60e0a0">⏱ Amazon Timestream</text>
+  <text x="833" y="852" font-family="JetBrains Mono" font-size="9.5" fill="#40a070">Purpose: time-series metrics store</text>
+  <text x="833" y="867" font-family="JetBrains Mono" font-size="9" fill="#60c080">Tables:</text>
+  <text x="833" y="882" font-family="JetBrains Mono" font-size="9" fill="#60c080">  network_latency (site, p50, p99)</text>
+  <text x="833" y="897" font-family="JetBrains Mono" font-size="9" fill="#60c080">  interface_utilization (ifInOctets)</text>
+  <text x="833" y="912" font-family="JetBrains Mono" font-size="9" fill="#60c080">  bgp_session_state (peer, state)</text>
+  <text x="833" y="927" font-family="JetBrains Mono" font-size="9" fill="#60c080">  tunnel_health (vpn_id, score)</text>
+  <text x="833" y="944" font-family="JetBrains Mono" font-size="9.5" fill="#40a070">Queries (Timestream SQL):</text>
+  <text x="833" y="959" font-family="JetBrains Mono" font-size="9" fill="#60c080">SELECT bin(time,5m), avg(latency)</text>
+  <text x="833" y="974" font-family="JetBrains Mono" font-size="9" fill="#60c080">FROM network_latency</text>
+  <text x="833" y="989" font-family="JetBrains Mono" font-size="9" fill="#60c080">WHERE site='APAC-SYD'</text>
+  <text x="833" y="1006" font-family="JetBrains Mono" font-size="9.5" fill="#40a070">Memory store: 12 hours (fast)</text>
+  <text x="833" y="1021" font-family="JetBrains Mono" font-size="9" fill="#50c070">Magnetic store: 365 days (cheap)</text>
+  <text x="833" y="1036" font-family="JetBrains Mono" font-size="9" fill="#40a070">Grafana native datasource plugin</text>
+
+  <!-- DynamoDB (State) -->
+  <rect x="1180" y="812" width="368" height="228" rx="8" fill="#060808" stroke="#1a4840" stroke-width="1.5"/>
+  <rect x="1180" y="812" width="368" height="26" rx="8" fill="#0e2e28" opacity="0.8"/>
+  <text x="1364" y="830" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#40e0d0">⚡ DynamoDB — State &amp; Feature Store</text>
+  <text x="1193" y="852" font-family="JetBrains Mono" font-size="9.5" fill="#30a090">Network state cache (ms reads):</text>
+  <text x="1193" y="867" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">PK: device_id / SK: timestamp</text>
+  <text x="1193" y="882" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">→ Current BGP peer states</text>
+  <text x="1193" y="897" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">→ Tunnel health history (7d)</text>
+  <text x="1193" y="912" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">→ Anomaly score per flow key</text>
+  <text x="1193" y="929" font-family="JetBrains Mono" font-size="9.5" fill="#30a090">SageMaker Feature Store:</text>
+  <text x="1193" y="944" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">→ Online store (DDB-backed)</text>
+  <text x="1193" y="959" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">→ Offline store (S3-backed)</text>
+  <text x="1193" y="974" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">→ Feature groups: flow_features</text>
+  <text x="1193" y="989" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">→ Point-in-time joins for training</text>
+  <text x="1193" y="1008" font-family="JetBrains Mono" font-size="9.5" fill="#30a090">DAX: microsecond cache on</text>
+  <text x="1193" y="1023" font-family="JetBrains Mono" font-size="9" fill="#50c0b0">  hot anomaly lookup paths</text>
+  <text x="1193" y="1038" font-family="JetBrains Mono" font-size="9" fill="#3090a0">TTL: 30d auto-expiry on state</text>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 4: ML / AI ENGINE -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="1090" width="1528" height="370" rx="12" fill="#0a0804" stroke="#4a3010" stroke-width="1.5"/>
+  <rect x="40" y="1090" width="1528" height="38" rx="12" fill="#2a1a08" opacity="0.9"/>
+  <text x="804" y="1116" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#ffb040" letter-spacing="2">SECTION 4 — ML / AI ENGINE · SageMaker · Bedrock · CloudWatch AI</text>
+
+  <!-- SageMaker Training -->
+  <rect x="60" y="1142" width="340" height="298" rx="8" fill="#080600" stroke="#5a3808" stroke-width="1.5"/>
+  <rect x="60" y="1142" width="340" height="26" rx="8" fill="#4a2808" opacity="0.8"/>
+  <text x="230" y="1160" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffb060">🧠 SageMaker — Model Training</text>
+  <text x="73" y="1182" font-family="JetBrains Mono" font-size="9.5" fill="#c08040">Anomaly Detection Models:</text>
+  <text x="73" y="1197" font-family="JetBrains Mono" font-size="9" fill="#e0a060">→ Random Cut Forest (RCF)</text>
+  <text x="73" y="1212" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  - AWS built-in algorithm</text>
+  <text x="73" y="1227" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  - Unsupervised, no labels needed</text>
+  <text x="73" y="1242" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  - Feature: bytes, pkt_rate, port entropy</text>
+  <text x="73" y="1259" font-family="JetBrains Mono" font-size="9.5" fill="#c08040">→ IP Insights (embedding model)</text>
+  <text x="73" y="1274" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  - Learns IP/user pair legitimacy</text>
+  <text x="73" y="1289" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  - Detects impossible-travel flows</text>
+  <text x="73" y="1306" font-family="JetBrains Mono" font-size="9.5" fill="#c08040">→ LSTM (time-series prediction)</text>
+  <text x="73" y="1321" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  - Predict next 5min traffic volume</text>
+  <text x="73" y="1336" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  - Input: 30d rolling latency series</text>
+  <text x="73" y="1353" font-family="JetBrains Mono" font-size="9.5" fill="#c08040">Training pipeline:</text>
+  <text x="73" y="1368" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  S3 features → SageMaker Job</text>
+  <text x="73" y="1383" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  Weekly retrain (drift detection)</text>
+  <text x="73" y="1398" font-family="JetBrains Mono" font-size="9" fill="#e0a060">  Model Registry → approve/reject</text>
+  <text x="73" y="1420" font-family="JetBrains Mono" font-size="9" fill="#a06020">⬇ → SageMaker Endpoint (real-time)</text>
+
+  <!-- SageMaker Inference -->
+  <rect x="420" y="1142" width="340" height="298" rx="8" fill="#08070a" stroke="#504020" stroke-width="1.5"/>
+  <rect x="420" y="1142" width="340" height="26" rx="8" fill="#403010" opacity="0.8"/>
+  <text x="590" y="1160" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ffd060">⚡ SageMaker — Inference</text>
+  <text x="433" y="1182" font-family="JetBrains Mono" font-size="9.5" fill="#b09040">Real-time endpoint:</text>
+  <text x="433" y="1197" font-family="JetBrains Mono" font-size="9" fill="#d0b060">POST /invocations</text>
+  <text x="433" y="1212" font-family="JetBrains Mono" font-size="9" fill="#d0b060">  {"src":"10.0.1.5","dst":"8.8.8.8"</text>
+  <text x="433" y="1227" font-family="JetBrains Mono" font-size="9" fill="#d0b060">   "bytes":94500,"proto":"UDP"}</text>
+  <text x="433" y="1244" font-family="JetBrains Mono" font-size="9" fill="#d0b060">→ {"anomaly_score":0.93, "label":"DDoS"}</text>
+  <text x="433" y="1261" font-family="JetBrains Mono" font-size="9.5" fill="#b09040">Auto-scaling policy:</text>
+  <text x="433" y="1276" font-family="JetBrains Mono" font-size="9" fill="#d0b060">  Target: InvocationsPerInstance 500</text>
+  <text x="433" y="1291" font-family="JetBrains Mono" font-size="9" fill="#d0b060">  Min: 2 instances (HA)</text>
+  <text x="433" y="1306" font-family="JetBrains Mono" font-size="9" fill="#d0b060">  Max: 20 instances (burst)</text>
+  <text x="433" y="1323" font-family="JetBrains Mono" font-size="9.5" fill="#b09040">Async inference (batch flows):</text>
+  <text x="433" y="1338" font-family="JetBrains Mono" font-size="9" fill="#d0b060">  S3 input → SNS callback</text>
+  <text x="433" y="1353" font-family="JetBrains Mono" font-size="9" fill="#d0b060">  Process 10M flows in &lt;15 min</text>
+  <text x="433" y="1370" font-family="JetBrains Mono" font-size="9.5" fill="#b09040">Model Monitor:</text>
+  <text x="433" y="1385" font-family="JetBrains Mono" font-size="9" fill="#d0b060">  Data quality / model quality</text>
+  <text x="433" y="1400" font-family="JetBrains Mono" font-size="9" fill="#d0b060">  Drift alerts → retrain trigger</text>
+  <text x="433" y="1420" font-family="JetBrains Mono" font-size="9" fill="#a08020">⬇ → Lambda / EventBridge</text>
+
+  <!-- CloudWatch Anomaly Detection -->
+  <rect x="780" y="1142" width="340" height="298" rx="8" fill="#080a06" stroke="#384820" stroke-width="1.5"/>
+  <rect x="780" y="1142" width="340" height="26" rx="8" fill="#283018" opacity="0.8"/>
+  <text x="950" y="1160" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#a0e060">📈 CloudWatch — Built-in AI/ML</text>
+  <text x="793" y="1182" font-family="JetBrains Mono" font-size="9.5" fill="#70a040">Anomaly Detection (native):</text>
+  <text x="793" y="1197" font-family="JetBrains Mono" font-size="9" fill="#90c060">→ ML band around each metric</text>
+  <text x="793" y="1212" font-family="JetBrains Mono" font-size="9" fill="#90c060">→ Adapts to seasonality auto</text>
+  <text x="793" y="1227" font-family="JetBrains Mono" font-size="9" fill="#90c060">→ Alarm when outside 2-sigma band</text>
+  <text x="793" y="1244" font-family="JetBrains Mono" font-size="9.5" fill="#70a040">Metrics Insights (ML queries):</text>
+  <text x="793" y="1259" font-family="JetBrains Mono" font-size="9" fill="#90c060">SELECT avg(NetworkIn) FROM</text>
+  <text x="793" y="1274" font-family="JetBrains Mono" font-size="9" fill="#90c060">  CWAgent WHERE InstanceType</text>
+  <text x="793" y="1289" font-family="JetBrains Mono" font-size="9" fill="#90c060">  = 'c5.xlarge' LIMIT 5</text>
+  <text x="793" y="1306" font-family="JetBrains Mono" font-size="9.5" fill="#70a040">Contributor Insights:</text>
+  <text x="793" y="1321" font-family="JetBrains Mono" font-size="9" fill="#90c060">→ Top IPs by reject count (SG)</text>
+  <text x="793" y="1336" font-family="JetBrains Mono" font-size="9" fill="#90c060">→ Top destination ports from flows</text>
+  <text x="793" y="1351" font-family="JetBrains Mono" font-size="9" fill="#90c060">→ Highest-latency sites per hour</text>
+  <text x="793" y="1368" font-family="JetBrains Mono" font-size="9.5" fill="#70a040">Composite Alarms (logic gates):</text>
+  <text x="793" y="1383" font-family="JetBrains Mono" font-size="9" fill="#90c060">  (LatencyHigh AND PacketLoss)</text>
+  <text x="793" y="1398" font-family="JetBrains Mono" font-size="9" fill="#90c060">  → P1 alert (not noise)</text>
+  <text x="793" y="1420" font-family="JetBrains Mono" font-size="9" fill="#60a030">⬇ → SNS / EventBridge</text>
+
+  <!-- Amazon Bedrock GenAI -->
+  <rect x="1140" y="1142" width="408" height="298" rx="8" fill="#080408" stroke="#4a1060" stroke-width="1.5"/>
+  <rect x="1140" y="1142" width="408" height="26" rx="8" fill="#360c50" opacity="0.8"/>
+  <text x="1344" y="1160" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#e060ff">✨ Amazon Bedrock — GenAI Layer</text>
+  <text x="1153" y="1182" font-family="JetBrains Mono" font-size="9.5" fill="#b040d0">Foundation Models in use:</text>
+  <text x="1153" y="1197" font-family="JetBrains Mono" font-size="9" fill="#d060f0">→ Claude 3.5 Sonnet (analysis)</text>
+  <text x="1153" y="1212" font-family="JetBrains Mono" font-size="9" fill="#d060f0">→ Amazon Titan Text (summarize)</text>
+  <text x="1153" y="1229" font-family="JetBrains Mono" font-size="9.5" fill="#b040d0">Use case 1: Incident Narration</text>
+  <text x="1153" y="1244" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  Prompt: "Anomaly detected: {context}"</text>
+  <text x="1153" y="1259" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  Output: "At 14:32 UTC, site SYD-01</text>
+  <text x="1153" y="1274" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  showed 340% traffic spike on TCP/443</text>
+  <text x="1153" y="1289" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  from 3 source IPs. Probable cause...</text>
+  <text x="1153" y="1306" font-family="JetBrains Mono" font-size="9.5" fill="#b040d0">Use case 2: RCA Copilot</text>
+  <text x="1153" y="1321" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  RAG on historical incidents (KB)</text>
+  <text x="1153" y="1336" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  → Find similar past events</text>
+  <text x="1153" y="1351" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  → Suggest proven remediation</text>
+  <text x="1153" y="1368" font-family="JetBrains Mono" font-size="9.5" fill="#b040d0">Use case 3: Config Review</text>
+  <text x="1153" y="1383" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  "Review this BGP config for risks"</text>
+  <text x="1153" y="1398" font-family="JetBrains Mono" font-size="9" fill="#d060f0">  → Bedrock Guardrails enforced</text>
+  <text x="1153" y="1420" font-family="JetBrains Mono" font-size="9" fill="#9030c0">⬇ → ServiceNow / Slack / ITSM</text>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 5: ALERTING & AUTOMATED REMEDIATION -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="1490" width="1528" height="310" rx="12" fill="#060a04" stroke="#1a3a10" stroke-width="1.5"/>
+  <rect x="40" y="1490" width="1528" height="38" rx="12" fill="#0e2008" opacity="0.9"/>
+  <text x="804" y="1516" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#80e050" letter-spacing="2">SECTION 5 — ALERTING &amp; AUTOMATED REMEDIATION · Lambda · SSM · Step Functions</text>
+
+  <!-- EventBridge Rules -->
+  <rect x="60" y="1542" width="300" height="238" rx="8" fill="#040a04" stroke="#204820" stroke-width="1.5"/>
+  <rect x="60" y="1542" width="300" height="26" rx="8" fill="#183818" opacity="0.8"/>
+  <text x="210" y="1560" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#80e060">⚡ Amazon EventBridge</text>
+  <text x="73" y="1582" font-family="JetBrains Mono" font-size="9.5" fill="#50b040">Event rules (pattern match):</text>
+  <text x="73" y="1597" font-family="JetBrains Mono" font-size="9" fill="#70d060">{source:"aws.network-manager"</text>
+  <text x="73" y="1612" font-family="JetBrains Mono" font-size="9" fill="#70d060"> detail-type:"VPN Tunnel State"</text>
+  <text x="73" y="1627" font-family="JetBrains Mono" font-size="9" fill="#70d060"> detail.state: "DOWN"}</text>
+  <text x="73" y="1644" font-family="JetBrains Mono" font-size="9.5" fill="#50b040">Targets per rule:</text>
+  <text x="73" y="1659" font-family="JetBrains Mono" font-size="9" fill="#70d060">→ Lambda (immediate action)</text>
+  <text x="73" y="1674" font-family="JetBrains Mono" font-size="9" fill="#70d060">→ Step Functions (orchestrate)</text>
+  <text x="73" y="1689" font-family="JetBrains Mono" font-size="9" fill="#70d060">→ SNS (human escalation)</text>
+  <text x="73" y="1706" font-family="JetBrains Mono" font-size="9" fill="#70d060">→ SQS (queued processing)</text>
+  <text x="73" y="1721" font-family="JetBrains Mono" font-size="9.5" fill="#50b040">Scheduler:</text>
+  <text x="73" y="1736" font-family="JetBrains Mono" font-size="9" fill="#70d060">  cron(0/15 * * * ? *) health check</text>
+  <text x="73" y="1758" font-family="JetBrains Mono" font-size="9" fill="#30a020">⬇ → Lambda / Step Functions</text>
+
+  <!-- Lambda Remediation -->
+  <rect x="380" y="1542" width="340" height="238" rx="8" fill="#040b06" stroke="#285028" stroke-width="1.5"/>
+  <rect x="380" y="1542" width="340" height="26" rx="8" fill="#1a3818" opacity="0.8"/>
+  <text x="550" y="1560" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#60e080">λ Lambda — Auto-Remediation</text>
+  <text x="393" y="1582" font-family="JetBrains Mono" font-size="9.5" fill="#40b050">Functions deployed:</text>
+  <text x="393" y="1597" font-family="JetBrains Mono" font-size="9" fill="#60c070">fn-vpn-failover-trigger</text>
+  <text x="393" y="1612" font-family="JetBrains Mono" font-size="9" fill="#60c070">  → boto3: modify_vpn_connection</text>
+  <text x="393" y="1627" font-family="JetBrains Mono" font-size="9" fill="#60c070">  → Reset IKE / IPSec SA</text>
+  <text x="393" y="1644" font-family="JetBrains Mono" font-size="9" fill="#60c070">fn-sg-block-malicious-ip</text>
+  <text x="393" y="1659" font-family="JetBrains Mono" font-size="9" fill="#60c070">  → revoke_security_group_ingress</text>
+  <text x="393" y="1674" font-family="JetBrains Mono" font-size="9" fill="#60c070">  → Update WAF IPSet automatically</text>
+  <text x="393" y="1691" font-family="JetBrains Mono" font-size="9" fill="#60c070">fn-tgw-reroute</text>
+  <text x="393" y="1706" font-family="JetBrains Mono" font-size="9" fill="#60c070">  → replace_transit_gateway_route</text>
+  <text x="393" y="1721" font-family="JetBrains Mono" font-size="9" fill="#60c070">  → Blackhole → active path</text>
+  <text x="393" y="1738" font-family="JetBrains Mono" font-size="9.5" fill="#40b050">Audit: every action → CloudTrail</text>
+  <text x="393" y="1758" font-family="JetBrains Mono" font-size="9" fill="#30a040">⬇ → SSM / Step Functions / SNS</text>
+
+  <!-- Step Functions Orchestration -->
+  <rect x="740" y="1542" width="380" height="238" rx="8" fill="#060806" stroke="#305a18" stroke-width="1.5"/>
+  <rect x="740" y="1542" width="380" height="26" rx="8" fill="#1e3810" opacity="0.8"/>
+  <text x="930" y="1560" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#a0e060">🔄 Step Functions — Remediation Orchestrator</text>
+  <text x="753" y="1582" font-family="JetBrains Mono" font-size="9.5" fill="#60a030">State machine: VPN-Recovery-Flow</text>
+  <text x="753" y="1597" font-family="JetBrains Mono" font-size="9" fill="#80c050">① Detect: check tunnel state (Lambda)</text>
+  <text x="753" y="1612" font-family="JetBrains Mono" font-size="9" fill="#80c050">② Validate: confirm via ping test</text>
+  <text x="753" y="1627" font-family="JetBrains Mono" font-size="9" fill="#80c050">③ Choice: still down? escalate / retry</text>
+  <text x="753" y="1642" font-family="JetBrains Mono" font-size="9" fill="#80c050">④ Auto-fix: reset IPSec / reroute TGW</text>
+  <text x="753" y="1657" font-family="JetBrains Mono" font-size="9" fill="#80c050">⑤ Wait(5min): verify recovery</text>
+  <text x="753" y="1672" font-family="JetBrains Mono" font-size="9" fill="#80c050">⑥ Notify: SNS → ServiceNow closed</text>
+  <text x="753" y="1689" font-family="JetBrains Mono" font-size="9.5" fill="#60a030">Human approval gate (for P1):</text>
+  <text x="753" y="1704" font-family="JetBrains Mono" font-size="9" fill="#80c050">  → Slack button approve/deny</text>
+  <text x="753" y="1719" font-family="JetBrains Mono" font-size="9" fill="#80c050">  → Timeout 10min → auto-exec</text>
+  <text x="753" y="1738" font-family="JetBrains Mono" font-size="9.5" fill="#60a030">State machine: DDoS-Mitigation-Flow</text>
+  <text x="753" y="1758" font-family="JetBrains Mono" font-size="9" fill="#40a020">⬇ → SSM Run Command / SNS</text>
+
+  <!-- SNS + ITSM -->
+  <rect x="1140" y="1542" width="408" height="238" rx="8" fill="#0a0604" stroke="#583010" stroke-width="1.5"/>
+  <rect x="1140" y="1542" width="408" height="26" rx="8" fill="#3a1e08" opacity="0.8"/>
+  <text x="1344" y="1560" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#ff9040">📣 SNS / ITSM / ChatOps</text>
+  <text x="1153" y="1582" font-family="JetBrains Mono" font-size="9.5" fill="#c06020">SNS topics &amp; subscriptions:</text>
+  <text x="1153" y="1597" font-family="JetBrains Mono" font-size="9" fill="#e08040">network-critical → PagerDuty API</text>
+  <text x="1153" y="1612" font-family="JetBrains Mono" font-size="9" fill="#e08040">network-warning → Slack webhook</text>
+  <text x="1153" y="1627" font-family="JetBrains Mono" font-size="9" fill="#e08040">network-resolved → auto-close SNow</text>
+  <text x="1153" y="1644" font-family="JetBrains Mono" font-size="9.5" fill="#c06020">ServiceNow integration:</text>
+  <text x="1153" y="1659" font-family="JetBrains Mono" font-size="9" fill="#e08040">→ REST API: create/update/close INC</text>
+  <text x="1153" y="1674" font-family="JetBrains Mono" font-size="9" fill="#e08040">→ CI population from Lambda payload</text>
+  <text x="1153" y="1689" font-family="JetBrains Mono" font-size="9" fill="#e08040">→ Bedrock summary in work notes</text>
+  <text x="1153" y="1706" font-family="JetBrains Mono" font-size="9.5" fill="#c06020">ChatOps (Slack):</text>
+  <text x="1153" y="1721" font-family="JetBrains Mono" font-size="9" fill="#e08040">→ Anomaly card with metrics graph</text>
+  <text x="1153" y="1736" font-family="JetBrains Mono" font-size="9" fill="#e08040">→ [Approve Remediation] button</text>
+  <text x="1153" y="1751" font-family="JetBrains Mono" font-size="9" fill="#e08040">→ [Open Runbook] → Confluence link</text>
+  <text x="1153" y="1758" font-family="JetBrains Mono" font-size="9" fill="#a05010">⬇ → Engineers / On-call NOC</text>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 6: VISUALIZATION & DASHBOARDS -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="1830" width="1528" height="300" rx="12" fill="#040a0a" stroke="#0e3838" stroke-width="1.5"/>
+  <rect x="40" y="1830" width="1528" height="38" rx="12" fill="#082020" opacity="0.9"/>
+  <text x="804" y="1856" text-anchor="middle" font-family="Rajdhani" font-size="15" font-weight="700" fill="#40d0d0" letter-spacing="2">SECTION 6 — VISUALIZATION · Grafana · OpenSearch Dashboards · CloudWatch</text>
+
+  <!-- AWS Managed Grafana -->
+  <rect x="60" y="1882" width="350" height="228" rx="8" fill="#04080a" stroke="#10485a" stroke-width="1.5"/>
+  <rect x="60" y="1882" width="350" height="26" rx="8" fill="#0c3040" opacity="0.8"/>
+  <text x="235" y="1900" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#40c8e0">📊 Amazon Managed Grafana</text>
+  <text x="73" y="1922" font-family="JetBrains Mono" font-size="9.5" fill="#2090a0">Data sources (native plugins):</text>
+  <text x="73" y="1937" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">→ Amazon Timestream</text>
+  <text x="73" y="1952" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">→ Amazon Managed Prometheus</text>
+  <text x="73" y="1967" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">→ CloudWatch (direct)</text>
+  <text x="73" y="1982" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">→ OpenSearch (JSON API)</text>
+  <text x="73" y="1997" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">→ Athena (ad-hoc SQL)</text>
+  <text x="73" y="2014" font-family="JetBrains Mono" font-size="9.5" fill="#2090a0">Dashboard catalog:</text>
+  <text x="73" y="2029" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">  Global WAN Health (exec view)</text>
+  <text x="73" y="2044" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">  Site Latency Heatmap</text>
+  <text x="73" y="2059" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">  ML Anomaly Score Timeline</text>
+  <text x="73" y="2076" font-family="JetBrains Mono" font-size="9" fill="#40b0c0">  BGP / VPN State Map</text>
+  <text x="73" y="2098" font-family="JetBrains Mono" font-size="9" fill="#2090a0">SSO via AWS IAM Identity Center</text>
+
+  <!-- OpenSearch Dashboards -->
+  <rect x="430" y="1882" width="350" height="228" rx="8" fill="#04080c" stroke="#104068" stroke-width="1.5"/>
+  <rect x="430" y="1882" width="350" height="26" rx="8" fill="#0c2848" opacity="0.8"/>
+  <text x="605" y="1900" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#40a8ff">🔍 OpenSearch Dashboards</text>
+  <text x="443" y="1922" font-family="JetBrains Mono" font-size="9.5" fill="#2880c0">Security Analytics plugin:</text>
+  <text x="443" y="1937" font-family="JetBrains Mono" font-size="9" fill="#4090d0">→ MITRE ATT&amp;CK correlation</text>
+  <text x="443" y="1952" font-family="JetBrains Mono" font-size="9" fill="#4090d0">→ Threat detection rules (Sigma)</text>
+  <text x="443" y="1967" font-family="JetBrains Mono" font-size="9" fill="#4090d0">→ Alert findings management</text>
+  <text x="443" y="1984" font-family="JetBrains Mono" font-size="9.5" fill="#2880c0">Anomaly Detection (built-in ML):</text>
+  <text x="443" y="1999" font-family="JetBrains Mono" font-size="9" fill="#4090d0">→ Detector on flow volume</text>
+  <text x="443" y="2014" font-family="JetBrains Mono" font-size="9" fill="#4090d0">→ Entity-level (per src_ip)</text>
+  <text x="443" y="2031" font-family="JetBrains Mono" font-size="9.5" fill="#2880c0">Flow visualizations:</text>
+  <text x="443" y="2046" font-family="JetBrains Mono" font-size="9" fill="#4090d0">  Sankey: top src→dst pairs</text>
+  <text x="443" y="2061" font-family="JetBrains Mono" font-size="9" fill="#4090d0">  Geo map: traffic origin map</text>
+  <text x="443" y="2076" font-family="JetBrains Mono" font-size="9" fill="#4090d0">  Timeline: anomaly events</text>
+  <text x="443" y="2098" font-family="JetBrains Mono" font-size="9" fill="#2060a0">Alerting → SNS / PagerDuty</text>
+
+  <!-- CloudWatch Dashboard -->
+  <rect x="800" y="1882" width="360" height="228" rx="8" fill="#060a06" stroke="#284828" stroke-width="1.5"/>
+  <rect x="800" y="1882" width="360" height="26" rx="8" fill="#182e18" opacity="0.8"/>
+  <text x="980" y="1900" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#80d060">📊 CloudWatch Dashboards</text>
+  <text x="813" y="1922" font-family="JetBrains Mono" font-size="9.5" fill="#50a040">Operational dashboards (OOTB):</text>
+  <text x="813" y="1937" font-family="JetBrains Mono" font-size="9" fill="#70c060">→ Network ELB / ALB metrics</text>
+  <text x="813" y="1952" font-family="JetBrains Mono" font-size="9" fill="#70c060">→ TGW attachment throughput</text>
+  <text x="813" y="1967" font-family="JetBrains Mono" font-size="9" fill="#70c060">→ Direct Connect utilization %</text>
+  <text x="813" y="1982" font-family="JetBrains Mono" font-size="9" fill="#70c060">→ VPN tunnel data transfer</text>
+  <text x="813" y="1999" font-family="JetBrains Mono" font-size="9.5" fill="#50a040">Canary (Synthetics):</text>
+  <text x="813" y="2014" font-family="JetBrains Mono" font-size="9" fill="#70c060">  Heartbeat canary per site</text>
+  <text x="813" y="2029" font-family="JetBrains Mono" font-size="9" fill="#70c060">  API canary: SAP health probe</text>
+  <text x="813" y="2044" font-family="JetBrains Mono" font-size="9" fill="#70c060">  → Availability SLA evidence</text>
+  <text x="813" y="2061" font-family="JetBrains Mono" font-size="9.5" fill="#50a040">Alarm hierarchy:</text>
+  <text x="813" y="2076" font-family="JetBrains Mono" font-size="9" fill="#70c060">  Metric → Composite → Action</text>
+  <text x="813" y="2091" font-family="JetBrains Mono" font-size="9" fill="#70c060">  Suppress maintenance windows</text>
+  <text x="813" y="2098" font-family="JetBrains Mono" font-size="9" fill="#40a020">→ SNS / EventBridge / OpsCenter</text>
+
+  <!-- Network Intelligence Center / AWS Health -->
+  <rect x="1180" y="1882" width="368" height="228" rx="8" fill="#080608" stroke="#3a1848" stroke-width="1.5"/>
+  <rect x="1180" y="1882" width="368" height="26" rx="8" fill="#241030" opacity="0.8"/>
+  <text x="1364" y="1900" text-anchor="middle" font-family="Rajdhani" font-size="12" font-weight="700" fill="#c060f0">🌐 Network Intelligence Center</text>
+  <text x="1193" y="1922" font-family="JetBrains Mono" font-size="9.5" fill="#8040b0">Reachability Analyzer:</text>
+  <text x="1193" y="1937" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ API: start_network_insights_analysis</text>
+  <text x="1193" y="1952" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ Path: EC2 → TGW → VPN → Site</text>
+  <text x="1193" y="1967" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ Automated on each config change</text>
+  <text x="1193" y="1984" font-family="JetBrains Mono" font-size="9.5" fill="#8040b0">Traffic Mirroring (deep packet):</text>
+  <text x="1193" y="1999" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ Mirror ENI traffic to collector</text>
+  <text x="1193" y="2014" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ Suricata IDS on collector EC2</text>
+  <text x="1193" y="2029" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ Findings → OpenSearch</text>
+  <text x="1193" y="2046" font-family="JetBrains Mono" font-size="9.5" fill="#8040b0">AWS Health API:</text>
+  <text x="1193" y="2061" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ Proactive DX / VPN events</text>
+  <text x="1193" y="2076" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ Scheduled maintenance alerts</text>
+  <text x="1193" y="2091" font-family="JetBrains Mono" font-size="9" fill="#a060d0">→ EventBridge → NOC Slack</text>
+  <text x="1193" y="2098" font-family="JetBrains Mono" font-size="9" fill="#7030a0">Zero-ETL: corr. with CW Logs Insights</text>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 7: GOVERNANCE -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="2150" width="1528" height="90" rx="12" fill="#040608" stroke="#1a1a40" stroke-width="1.5"/>
+  <rect x="40" y="2150" width="1528" height="32" rx="12" fill="#101028" opacity="0.8"/>
+  <text x="804" y="2172" text-anchor="middle" font-family="Rajdhani" font-size="13" font-weight="700" fill="#8888ff" letter-spacing="2">GOVERNANCE — AWS Config · Security Hub · Cost Explorer · CloudFormation StackSets</text>
+  <text x="120" y="2196" font-family="JetBrains Mono" font-size="9" fill="#4050a0">AWS Security Hub: CSPM aggregation · CIS benchmarks · Findings → OpenSearch</text>
+  <text x="120" y="2212" font-family="JetBrains Mono" font-size="9" fill="#4050a0">AWS Config: conformance packs (NIST 800-53) · config-rule-vpc-flow-logs-enabled · auto-remediation SSM doc</text>
+  <text x="700" y="2196" font-family="JetBrains Mono" font-size="9" fill="#4050a0">Cost Explorer: observability stack cost by service · tagging: CostCenter, Project, Env</text>
+  <text x="700" y="2212" font-family="JetBrains Mono" font-size="9" fill="#4050a0">CloudFormation StackSets: deploy monitoring stack to all accounts / regions in AWS Org</text>
+  <text x="1280" y="2196" font-family="JetBrains Mono" font-size="9" fill="#4050a0">AWS Organizations SCP:</text>
+  <text x="1280" y="2212" font-family="JetBrains Mono" font-size="9" fill="#4050a0">  deny: disable-flow-logs (enforced)</text>
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- INTER-SECTION ARROWS -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+
+  <!-- S1 → S2 (collect → stream) -->
+  <path d="M 804 390 L 804 420" stroke="#20c060" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <rect x="754" y="398" width="100" height="16" rx="3" fill="#080e1a"/>
+  <text x="804" y="410" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#20c060">Push / Publish</text>
+
+  <!-- S2 → S3 (stream → storage) -->
+  <path d="M 804 730 L 804 760" stroke="#9060e0" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <rect x="748" y="738" width="112" height="16" rx="3" fill="#080e1a"/>
+  <text x="804" y="750" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#9060e0">Store / Index</text>
+
+  <!-- S3 → S4 (storage → ML) -->
+  <path d="M 804 1060 L 804 1090" stroke="#e0a020" stroke-width="2" marker-end="url(#arrow-amber)"/>
+  <rect x="748" y="1068" width="112" height="16" rx="3" fill="#080e1a"/>
+  <text x="804" y="1080" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e0a020">Train / Infer</text>
+
+  <!-- S4 → S5 (ML → remediation) -->
+  <path d="M 804 1460 L 804 1490" stroke="#e04060" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <rect x="748" y="1468" width="112" height="16" rx="3" fill="#080e1a"/>
+  <text x="804" y="1480" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#e04060">Alert / Trigger</text>
+
+  <!-- S5 → S6 (remediate → visualize) -->
+  <path d="M 804 1800 L 804 1830" stroke="#40c0a0" stroke-width="2" marker-end="url(#arrow-teal)"/>
+  <rect x="748" y="1808" width="112" height="16" rx="3" fill="#080e1a"/>
+  <text x="804" y="1820" text-anchor="middle" font-family="JetBrains Mono" font-size="8.5" fill="#40c0a0">Update / Close</text>
+
+  <!-- S6 → S7 (viz → governance) -->
+  <path d="M 804 2130 L 804 2150" stroke="#8090a0" stroke-width="2" marker-end="url(#arrow-white)"/>
+
+  <!-- Feedback: Bedrock → ServiceNow (dotted) -->
+  <path d="M 1344 1440 L 1344 1480 L 1400 1480 L 1400 1542" stroke="#d060f0" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#arrow-pink)" opacity="0.5"/>
+
+  <!-- SageMaker endpoint → Flink (side feedback) -->
+  <path d="M 590 1440 L 590 1460 L 1350 1460 L 1350 712 L 1314 712" stroke="#e0a020" stroke-width="1.2" stroke-dasharray="4,3" fill="none" marker-end="url(#arrow-amber)" opacity="0.4"/>
+
+  <!-- Observability feedback loop (right side) -->
+  <path d="M 1548 1990 L 1574 1990 L 1574 100 L 1548 100" stroke="#40d0d0" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#arrow-teal)" opacity="0.3"/>
+  <text x="1578" y="1060" text-anchor="start" font-family="JetBrains Mono" font-size="8" fill="#40d0d0" opacity="0.4" transform="rotate(90,1578,1060)">Observability Feedback Loop</text>
+
+  <!-- GuardDuty → Lambda side arrow -->
+  <path d="M 1260 200 L 1100 200 L 1100 420 L 430 420 L 430 472" stroke="#6060c0" stroke-width="1.2" stroke-dasharray="4,3" fill="none" marker-end="url(#arrow-blue)" opacity="0.45"/>
+
+  <!-- Config Drift feedback to Remediation -->
+  <path d="M 60 996 L 40 996 L 40 1600 L 60 1600" stroke="#9060c0" stroke-width="1.1" stroke-dasharray="4,3" fill="none" marker-end="url(#arrow-purple)" opacity="0.4"/>
+
+</svg>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+  document.querySelectorAll('rect[data-tip]').forEach(el => {
+    el.style.cursor = 'pointer';
+  });
+</script>
+</body>
+</html>
