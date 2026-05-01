@@ -1,0 +1,2425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Telecom Operating Model Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0d1f3c;
+  --blue: #1a4480;
+  --mid-blue: #2563ab;
+  --accent: #0ea5e9;
+  --accent-light: #e0f2fe;
+  --gold: #b8860b;
+  --gold-light: #fef9e7;
+  --surface: #ffffff;
+  --surface-2: #f7f9fc;
+  --surface-3: #eef2f8;
+  --border: #dde4ef;
+  --text-primary: #0d1f3c;
+  --text-secondary: #4a5568;
+  --text-muted: #8a97ab;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --shadow-sm: 0 1px 3px rgba(13,31,60,0.08);
+  --shadow-md: 0 4px 16px rgba(13,31,60,0.10);
+  --shadow-lg: 0 12px 40px rgba(13,31,60,0.13);
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* ─── NAV ─── */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 16px rgba(13,31,60,0.07);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--blue), var(--accent));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.brand-icon svg { width: 20px; height: 20px; fill: white; }
+
+.brand-text { display: flex; flex-direction: column; }
+.brand-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.header-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mid-blue);
+  background: var(--accent-light);
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav-tabs {
+  display: flex;
+  overflow-x: auto;
+  padding: 0 24px;
+  gap: 0;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+
+.nav-tab {
+  flex-shrink: 0;
+  padding: 11px 16px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  letter-spacing: 0.01em;
+}
+.nav-tab:hover { color: var(--mid-blue); }
+.nav-tab.active {
+  color: var(--mid-blue);
+  border-bottom-color: var(--mid-blue);
+  font-weight: 600;
+}
+
+/* ─── LAYOUT ─── */
+.main-content {
+  margin-top: 96px;
+  padding: 0;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ─── HERO BANNER ─── */
+.page-hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 60%, #1e5fa0 100%);
+  padding: 56px 64px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 40%;
+  width: 400px; height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+.hero-tag::before {
+  content: '';
+  display: inline-block;
+  width: 20px; height: 2px;
+  background: var(--accent);
+}
+
+.page-hero h1 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  max-width: 640px;
+  margin-bottom: 14px;
+}
+
+.page-hero p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.72);
+  max-width: 560px;
+  font-weight: 300;
+}
+
+/* ─── SECTION ─── */
+.section {
+  padding: 52px 64px;
+}
+.section-alt { background: var(--surface); }
+.section-blue { background: #f0f5fb; }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mid-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 14.5px;
+  margin-bottom: 36px;
+  max-width: 600px;
+  font-weight: 300;
+}
+
+/* ─── CARDS ─── */
+.card-grid {
+  display: grid;
+  gap: 20px;
+}
+.g2 { grid-template-columns: repeat(2, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.card-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.card p {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* ─── KPI TILES ─── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.kpi-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.kpi-tile::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mid-blue), var(--accent));
+}
+
+.kpi-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.kpi-value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.kpi-change {
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.kpi-change.up { color: var(--success); }
+.kpi-change.down { color: var(--danger); }
+.kpi-change.neutral { color: var(--text-muted); }
+
+.kpi-from {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ─── MATURITY BARS ─── */
+.maturity-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.maturity-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.maturity-label {
+  flex: 0 0 200px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--navy);
+}
+
+.maturity-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: var(--surface-3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.maturity-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+.maturity-score {
+  flex: 0 0 40px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mid-blue);
+  text-align: right;
+}
+
+.maturity-level {
+  flex: 0 0 100px;
+  text-align: right;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* maturity colors */
+.m1 .maturity-bar { background: #ef4444; }
+.m2 .maturity-bar { background: #f97316; }
+.m3 .maturity-bar { background: #eab308; }
+.m4 .maturity-bar { background: #22c55e; }
+.m5 .maturity-bar { background: var(--mid-blue); }
+.m1 .maturity-level { color: #ef4444; }
+.m2 .maturity-level { color: #f97316; }
+.m3 .maturity-level { color: #ca8a04; }
+.m4 .maturity-level { color: var(--success); }
+.m5 .maturity-level { color: var(--mid-blue); }
+
+/* ─── ARCH BLOCKS ─── */
+.arch-section {
+  margin-bottom: 36px;
+}
+.arch-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mid-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.arch-blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.arch-block {
+  background: linear-gradient(135deg, var(--surface), var(--surface-3));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+}
+.arch-block .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.fiber .dot { background: #0ea5e9; }
+.wireless .dot { background: #8b5cf6; }
+.core .dot { background: #059669; }
+
+/* ─── OPERATING MODEL LAYERS ─── */
+.om-layer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.om-layer-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 24px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.om-layer-header:hover { background: var(--surface-2); }
+
+.layer-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.om-layer-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--navy);
+  flex: 1;
+}
+
+.om-layer-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.om-chevron {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+.om-layer.open .om-chevron { transform: rotate(180deg); }
+
+.om-layer-body {
+  display: none;
+  padding: 0 24px 20px;
+  border-top: 1px solid var(--border);
+}
+.om-layer.open .om-layer-body { display: block; }
+
+.om-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.om-tag {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--navy);
+}
+
+/* ─── ITIL TABLE ─── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.data-table th {
+  background: var(--navy);
+  color: white;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 12px 16px;
+  text-align: left;
+}
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+.data-table tr:nth-child(even) td { background: var(--surface-2); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table td:first-child {
+  font-weight: 600;
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+/* ─── FLOW DIAGRAM ─── */
+.flow-wrap {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: max-content;
+  padding: 8px 0;
+}
+.flow-node {
+  background: var(--surface);
+  border: 1.5px solid var(--mid-blue);
+  border-radius: 10px;
+  padding: 14px 18px;
+  text-align: center;
+  min-width: 130px;
+  box-shadow: var(--shadow-sm);
+}
+.flow-node .fn-icon { font-size: 22px; margin-bottom: 6px; }
+.flow-node .fn-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.flow-node .fn-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+.flow-arrow {
+  color: var(--mid-blue);
+  font-size: 20px;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+/* ─── PIPELINE ─── */
+.pipeline {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding: 12px 0;
+}
+.pipe-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 110px;
+  position: relative;
+}
+.pipe-step:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: -14px;
+  top: 28px;
+  font-size: 18px;
+  color: var(--mid-blue);
+}
+.pipe-circle {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  margin-bottom: 8px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+}
+.pipe-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--navy);
+  text-align: center;
+}
+
+/* ─── ROADMAP TIMELINE ─── */
+.roadmap-phase {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.phase-header {
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.phase-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 12px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.phase-info { flex: 1; }
+.phase-info h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.phase-info span {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.phase-body {
+  padding: 0 28px 20px;
+  border-top: 1px solid var(--border);
+}
+.phase-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+.phase-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.phase-item::before {
+  content: '◆';
+  font-size: 7px;
+  color: var(--mid-blue);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+/* ─── RISK REGISTER ─── */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.risk-h { background: #fee2e2; color: #dc2626; }
+.risk-m { background: #fef3c7; color: #92400e; }
+.risk-l { background: #dcfce7; color: #166534; }
+
+/* ─── GOVERNANCE ─── */
+.gov-tier {
+  margin-bottom: 32px;
+}
+.gov-tier-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gov-tier-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.gov-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.gov-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  flex: 1;
+  min-width: 180px;
+  box-shadow: var(--shadow-sm);
+}
+.gov-card h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.gov-card p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ─── QUESTIONNAIRE ─── */
+.q-section {
+  margin-bottom: 36px;
+}
+.q-section-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.q-section-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.q-list {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.q-list li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  box-shadow: var(--shadow-sm);
+}
+.q-num {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mid-blue);
+  margin-top: 1px;
+}
+
+/* ─── TELEMETRY TAGS ─── */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+.tag {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 500;
+  border: 1.5px solid;
+}
+.tag-blue { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+.tag-purple { background: #ede9fe; color: #7c3aed; border-color: #c4b5fd; }
+.tag-green { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+.tag-amber { background: #fef3c7; color: #78350f; border-color: #fcd34d; }
+
+/* ─── DIVIDER ─── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+/* ─── BEFORE/AFTER ─── */
+.ba-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.ba-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+.ba-metric {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.ba-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.ba-before {
+  text-align: center;
+}
+.ba-before .val {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--danger);
+}
+.ba-before .lbl {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.ba-arrow { font-size: 20px; color: var(--mid-blue); }
+.ba-after {
+  text-align: center;
+}
+.ba-after .val {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--success);
+}
+.ba-after .lbl {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ─── RACI ─── */
+.raci-table { font-size: 12.5px; }
+.raci-r { background: #fee2e2; color: #b91c1c; font-weight: 700; text-align: center; padding: 4px 8px; border-radius: 4px; }
+.raci-a { background: #fef3c7; color: #92400e; font-weight: 700; text-align: center; padding: 4px 8px; border-radius: 4px; }
+.raci-c { background: #dbeafe; color: #1e40af; font-weight: 700; text-align: center; padding: 4px 8px; border-radius: 4px; }
+.raci-i { background: #f3f4f6; color: #6b7280; font-weight: 700; text-align: center; padding: 4px 8px; border-radius: 4px; }
+
+/* ─── GAP LIST ─── */
+.gap-list {
+  display: grid;
+  gap: 10px;
+}
+.gap-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  box-shadow: var(--shadow-sm);
+}
+.gap-icon {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  background: #fee2e2;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.gap-text { font-size: 13.5px; color: var(--text-secondary); }
+.gap-text strong { color: var(--navy); font-weight: 600; display: block; margin-bottom: 2px; }
+
+/* ─── INFO BOX ─── */
+.info-box {
+  background: var(--accent-light);
+  border: 1px solid #bae6fd;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 13.5px;
+  color: #075985;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+/* ─── OUTCOME BULLETS ─── */
+.outcome-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.outcome-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.outcome-item .oi-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .section { padding: 36px 24px; }
+  .page-hero { padding: 40px 24px 32px; }
+  .page-hero h1 { font-size: 26px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: 1fr 1fr; }
+  .g4 { grid-template-columns: 1fr 1fr; }
+  .ba-grid { grid-template-columns: 1fr; }
+  .outcome-list { grid-template-columns: 1fr; }
+  .header-top { padding: 10px 16px; }
+}
+
+@media (max-width: 600px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .g2, .g3, .g4 { grid-template-columns: 1fr; }
+  .phase-items { grid-template-columns: 1fr; }
+  .maturity-label { flex: 0 0 150px; font-size: 12px; }
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tab-panel.active .page-hero,
+.tab-panel.active .section {
+  animation: fadeUp 0.4s ease both;
+}
+.tab-panel.active .section { animation-delay: 0.05s; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Future Telecom Operating Model</span>
+        <span class="brand-sub">Executive Assessment · Confidential</span>
+      </div>
+    </div>
+    <span class="header-badge">Assessment 2024–2026</span>
+  </div>
+  <nav class="nav-tabs" id="mainNav">
+    <button class="nav-tab active" data-tab="exec">Executive Summary</button>
+    <button class="nav-tab" data-tab="current">Current State</button>
+    <button class="nav-tab" data-tab="arch">Future Architecture</button>
+    <button class="nav-tab" data-tab="opmodel">Operating Model</button>
+    <button class="nav-tab" data-tab="itsm">ITSM / ITIL</button>
+    <button class="nav-tab" data-tab="obs">Observability & Automation</button>
+    <button class="nav-tab" data-tab="data">Data & AI Layer</button>
+    <button class="nav-tab" data-tab="gov">Delivery Governance</button>
+    <button class="nav-tab" data-tab="roadmap">Roadmap</button>
+    <button class="nav-tab" data-tab="kpis">KPIs & Outcomes</button>
+    <button class="nav-tab" data-tab="risks">Risks & Mitigation</button>
+    <button class="nav-tab" data-tab="interview">Questionnaire</button>
+  </nav>
+</header>
+
+<main class="main-content">
+
+<!-- ══════════════════════════════════════════
+     TAB 1: EXECUTIVE SUMMARY
+══════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-exec">
+  <div class="page-hero">
+    <div class="hero-tag">Executive Summary</div>
+    <h1>Future Telecom Operating Model Assessment</h1>
+    <p>A comprehensive evaluation of the current operational posture and a structured transformation roadmap to achieve a future-ready, automated, and high-performance broadband and wireless operating model.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="section-label">Purpose</div>
+    <div class="section-title">Why This Assessment Matters</div>
+    <div class="section-subtitle">This assessment provides an evidence-based foundation for transforming operations across fiber, wireless, service management, and automation disciplines.</div>
+
+    <div class="card-grid g3">
+      <div class="card">
+        <div class="card-icon" style="background:#e0f2fe;">🎯</div>
+        <h3>Business Drivers</h3>
+        <p>Accelerating fiber-to-the-home buildout, 5G SA readiness, competitive pressure on service quality, and customer experience expectations are forcing operational modernization.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#fef3c7;">⚠️</div>
+        <h3>Current Challenges</h3>
+        <p>Reactive incident management, fragmented tooling, manual provisioning workflows, siloed teams, and poor CMDB integrity are limiting operational scale and agility.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#dcfce7;">🚀</div>
+        <h3>Future-State Vision</h3>
+        <p>A closed-loop, AI-assisted operating model where telemetry drives automated remediation, capacity is managed proactively, and service delivery is frictionless.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Transformation Targets</div>
+    <div class="section-title">Expected Business Outcomes</div>
+    <div class="section-subtitle">Measurable improvements tied directly to operational and financial performance.</div>
+    <div class="kpi-grid">
+      <div class="kpi-tile">
+        <div class="kpi-label">Service Availability</div>
+        <div class="kpi-value">99.95%</div>
+        <div class="kpi-change up">↑ From 99.3%</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">MTTR Target</div>
+        <div class="kpi-value">&lt;90m</div>
+        <div class="kpi-change up">↓ From 6 hours</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Change Success Rate</div>
+        <div class="kpi-value">95%</div>
+        <div class="kpi-change up">↑ From 82%</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Manual Effort Reduction</div>
+        <div class="kpi-value">35%</div>
+        <div class="kpi-change up">↓ Through automation</div>
+      </div>
+    </div>
+
+    <div class="outcome-list">
+      <div class="outcome-item"><span class="oi-icon">📡</span>Accelerate fiber rollout with automated service activation and ODN provisioning</div>
+      <div class="outcome-item"><span class="oi-icon">📶</span>Enable 5G SA and AI-RAN capabilities through modernized wireless operations</div>
+      <div class="outcome-item"><span class="oi-icon">🔄</span>Implement closed-loop incident management with AI-assisted root cause analysis</div>
+      <div class="outcome-item"><span class="oi-icon">📊</span>Establish real-time KPI visibility through integrated observability platform</div>
+      <div class="outcome-item"><span class="oi-icon">🤖</span>Automate repetitive NOC and field dispatch workflows to reduce truck rolls</div>
+      <div class="outcome-item"><span class="oi-icon">💰</span>Reduce cost per incident and improve SLA compliance across all service tiers</div>
+    </div>
+  </div>
+
+  <div class="section section-alt">
+    <div class="section-label">Assessment Scope</div>
+    <div class="section-title">Domains Under Evaluation</div>
+    <div class="arch-blocks">
+      <div class="arch-block fiber"><span class="dot"></span>Fiber Network</div>
+      <div class="arch-block wireless"><span class="dot"></span>Wireless Network</div>
+      <div class="arch-block core"><span class="dot"></span>Service Operations</div>
+      <div class="arch-block fiber"><span class="dot"></span>ITSM / ITIL Maturity</div>
+      <div class="arch-block wireless"><span class="dot"></span>Observability</div>
+      <div class="arch-block core"><span class="dot"></span>Automation</div>
+      <div class="arch-block fiber"><span class="dot"></span>Data Management</div>
+      <div class="arch-block wireless"><span class="dot"></span>Customer Experience</div>
+      <div class="arch-block core"><span class="dot"></span>Vendor Governance</div>
+      <div class="arch-block fiber"><span class="dot"></span>Security &amp; Compliance</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 2: CURRENT STATE ASSESSMENT
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-current">
+  <div class="page-hero">
+    <div class="hero-tag">Current State Assessment</div>
+    <h1>Operational Maturity Baseline</h1>
+    <p>A structured evaluation of current capabilities across ten operational domains, scored on a 1–5 maturity scale with identified gaps and improvement opportunities.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="section-label">Maturity Heatmap</div>
+    <div class="section-title">Domain-Level Maturity Scores</div>
+    <div class="section-subtitle">Each domain assessed against a 5-point maturity framework: 1 = Ad Hoc, 2 = Developing, 3 = Defined, 4 = Managed, 5 = Optimised.</div>
+
+    <div class="maturity-grid">
+      <div class="maturity-row m3">
+        <span class="maturity-label">Fiber Network</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:60%"></div></div>
+        <span class="maturity-score">3.0</span>
+        <span class="maturity-level">Defined</span>
+      </div>
+      <div class="maturity-row m2">
+        <span class="maturity-label">Wireless Network</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:48%"></div></div>
+        <span class="maturity-score">2.4</span>
+        <span class="maturity-level">Developing</span>
+      </div>
+      <div class="maturity-row m2">
+        <span class="maturity-label">Service Operations</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:44%"></div></div>
+        <span class="maturity-score">2.2</span>
+        <span class="maturity-level">Developing</span>
+      </div>
+      <div class="maturity-row m2">
+        <span class="maturity-label">ITSM Process Maturity</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:50%"></div></div>
+        <span class="maturity-score">2.5</span>
+        <span class="maturity-level">Developing</span>
+      </div>
+      <div class="maturity-row m2">
+        <span class="maturity-label">Observability</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:36%"></div></div>
+        <span class="maturity-score">1.8</span>
+        <span class="maturity-level">Developing</span>
+      </div>
+      <div class="maturity-row m2">
+        <span class="maturity-label">Automation</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:30%"></div></div>
+        <span class="maturity-score">1.5</span>
+        <span class="maturity-level">Developing</span>
+      </div>
+      <div class="maturity-row m2">
+        <span class="maturity-label">Data Management</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:40%"></div></div>
+        <span class="maturity-score">2.0</span>
+        <span class="maturity-level">Developing</span>
+      </div>
+      <div class="maturity-row m3">
+        <span class="maturity-label">Customer Experience</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:56%"></div></div>
+        <span class="maturity-score">2.8</span>
+        <span class="maturity-level">Defined</span>
+      </div>
+      <div class="maturity-row m2">
+        <span class="maturity-label">Vendor Governance</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:42%"></div></div>
+        <span class="maturity-score">2.1</span>
+        <span class="maturity-level">Developing</span>
+      </div>
+      <div class="maturity-row m3">
+        <span class="maturity-label">Security &amp; Compliance</span>
+        <div class="maturity-bar-wrap"><div class="maturity-bar" style="width:62%"></div></div>
+        <span class="maturity-score">3.1</span>
+        <span class="maturity-level">Defined</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Key Gaps</div>
+    <div class="section-title">Critical Pain Points Identified</div>
+    <div class="section-subtitle">Findings from stakeholder interviews, tool audits, and process walkthroughs.</div>
+
+    <div class="gap-list">
+      <div class="gap-item">
+        <div class="gap-icon">🔧</div>
+        <div class="gap-text"><strong>Fragmented Monitoring Toolset</strong>Multiple disparate tools with no unified correlation layer — EMS, OSS, and NOC dashboards are not integrated, leading to alert storms and missed signals.</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon">🖐️</div>
+        <div class="gap-text"><strong>Manual Troubleshooting Workflows</strong>NOC engineers spend 60–70% of time on manual L1/L2 diagnostics. No automated enrichment or guided remediation exists.</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon">🚨</div>
+        <div class="gap-text"><strong>Reactive Incident Handling</strong>Incidents are primarily customer-reported. MTTD is 45+ minutes for significant outages. Proactive detection is absent across fiber and wireless domains.</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon">🔁</div>
+        <div class="gap-text"><strong>No Closed-Loop Automation</strong>Remediation workflows are fully manual. Automation pilots exist but are not integrated with ITSM or observability platforms.</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon">📉</div>
+        <div class="gap-text"><strong>Inconsistent SLA Visibility</strong>SLA tracking is spreadsheet-based in some domains. Real-time SLA dashboards are unavailable for field or NOC teams.</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon">🏢</div>
+        <div class="gap-text"><strong>Siloed Network and Operations Teams</strong>Fiber, wireless, and IT operations teams operate independently with no shared tooling, processes, or escalation framework.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 3: FUTURE ARCHITECTURE
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-arch">
+  <div class="page-hero">
+    <div class="hero-tag">Future Architecture</div>
+    <h1>Target Network &amp; Platform Architecture</h1>
+    <p>The future architecture establishes a modern, disaggregated, and automation-ready infrastructure across fiber, wireless, core, and transport domains.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="section-label">Fiber Domain</div>
+    <div class="arch-section">
+      <div class="arch-section-title">🔵 Fiber – FTTH Modernization</div>
+      <div class="arch-blocks fiber">
+        <div class="arch-block fiber"><span class="dot"></span>FTTH Modernization</div>
+        <div class="arch-block fiber"><span class="dot"></span>ODN Multi-Rate: 10G / 25G / 50G PON</div>
+        <div class="arch-block fiber"><span class="dot"></span>OLT Disaggregation</div>
+        <div class="arch-block fiber"><span class="dot"></span>Unified / Wholesale Provisioning</div>
+        <div class="arch-block fiber"><span class="dot"></span>Service Activation Automation</div>
+        <div class="arch-block fiber"><span class="dot"></span>MDU / MTU Access Architecture</div>
+        <div class="arch-block fiber"><span class="dot"></span>Optical Inventory System</div>
+      </div>
+    </div>
+
+    <div class="arch-section">
+      <div class="arch-section-title">🟣 Wireless – 5G SA &amp; Advanced Readiness</div>
+      <div class="arch-blocks wireless">
+        <div class="arch-block wireless"><span class="dot"></span>5G SA Core Readiness</div>
+        <div class="arch-block wireless"><span class="dot"></span>5G Advanced Roadmap (Rel-18)</div>
+        <div class="arch-block wireless"><span class="dot"></span>Network Slicing &amp; QoS Prioritization</div>
+        <div class="arch-block wireless"><span class="dot"></span>AI-RAN Readiness</div>
+        <div class="arch-block wireless"><span class="dot"></span>Edge Compute Integration (MEC)</div>
+        <div class="arch-block wireless"><span class="dot"></span>Indoor Coverage (DAS / Small Cells)</div>
+        <div class="arch-block wireless"><span class="dot"></span>Private 5G Framework</div>
+      </div>
+    </div>
+
+    <div class="arch-section">
+      <div class="arch-section-title">🟢 Core &amp; Transport – IP/MPLS Modernization</div>
+      <div class="arch-blocks core">
+        <div class="arch-block core"><span class="dot"></span>IP/MPLS Core Modernization</div>
+        <div class="arch-block core"><span class="dot"></span>Segment Routing (SR-MPLS / SRv6)</div>
+        <div class="arch-block core"><span class="dot"></span>Cloud Interconnect (Hyperscaler PoPs)</div>
+        <div class="arch-block core"><span class="dot"></span>Resilient Backbone Architecture</div>
+        <div class="arch-block core"><span class="dot"></span>Zero Trust Security Overlay</div>
+        <div class="arch-block core"><span class="dot"></span>SD-WAN / SASE Integration</div>
+        <div class="arch-block core"><span class="dot"></span>100G / 400G Transport Upgrade</div>
+      </div>
+    </div>
+
+    <div class="arch-section">
+      <div class="arch-section-title">🔷 Platform Layer – Observability &amp; Automation Stack</div>
+      <div class="arch-blocks fiber">
+        <div class="arch-block fiber"><span class="dot"></span>Unified Observability Platform</div>
+        <div class="arch-block fiber"><span class="dot"></span>ITSM (ITIL v4 Aligned)</div>
+        <div class="arch-block fiber"><span class="dot"></span>Network Inventory &amp; CMDB</div>
+        <div class="arch-block fiber"><span class="dot"></span>Automation Engine (IaC / Ansible)</div>
+        <div class="arch-block fiber"><span class="dot"></span>AI/ML Operations Layer</div>
+        <div class="arch-block fiber"><span class="dot"></span>Data Lake &amp; Feature Store</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Architecture Principles</div>
+    <div class="section-title">Design Guiding Principles</div>
+    <div class="card-grid g3">
+      <div class="card">
+        <div class="card-icon" style="background:#e0f2fe;">🧩</div>
+        <h3>Disaggregation First</h3>
+        <p>Prefer open, disaggregated architectures (OLT, RAN, routing) to reduce vendor lock-in and enable best-of-breed component selection.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#fef3c7;">⚡</div>
+        <h3>Automation by Default</h3>
+        <p>Every provisioning, change, and remediation workflow should have an automation-first design. Manual fallback only where exception-handling is required.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#dcfce7;">🔐</div>
+        <h3>Zero Trust Security</h3>
+        <p>Identity-based access, micro-segmentation, encrypted transport, and continuous verification across all network and platform layers.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#ede9fe;">📡</div>
+        <h3>Telemetry Native</h3>
+        <p>All network elements must support streaming telemetry (gNMI / gRPC). SNMP-only devices to be phased out or wrapped with telemetry proxies.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#fce7f3;">☁️</div>
+        <h3>Cloud Integration Ready</h3>
+        <p>Core platforms and data pipelines to support multi-cloud deployment, hyperscaler peering, and cloud-native workload hosting.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#ecfdf5;">📈</div>
+        <h3>Scalable by Design</h3>
+        <p>Architecture must support 3x subscriber growth and 5x traffic growth over 5 years without linear cost or headcount scaling.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 4: FUTURE OPERATING MODEL
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-opmodel">
+  <div class="page-hero">
+    <div class="hero-tag">Future Operating Model</div>
+    <h1>Seven-Layer Operating Model Design</h1>
+    <p>A structured, layered operating model that aligns business intent with service delivery, automation, governance, and continuous improvement.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="info-box">ℹ️ <span>Click any layer to expand its components and capability descriptions.</span></div>
+
+    <div id="omLayers">
+
+      <div class="om-layer open" data-layer="1">
+        <div class="om-layer-header" onclick="toggleLayer(this)">
+          <div class="layer-num" style="background:#dbeafe;color:#1d4ed8;">1</div>
+          <div style="flex:1">
+            <div class="om-layer-title">Business Intent Layer</div>
+            <div class="om-layer-desc">Strategic goals driving the operating model</div>
+          </div>
+          <div class="om-chevron">▼</div>
+        </div>
+        <div class="om-layer-body">
+          <div class="om-tags">
+            <span class="om-tag">Growth Strategy &amp; Market Expansion</span>
+            <span class="om-tag">Customer Experience Targets</span>
+            <span class="om-tag">Service Reliability Commitments</span>
+            <span class="om-tag">Cost Efficiency Programs</span>
+            <span class="om-tag">Regulatory &amp; Compliance Obligations</span>
+            <span class="om-tag">Product Roadmap Alignment</span>
+          </div>
+          <p style="margin-top:14px;font-size:13.5px;color:var(--text-secondary);">This layer translates board-level strategy into operational mandates. All lower layers derive their priorities, KPIs, and resource allocations from commitments made at this level.</p>
+        </div>
+      </div>
+
+      <div class="om-layer" data-layer="2">
+        <div class="om-layer-header" onclick="toggleLayer(this)">
+          <div class="layer-num" style="background:#ede9fe;color:#7c3aed;">2</div>
+          <div style="flex:1">
+            <div class="om-layer-title">Service Model Layer</div>
+            <div class="om-layer-desc">Portfolio of services and SLA commitments</div>
+          </div>
+          <div class="om-chevron">▼</div>
+        </div>
+        <div class="om-layer-body">
+          <div class="om-tags">
+            <span class="om-tag">Broadband Services (Residential &amp; SMB)</span>
+            <span class="om-tag">Enterprise Connectivity (MPLS / SD-WAN)</span>
+            <span class="om-tag">Wireless Services (4G LTE / 5G SA)</span>
+            <span class="om-tag">Managed Services Portfolio</span>
+            <span class="om-tag">Wholesale / Carrier Services</span>
+            <span class="om-tag">SLA Catalog &amp; OLA Framework</span>
+          </div>
+          <p style="margin-top:14px;font-size:13.5px;color:var(--text-secondary);">Defines the service catalog with tiered SLAs, OLAs, and underpinning contracts. Enables accountability mapping between service outcomes and operational domains.</p>
+        </div>
+      </div>
+
+      <div class="om-layer" data-layer="3">
+        <div class="om-layer-header" onclick="toggleLayer(this)">
+          <div class="layer-num" style="background:#d1fae5;color:#065f46;">3</div>
+          <div style="flex:1">
+            <div class="om-layer-title">Operations Layer</div>
+            <div class="om-layer-desc">NOC, field, change, and capacity operations</div>
+          </div>
+          <div class="om-chevron">▼</div>
+        </div>
+        <div class="om-layer-body">
+          <div class="om-tags">
+            <span class="om-tag">Network Operations Center (NOC)</span>
+            <span class="om-tag">Service Assurance</span>
+            <span class="om-tag">Field Operations &amp; Dispatch</span>
+            <span class="om-tag">Change Operations</span>
+            <span class="om-tag">Capacity Management</span>
+            <span class="om-tag">Vendor Operations Management</span>
+            <span class="om-tag">Event &amp; Incident Command</span>
+          </div>
+          <p style="margin-top:14px;font-size:13.5px;color:var(--text-secondary);">The execution core of the model. Converges fiber, wireless, and IT operations into a unified NOC model with tiered L1/L2/L3 support and integrated escalation paths.</p>
+        </div>
+      </div>
+
+      <div class="om-layer" data-layer="4">
+        <div class="om-layer-header" onclick="toggleLayer(this)">
+          <div class="layer-num" style="background:#fef3c7;color:#92400e;">4</div>
+          <div style="flex:1">
+            <div class="om-layer-title">Platform &amp; Tooling Layer</div>
+            <div class="om-layer-desc">Integrated technology platforms enabling operations</div>
+          </div>
+          <div class="om-chevron">▼</div>
+        </div>
+        <div class="om-layer-body">
+          <div class="om-tags">
+            <span class="om-tag">Unified Observability Platform</span>
+            <span class="om-tag">ITSM Platform (ITIL v4)</span>
+            <span class="om-tag">Network Inventory System</span>
+            <span class="om-tag">CMDB (Live, Validated)</span>
+            <span class="om-tag">Automation Platform (Ansible / Terraform)</span>
+            <span class="om-tag">Data Lake &amp; Analytics</span>
+            <span class="om-tag">API Gateway &amp; Integration Bus</span>
+          </div>
+          <p style="margin-top:14px;font-size:13.5px;color:var(--text-secondary);">Provides the technology substrate for all operations. Platforms are integrated via APIs with bidirectional data flows between ITSM, observability, inventory, and automation engines.</p>
+        </div>
+      </div>
+
+      <div class="om-layer" data-layer="5">
+        <div class="om-layer-header" onclick="toggleLayer(this)">
+          <div class="layer-num" style="background:#fce7f3;color:#9d174d;">5</div>
+          <div style="flex:1">
+            <div class="om-layer-title">Automation Layer</div>
+            <div class="om-layer-desc">Closed-loop automation and AI-assisted workflows</div>
+          </div>
+          <div class="om-chevron">▼</div>
+        </div>
+        <div class="om-layer-body">
+          <div class="om-tags">
+            <span class="om-tag">Service Provisioning Automation</span>
+            <span class="om-tag">Incident Enrichment &amp; Triage</span>
+            <span class="om-tag">Auto-Ticket Creation</span>
+            <span class="om-tag">Root Cause Recommendation</span>
+            <span class="om-tag">Dynamic SLA Adjustment</span>
+            <span class="om-tag">Automated Post-Change Validation</span>
+            <span class="om-tag">Self-Healing Network Actions</span>
+          </div>
+          <p style="margin-top:14px;font-size:13.5px;color:var(--text-secondary);">Executes automated workflows triggered by observability events, ITSM tickets, or scheduled jobs. Reduces manual effort and accelerates MTTR through pre-approved runbooks.</p>
+        </div>
+      </div>
+
+      <div class="om-layer" data-layer="6">
+        <div class="om-layer-header" onclick="toggleLayer(this)">
+          <div class="layer-num" style="background:#ecfdf5;color:#065f46;">6</div>
+          <div style="flex:1">
+            <div class="om-layer-title">Governance Layer</div>
+            <div class="om-layer-desc">Decision-making, oversight, and accountability structures</div>
+          </div>
+          <div class="om-chevron">▼</div>
+        </div>
+        <div class="om-layer-body">
+          <div class="om-tags">
+            <span class="om-tag">Change Advisory Board (CAB)</span>
+            <span class="om-tag">Service Review Boards</span>
+            <span class="om-tag">Architecture Review Board</span>
+            <span class="om-tag">Vendor Performance Governance</span>
+            <span class="om-tag">Risk &amp; Compliance Review</span>
+            <span class="om-tag">Security Operations Board</span>
+          </div>
+          <p style="margin-top:14px;font-size:13.5px;color:var(--text-secondary);">Provides structured oversight across all operational and transformation activities. Governance forums meet on defined cadences and produce actionable decisions with ownership.</p>
+        </div>
+      </div>
+
+      <div class="om-layer" data-layer="7">
+        <div class="om-layer-header" onclick="toggleLayer(this)">
+          <div class="layer-num" style="background:#f3f4f6;color:#374151;">7</div>
+          <div style="flex:1">
+            <div class="om-layer-title">Continuous Improvement Layer</div>
+            <div class="om-layer-desc">Systematic improvement cycles and performance reviews</div>
+          </div>
+          <div class="om-chevron">▼</div>
+        </div>
+        <div class="om-layer-body">
+          <div class="om-tags">
+            <span class="om-tag">KPI Review Cadence</span>
+            <span class="om-tag">Problem Management Reviews</span>
+            <span class="om-tag">Automation Backlog Management</span>
+            <span class="om-tag">Service Improvement Plans (SIPs)</span>
+            <span class="om-tag">Quarterly Roadmap Refresh</span>
+            <span class="om-tag">Lessons Learned Repository</span>
+          </div>
+          <p style="margin-top:14px;font-size:13.5px;color:var(--text-secondary);">Ensures the operating model evolves continuously. Feeds insights from incident post-mortems, KPI gaps, and automation performance back into the roadmap and process designs.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 5: ITSM / ITIL
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-itsm">
+  <div class="page-hero">
+    <div class="hero-tag">ITSM / ITIL Alignment</div>
+    <h1>ITIL v4 Process Mapping</h1>
+    <p>Aligning the future operating model to ITIL v4 practices, identifying current gaps and defining future capabilities with tooling and KPI accountability.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ITIL Process</th>
+            <th>Current Gap</th>
+            <th>Future Capability</th>
+            <th>Tooling</th>
+            <th>KPIs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Incident Management</td>
+            <td>Reactive, manual triage; no enrichment or auto-routing</td>
+            <td>AI-enriched triage, automated routing, closed-loop resolution</td>
+            <td>ITSM + Observability</td>
+            <td>MTTR, SLA Breach %</td>
+          </tr>
+          <tr>
+            <td>Problem Management</td>
+            <td>Ad hoc post-mortems; no systematic root cause tracking</td>
+            <td>Structured problem records, AI-assisted RCA, trend analysis</td>
+            <td>ITSM + Data Lake</td>
+            <td>Repeat Incidents, Problem Resolution Time</td>
+          </tr>
+          <tr>
+            <td>Change Enablement</td>
+            <td>CAB exists but inconsistent; 18% change failure rate</td>
+            <td>Risk-scored changes, automated pre/post validation, e-CAB</td>
+            <td>ITSM + Automation Engine</td>
+            <td>Change Success Rate, Failed Change %</td>
+          </tr>
+          <tr>
+            <td>Service Request Mgmt</td>
+            <td>Manual fulfillment; 5-day average provisioning lead time</td>
+            <td>Self-service portal, automated provisioning workflows</td>
+            <td>ITSM + Provisioning Engine</td>
+            <td>Fulfillment Time, CSAT</td>
+          </tr>
+          <tr>
+            <td>Configuration Mgmt</td>
+            <td>CMDB partially populated; stale data; no auto-discovery</td>
+            <td>Live CMDB with auto-discovery, relationship mapping, CI validation</td>
+            <td>CMDB + Discovery Tool</td>
+            <td>CMDB Accuracy %, Stale CI Count</td>
+          </tr>
+          <tr>
+            <td>Capacity Management</td>
+            <td>Reactive; no predictive capacity planning</td>
+            <td>AI-driven forecasting, threshold alerts, capacity dashboards</td>
+            <td>Observability + AI/ML</td>
+            <td>Capacity Utilization, Forecast Accuracy</td>
+          </tr>
+          <tr>
+            <td>Availability Management</td>
+            <td>Tracked retroactively; limited proactive monitoring</td>
+            <td>Real-time availability dashboards, synthetic monitoring, SLA alerting</td>
+            <td>Observability Platform</td>
+            <td>Network Availability %, SLA Compliance</td>
+          </tr>
+          <tr>
+            <td>Service Level Mgmt</td>
+            <td>SLAs tracked in spreadsheets; no real-time SLA visibility</td>
+            <td>Dynamic SLA dashboards, automated breach alerting, SLA reporting</td>
+            <td>ITSM + BI Platform</td>
+            <td>SLA Breach %, SLA Achievement %</td>
+          </tr>
+          <tr>
+            <td>Continual Improvement</td>
+            <td>No formal CSI process; improvement driven by escalation only</td>
+            <td>Structured CSI register, quarterly reviews, KPI-driven backlog</td>
+            <td>ITSM + Data Lake</td>
+            <td>CSI Actions Closed, Improvement Velocity</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 6: OBSERVABILITY & AUTOMATION
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-obs">
+  <div class="page-hero">
+    <div class="hero-tag">Observability &amp; Automation</div>
+    <h1>Closed-Loop Operations Model</h1>
+    <p>An end-to-end telemetry and automation flow that detects, enriches, acts, and closes incidents without manual intervention at every step.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="section-label">End-to-End Flow</div>
+    <div class="section-title">Telemetry to Closure</div>
+    <div class="flow-wrap">
+      <div class="flow">
+        <div class="flow-node"><div class="fn-icon">📡</div><div class="fn-title">Network Devices</div><div class="fn-sub">Fiber · RAN · Core</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="fn-icon">📊</div><div class="fn-title">Telemetry</div><div class="fn-sub">SNMP · gNMI · Syslog</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="fn-icon">🔭</div><div class="fn-title">Observability</div><div class="fn-sub">Correlation Engine</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="fn-icon">🔔</div><div class="fn-title">Event Correlation</div><div class="fn-sub">Alert Suppression</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="fn-icon">🎫</div><div class="fn-title">ITSM Ticket</div><div class="fn-sub">Auto-Created</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="fn-icon">⚙️</div><div class="fn-title">Automation Engine</div><div class="fn-sub">Runbook Execution</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="fn-icon">✅</div><div class="fn-title">Validation</div><div class="fn-sub">Post-Action Check</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="fn-icon">🔒</div><div class="fn-title">Auto-Closure</div><div class="fn-sub">KB Updated</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Data Sources</div>
+    <div class="section-title">Telemetry Inputs</div>
+    <div class="tag-cloud">
+      <span class="tag tag-blue">SNMP Polling</span>
+      <span class="tag tag-blue">Streaming Telemetry (gNMI)</span>
+      <span class="tag tag-blue">Syslog / Event Logs</span>
+      <span class="tag tag-purple">NetFlow / IPFIX</span>
+      <span class="tag tag-purple">API Events (REST/Webhook)</span>
+      <span class="tag tag-green">Customer Experience Probes</span>
+      <span class="tag tag-green">Synthetic Testing</span>
+      <span class="tag tag-amber">SNMP Traps</span>
+      <span class="tag tag-amber">gRPC Dial-Out</span>
+      <span class="tag tag-blue">BGP Route Monitoring</span>
+      <span class="tag tag-purple">OLT / PON Diagnostics</span>
+      <span class="tag tag-green">RAN KPI Streams</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-label">Automation Use Cases</div>
+    <div class="section-title">Automation Examples</div>
+    <div class="card-grid g3">
+      <div class="card">
+        <div class="card-icon" style="background:#dbeafe;">🔍</div>
+        <h3>Auto-Detect Degradation</h3>
+        <p>Streaming telemetry triggers anomaly detection. Pre-defined thresholds initiate incident workflows before customer impact occurs.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#ede9fe;">🎫</div>
+        <h3>Auto-Open Incident</h3>
+        <p>Correlated events automatically create P1/P2 tickets in ITSM with enriched context: affected services, impacted CIs, and similar past incidents.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#dcfce7;">👥</div>
+        <h3>Identify Impacted Customers</h3>
+        <p>CMDB relationships map failing CIs to affected service subscriptions, enabling proactive customer notification and SLA breach avoidance.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#fef3c7;">🧠</div>
+        <h3>Root Cause Recommendation</h3>
+        <p>ML models trained on historical incident data surface top-3 probable root causes with confidence scores, reducing diagnostic time by 70%.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#fee2e2;">↩️</div>
+        <h3>Trigger Rollback</h3>
+        <p>Post-change monitoring detects regression events and triggers automatic rollback of the offending configuration within 5 minutes of detection.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#ecfdf5;">📚</div>
+        <h3>Update Knowledge Base</h3>
+        <p>Resolved incidents automatically update the knowledge base with resolution steps, symptoms, and affected components for future use.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 7: DATA & AI LAYER
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-data">
+  <div class="page-hero">
+    <div class="hero-tag">Data &amp; AI Operating Layer</div>
+    <h1>Intelligence-Driven Operations</h1>
+    <p>A unified data architecture that transforms raw telemetry and operational data into actionable AI-driven insights, supporting every layer of the operating model.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="section-label">Data Sources</div>
+    <div class="section-title">Operational Data Inputs</div>
+    <div class="tag-cloud">
+      <span class="tag tag-blue">Network Telemetry</span>
+      <span class="tag tag-blue">Customer Tickets</span>
+      <span class="tag tag-purple">Field Technician Updates</span>
+      <span class="tag tag-purple">Change Records</span>
+      <span class="tag tag-green">Network Inventory</span>
+      <span class="tag tag-green">SLA Performance Data</span>
+      <span class="tag tag-amber">Capacity Utilization</span>
+      <span class="tag tag-amber">Customer Experience Data</span>
+      <span class="tag tag-blue">Vendor Performance Reports</span>
+      <span class="tag tag-purple">Financial / Cost Data</span>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-label">Data Pipeline</div>
+    <div class="section-title">From Raw Data to Automated Actions</div>
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-circle" style="background:#fee2e2;border-color:#fca5a5;">📥</div>
+        <div class="pipe-label">Raw Data<br>Ingest</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-circle" style="background:#fef3c7;border-color:#fcd34d;">🧹</div>
+        <div class="pipe-label">Clean &amp;<br>Validate</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-circle" style="background:#d1fae5;border-color:#6ee7b7;">🗂️</div>
+        <div class="pipe-label">Curated<br>Data Lake</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-circle" style="background:#dbeafe;border-color:#93c5fd;">🏪</div>
+        <div class="pipe-label">Feature<br>Store</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-circle" style="background:#ede9fe;border-color:#c4b5fd;">🤖</div>
+        <div class="pipe-label">AI/ML<br>Models</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-circle" style="background:#fce7f3;border-color:#f9a8d4;">💡</div>
+        <div class="pipe-label">Decision<br>Support</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-circle" style="background:#ecfdf5;border-color:#6ee7b7;">⚡</div>
+        <div class="pipe-label">Automation<br>Actions</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">AI Use Cases</div>
+    <div class="section-title">Applied Intelligence in Operations</div>
+    <div class="card-grid g3">
+      <div class="card">
+        <div class="card-icon" style="background:#dbeafe;">⚡</div>
+        <h3>Predictive Outage Detection</h3>
+        <p>Anomaly detection models identify leading indicators of service degradation 20–40 minutes before customer impact, enabling proactive intervention.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#fee2e2;">📉</div>
+        <h3>Churn Risk Signals</h3>
+        <p>Correlates service quality signals with customer behavior to surface at-risk accounts for proactive retention outreach before churn occurs.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#d1fae5;">📊</div>
+        <h3>Capacity Forecasting</h3>
+        <p>Time-series models predict network utilization 30–90 days ahead, enabling planned capacity upgrades before saturation events.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#fef3c7;">🏷️</div>
+        <h3>Ticket Classification</h3>
+        <p>NLP models classify and route incoming trouble tickets with 94% accuracy, reducing manual triage time and improving first-contact resolution.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#ede9fe;">🚛</div>
+        <h3>Field Dispatch Optimization</h3>
+        <p>ML-assisted scheduling optimizes truck roll assignments based on technician skills, location, parts availability, and SLA priority.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:#fce7f3;">⚠️</div>
+        <h3>Change Risk Scoring</h3>
+        <p>Each submitted change receives an AI-generated risk score based on historical change failure patterns, CI blast radius, and time-of-day risk factors.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 8: DELIVERY GOVERNANCE
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-gov">
+  <div class="page-hero">
+    <div class="hero-tag">Delivery Governance</div>
+    <h1>Transformation Governance Model</h1>
+    <p>A structured governance framework ensuring executive accountability, delivery discipline, and cross-functional alignment throughout the transformation program.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="section-label">Governance Structure</div>
+    <div class="section-title">Forums &amp; Accountability Bodies</div>
+
+    <div class="gov-tier">
+      <div class="gov-tier-title">Executive Tier</div>
+      <div class="gov-cards">
+        <div class="gov-card">
+          <h4>Executive Steering Committee</h4>
+          <p>Monthly. Approves investment, resolves cross-program dependencies. Chaired by CEO/COO.</p>
+        </div>
+        <div class="gov-card">
+          <h4>Transformation Office</h4>
+          <p>Weekly. Program delivery tracking, milestone accountability, risk escalation management.</p>
+        </div>
+        <div class="gov-card">
+          <h4>Architecture Review Board</h4>
+          <p>Bi-weekly. Reviews and approves all significant design decisions, tool selections, and standards.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gov-tier">
+      <div class="gov-tier-title">Operational Tier</div>
+      <div class="gov-cards">
+        <div class="gov-card">
+          <h4>Service Operations Board</h4>
+          <p>Weekly. Reviews operational KPIs, SLA performance, major incident trends, and improvement actions.</p>
+        </div>
+        <div class="gov-card">
+          <h4>Change Advisory Board (CAB)</h4>
+          <p>Weekly. Approves scheduled changes; e-CAB for emergency changes. Risk-scored approvals.</p>
+        </div>
+        <div class="gov-card">
+          <h4>Automation Review Board</h4>
+          <p>Monthly. Prioritizes automation backlog, reviews automation quality, approves new runbooks.</p>
+        </div>
+        <div class="gov-card">
+          <h4>Vendor Governance Forum</h4>
+          <p>Monthly. Reviews vendor SLAs, contractual compliance, escalations, and roadmap alignment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">RACI Matrix</div>
+    <div class="section-title">Responsibility Assignment</div>
+    <div class="table-wrap">
+      <table class="data-table raci-table">
+        <thead>
+          <tr>
+            <th>Activity</th>
+            <th>Bus. Leadership</th>
+            <th>Net. Engineering</th>
+            <th>Wireless Eng.</th>
+            <th>Fiber Eng.</th>
+            <th>IT Operations</th>
+            <th>Service Desk</th>
+            <th>Field Ops</th>
+            <th>Security</th>
+            <th>Vendors</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Strategy &amp; Roadmap</td>
+            <td><span class="raci-a">A</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-i">I</span></td>
+          </tr>
+          <tr>
+            <td>Incident Management</td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-a">A</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-r">R</span></td>
+          </tr>
+          <tr>
+            <td>Change Management</td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-a">A</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+          </tr>
+          <tr>
+            <td>CMDB &amp; Inventory</td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-a">A</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-c">C</span></td>
+          </tr>
+          <tr>
+            <td>Automation Delivery</td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-a">A</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-i">I</span></td>
+          </tr>
+          <tr>
+            <td>Vendor Performance</td>
+            <td><span class="raci-a">A</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-r">R</span></td>
+          </tr>
+          <tr>
+            <td>Security &amp; Compliance</td>
+            <td><span class="raci-a">A</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-c">C</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-i">I</span></td>
+            <td><span class="raci-r">R</span></td>
+            <td><span class="raci-i">I</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;">
+      <span style="font-size:12px;display:flex;align-items:center;gap:6px;"><span class="raci-r">R</span> Responsible</span>
+      <span style="font-size:12px;display:flex;align-items:center;gap:6px;"><span class="raci-a">A</span> Accountable</span>
+      <span style="font-size:12px;display:flex;align-items:center;gap:6px;"><span class="raci-c">C</span> Consulted</span>
+      <span style="font-size:12px;display:flex;align-items:center;gap:6px;"><span class="raci-i">I</span> Informed</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 9: ROADMAP
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-roadmap">
+  <div class="page-hero">
+    <div class="hero-tag">Roadmap</div>
+    <h1>18-Month Transformation Roadmap</h1>
+    <p>A phased, outcome-driven delivery plan structured across four phases — from discovery baseline through optimization and sustained improvement.</p>
+  </div>
+
+  <div class="section section-alt">
+
+    <div class="roadmap-phase">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:#fee2e2;color:#b91c1c;">Phase 1</span>
+        <div class="phase-info">
+          <h3>Assessment &amp; Baseline</h3>
+          <span>Months 1–3 · Foundation for Change</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);text-align:right;line-height:1.4;">Discovery<br>Inventory<br>Baseline</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-items">
+          <div class="phase-item">Current-state discovery across all domains</div>
+          <div class="phase-item">Tool inventory and integration mapping</div>
+          <div class="phase-item">SLA performance baseline establishment</div>
+          <div class="phase-item">Process review and gap documentation</div>
+          <div class="phase-item">Data quality and CMDB audit</div>
+          <div class="phase-item">Stakeholder interview program</div>
+          <div class="phase-item">Automation opportunity assessment</div>
+          <div class="phase-item">Governance model design</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:#fef3c7;color:#92400e;">Phase 2</span>
+        <div class="phase-info">
+          <h3>Foundation</h3>
+          <span>Months 4–8 · Platform &amp; Process Foundation</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);text-align:right;line-height:1.4;">Platforms<br>CMDB<br>ITSM</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-items">
+          <div class="phase-item">CMDB cleanup and auto-discovery deployment</div>
+          <div class="phase-item">Observability platform integration</div>
+          <div class="phase-item">ITSM process redesign (ITIL v4 alignment)</div>
+          <div class="phase-item">Automation backlog prioritization</div>
+          <div class="phase-item">KPI dashboard development</div>
+          <div class="phase-item">NOC convergence planning</div>
+          <div class="phase-item">Data lake foundation build</div>
+          <div class="phase-item">Governance forums established</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:#dbeafe;color:#1e40af;">Phase 3</span>
+        <div class="phase-info">
+          <h3>Modernization</h3>
+          <span>Months 9–14 · Automation &amp; Integration</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);text-align:right;line-height:1.4;">Automation<br>Closed-Loop<br>Analytics</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-items">
+          <div class="phase-item">Fiber service activation automation</div>
+          <div class="phase-item">Wireless service assurance workflows</div>
+          <div class="phase-item">Closed-loop incident management</div>
+          <div class="phase-item">Change validation automation</div>
+          <div class="phase-item">Capacity forecasting ML model</div>
+          <div class="phase-item">Field dispatch optimization</div>
+          <div class="phase-item">Customer impact correlation engine</div>
+          <div class="phase-item">NOC convergence execution</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="roadmap-phase">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:#d1fae5;color:#065f46;">Phase 4</span>
+        <div class="phase-info">
+          <h3>Optimization</h3>
+          <span>Months 15–18 · AI-Assisted &amp; Self-Healing</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);text-align:right;line-height:1.4;">AI/ML<br>Predictive<br>Self-Healing</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-items">
+          <div class="phase-item">AI-assisted NOC operations</div>
+          <div class="phase-item">Dynamic SLA management engine</div>
+          <div class="phase-item">Predictive maintenance program</div>
+          <div class="phase-item">Continuous service improvement cycle</div>
+          <div class="phase-item">Executive scorecard automation</div>
+          <div class="phase-item">Self-healing network actions (approved runbooks)</div>
+          <div class="phase-item">Churn prediction integration with CRM</div>
+          <div class="phase-item">Full automation coverage reporting</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 10: KPIs & OUTCOMES
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-kpis">
+  <div class="page-hero">
+    <div class="hero-tag">KPIs &amp; Business Outcomes</div>
+    <h1>Performance Improvement Targets</h1>
+    <p>Measurable KPIs across availability, quality, speed, automation, and cost — with before/after targets tied to the transformation roadmap.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="section-label">Current vs. Target</div>
+    <div class="section-title">Before &amp; After Comparison</div>
+    <div class="ba-grid">
+      <div class="ba-card">
+        <div class="ba-metric">Mean Time to Repair (MTTR)</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">6 hrs</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">90 min</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-metric">Mean Time to Detect (MTTD)</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">45 min</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">5 min</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-metric">Change Success Rate</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">82%</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">95%</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-metric">SLA Breach Rate</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">14%</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">4%</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-metric">Truck Roll Reduction</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">Baseline</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">–25%</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-metric">Manual Ticket Volume</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">Baseline</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">–35%</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-metric">Provisioning Lead Time</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">5 days</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">1 day</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-metric">Service Availability</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">99.3%</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">99.95%</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+      <div class="ba-card">
+        <div class="ba-metric">Automation Coverage</div>
+        <div class="ba-row">
+          <div class="ba-before"><div class="val">&lt;10%</div><div class="lbl">Current</div></div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after"><div class="val">65%</div><div class="lbl">Target</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Full KPI Dashboard</div>
+    <div class="section-title">Operational &amp; Business KPI Set</div>
+    <div class="kpi-grid">
+      <div class="kpi-tile">
+        <div class="kpi-label">Network Availability</div>
+        <div class="kpi-value">99.95%</div>
+        <div class="kpi-from">From 99.3% · Five Nines Target</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">MTTR</div>
+        <div class="kpi-value">90 min</div>
+        <div class="kpi-from">From 6 hours · 75% improvement</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">MTTD</div>
+        <div class="kpi-value">5 min</div>
+        <div class="kpi-from">From 45 min · Proactive detection</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Change Success Rate</div>
+        <div class="kpi-value">95%</div>
+        <div class="kpi-from">From 82% · AI risk scoring</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">SLA Breach %</div>
+        <div class="kpi-value">4%</div>
+        <div class="kpi-from">From 14% · Dynamic SLA mgmt</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Repeat Incidents</div>
+        <div class="kpi-value">–60%</div>
+        <div class="kpi-from">Via problem management</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Automation Coverage</div>
+        <div class="kpi-value">65%</div>
+        <div class="kpi-from">From &lt;10% today</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Provisioning Lead Time</div>
+        <div class="kpi-value">1 day</div>
+        <div class="kpi-from">From 5 days · Self-service</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 11: RISKS & MITIGATION
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-risks">
+  <div class="page-hero">
+    <div class="hero-tag">Risks &amp; Mitigation</div>
+    <h1>Risk Register</h1>
+    <p>Identified transformation risks with impact and probability assessments, structured mitigation plans, and designated accountability owners.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Risk</th>
+            <th>Impact</th>
+            <th>Probability</th>
+            <th>Mitigation Strategy</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tool Fragmentation</td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td>Define target platform architecture early; establish integration standards; deprecate redundant tools on a structured timeline.</td>
+            <td>Architecture Board</td>
+          </tr>
+          <tr>
+            <td>Poor CMDB Quality</td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td>Dedicated CMDB remediation sprint in Phase 2; auto-discovery tooling; CMDB accuracy KPI tracked weekly.</td>
+            <td>IT Operations</td>
+          </tr>
+          <tr>
+            <td>Resistance to Process Change</td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td><span class="risk-badge risk-m">Medium</span></td>
+            <td>Change management program; executive sponsorship visible at team level; early-adopter program with peer champions.</td>
+            <td>Transformation Office</td>
+          </tr>
+          <tr>
+            <td>Data Quality Issues</td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td><span class="risk-badge risk-m">Medium</span></td>
+            <td>Data quality audit in Phase 1; data governance framework; automated data quality checks in pipeline.</td>
+            <td>Data &amp; Analytics Lead</td>
+          </tr>
+          <tr>
+            <td>Vendor Dependency</td>
+            <td><span class="risk-badge risk-m">Medium</span></td>
+            <td><span class="risk-badge risk-m">Medium</span></td>
+            <td>Multi-vendor strategy for critical platforms; open APIs required for all new contracts; exit clause reviews.</td>
+            <td>Vendor Governance Forum</td>
+          </tr>
+          <tr>
+            <td>Automation Failure</td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td><span class="risk-badge risk-l">Low</span></td>
+            <td>Staged rollout with manual fallback; automated testing of all runbooks; approval gates before production deployment.</td>
+            <td>Automation Review Board</td>
+          </tr>
+          <tr>
+            <td>Security / Compliance Gaps</td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td><span class="risk-badge risk-m">Medium</span></td>
+            <td>Security review embedded in architecture board; Zero Trust framework adopted from Day 1; quarterly compliance audits.</td>
+            <td>Security</td>
+          </tr>
+          <tr>
+            <td>Skill Gaps</td>
+            <td><span class="risk-badge risk-m">Medium</span></td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td>Skills gap assessment in Phase 1; training program; hire specialists in automation, AI/ML, and ITSM roles.</td>
+            <td>HR / Transformation Office</td>
+          </tr>
+          <tr>
+            <td>Budget Constraints</td>
+            <td><span class="risk-badge risk-h">High</span></td>
+            <td><span class="risk-badge risk-m">Medium</span></td>
+            <td>Phase-gated investment approval; benefit realization tracking at each phase gate; ROI dashboard for steering committee.</td>
+            <td>Executive Steering Committee</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 12: INTERVIEW QUESTIONNAIRE
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-interview">
+  <div class="page-hero">
+    <div class="hero-tag">Interview Questionnaire</div>
+    <h1>Assessment Interview Guide</h1>
+    <p>A structured question framework for executive, technical, and operational stakeholder interviews — designed to surface evidence-based insights for the assessment.</p>
+  </div>
+
+  <div class="section section-alt">
+
+    <div class="q-section">
+      <div class="q-section-title">
+        <div class="q-section-icon" style="background:#dbeafe;">🎯</div>
+        Executive &amp; Strategic Questions
+      </div>
+      <ul class="q-list">
+        <li><span class="q-num">1</span>What are the top 3 strategic goals for the organization over the next 3 years, and how does operational capability need to change to support them?</li>
+        <li><span class="q-num">2</span>Which services are most critical for revenue growth, and what operational risks currently threaten their delivery?</li>
+        <li><span class="q-num">3</span>What customer experience issues are most visible to leadership, and how are they currently being tracked and reported?</li>
+        <li><span class="q-num">4</span>How are technology investment decisions made, and what is the governance framework for prioritization?</li>
+        <li><span class="q-num">5</span>What does success look like for this transformation in 18 months?</li>
+      </ul>
+    </div>
+
+    <div class="q-section">
+      <div class="q-section-title">
+        <div class="q-section-icon" style="background:#d1fae5;">📡</div>
+        Network Engineering Questions
+      </div>
+      <ul class="q-list">
+        <li><span class="q-num">1</span>What are the top 5 recurring network incidents by frequency and impact over the last 12 months?</li>
+        <li><span class="q-num">2</span>Which parts of the fiber or wireless network have known capacity constraints or are approaching saturation?</li>
+        <li><span class="q-num">3</span>What tools are currently used for monitoring, fault management, and troubleshooting — and are they integrated?</li>
+        <li><span class="q-num">4</span>How is network change management currently governed, and what is the failure or rollback rate?</li>
+        <li><span class="q-num">5</span>What is the current state of network inventory and CMDB accuracy?</li>
+      </ul>
+    </div>
+
+    <div class="q-section">
+      <div class="q-section-title">
+        <div class="q-section-icon" style="background:#ede9fe;">⚙️</div>
+        Operations &amp; Service Management Questions
+      </div>
+      <ul class="q-list">
+        <li><span class="q-num">1</span>How are incidents currently detected, triaged, routed, and resolved — and where are the biggest bottlenecks?</li>
+        <li><span class="q-num">2</span>What percentage of changes fail or require rollback, and what are the most common causes?</li>
+        <li><span class="q-num">3</span>How mature is the CMDB — what percentage of active CIs are accurately documented with current relationships?</li>
+        <li><span class="q-num">4</span>How are SLAs currently tracked, reported, and enforced across service tiers?</li>
+        <li><span class="q-num">5</span>How are problem management and root cause analysis conducted after major incidents?</li>
+      </ul>
+    </div>
+
+    <div class="q-section">
+      <div class="q-section-title">
+        <div class="q-section-icon" style="background:#fef3c7;">🤖</div>
+        Automation &amp; Data Questions
+      </div>
+      <ul class="q-list">
+        <li><span class="q-num">1</span>Which daily or weekly activities are highly repetitive and would be the strongest candidates for automation?</li>
+        <li><span class="q-num">2</span>What structured data is available today that could support AI/ML-driven operations (tickets, telemetry, change records)?</li>
+        <li><span class="q-num">3</span>Are post-change validations automated today, and if not, how are they performed?</li>
+        <li><span class="q-num">4</span>What automation exists today, and what prevented it from being scaled or integrated with ITSM?</li>
+        <li><span class="q-num">5</span>How confident is the team in the quality and completeness of the data needed for AI models?</li>
+      </ul>
+    </div>
+
+    <div class="q-section">
+      <div class="q-section-title">
+        <div class="q-section-icon" style="background:#fce7f3;">🤝</div>
+        Vendor &amp; Governance Questions
+      </div>
+      <ul class="q-list">
+        <li><span class="q-num">1</span>Which vendors support core platforms, and are their SLAs contractually defined and regularly measured?</li>
+        <li><span class="q-num">2</span>How are vendor performance reviews currently conducted, and are they standardized across all vendors?</li>
+        <li><span class="q-num">3</span>What is the current level of vendor lock-in risk for critical network or platform components?</li>
+        <li><span class="q-num">4</span>Are there open API commitments from all strategic vendors — and are they being utilized?</li>
+        <li><span class="q-num">5</span>How are vendor escalations handled, and who has accountability for vendor relationship management?</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script>
+// Tab switching
+const tabs = document.querySelectorAll('.nav-tab');
+const panels = document.querySelectorAll('.tab-panel');
+const tabIds = ['exec','current','arch','opmodel','itsm','obs','data','gov','roadmap','kpis','risks','interview'];
+
+tabs.forEach((tab, i) => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tabIds[i]).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+// Operating model layer toggle
+function toggleLayer(header) {
+  const layer = header.parentElement;
+  layer.classList.toggle('open');
+}
+
+// Animate maturity bars on load and tab switch
+function animateBars() {
+  document.querySelectorAll('.maturity-bar').forEach(bar => {
+    const width = bar.style.width;
+    bar.style.width = '0';
+    setTimeout(() => { bar.style.width = width; }, 100);
+  });
+}
+animateBars();
+
+// Re-animate when current state tab is opened
+tabs[1].addEventListener('click', () => {
+  setTimeout(animateBars, 100);
+});
+</script>
+</body>
+</html>
