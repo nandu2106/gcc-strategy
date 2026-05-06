@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eTOM L1–L4 Process Standards · Telecom Operating Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & ROOT ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --navy:     #0d1f3c;
+  --blue:     #1a4480;
+  --mid:      #2563ab;
+  --accent:   #0ea5e9;
+  --accentLt: #e0f2fe;
+  --white:    #ffffff;
+  --off:      #f7f9fc;
+  --lgray:    #eef2f8;
+  --border:   #dde4ef;
+  --tsec:     #4a5568;
+  --tmut:     #8a97ab;
+  --success:  #059669;
+  --warn:     #d97706;
+  --danger:   #dc2626;
+  --purple:   #7c3aed;
+  --teal:     #0d9488;
+  --fulfilment: #0d9488;
+  --assurance:  #b45309;
+  --billing:    #991b1b;
+  --ops:        #1a4480;
+  --resource:   #1e40af;
+  --supplier:   #4d7c0f;
+  --shadow-sm: 0 1px 4px rgba(13,31,60,0.07);
+  --shadow-md: 0 4px 16px rgba(13,31,60,0.10);
+  --shadow-lg: 0 12px 40px rgba(13,31,60,0.13);
+  --radius:    10px;
+  --radius-lg: 16px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--navy);
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ───────────────────────────────────────────────────── */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(13,31,60,0.06);
+}
+
+.header-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 36px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+
+.brand-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--navy), var(--mid));
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #fff;
+}
+
+.brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; font-weight: 700; color: var(--navy);
+  letter-spacing: 0.01em;
+}
+.brand-sub { font-size: 10.5px; color: var(--tmut); letter-spacing: 0.05em; text-transform: uppercase; }
+
+.header-pill {
+  font-size: 10.5px; font-weight: 600; color: var(--mid);
+  background: var(--accentLt); padding: 4px 14px; border-radius: 20px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+.nav-tabs {
+  display: flex; overflow-x: auto; padding: 0 28px;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+
+.nav-tab {
+  flex-shrink: 0; padding: 10px 15px;
+  font-size: 12.5px; font-weight: 500; color: var(--tsec);
+  cursor: pointer; background: none; border: none;
+  border-bottom: 2.5px solid transparent;
+  transition: all 0.2s; white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-tab:hover { color: var(--mid); }
+.nav-tab.active { color: var(--mid); border-bottom-color: var(--mid); font-weight: 600; }
+
+/* ─── LAYOUT ────────────────────────────────────────────────── */
+.main { margin-top: 94px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ─── PAGE HERO ─────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 55%, #1e5fa0 100%);
+  padding: 56px 64px 48px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -80px; right: -60px;
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10.5px; font-weight: 700; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 14px;
+}
+.hero-tag::before { content:''; display:inline-block; width:18px; height:2px; background:var(--accent); }
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; font-weight: 700; color: #fff;
+  line-height: 1.2; max-width: 660px; margin-bottom: 12px;
+}
+.hero p { font-size: 14.5px; color: rgba(255,255,255,0.7); max-width: 560px; font-weight: 300; }
+
+/* ─── SECTION ───────────────────────────────────────────────── */
+.section { padding: 52px 64px; }
+.section-alt { background: var(--off); }
+.section-blue { background: #f0f5fb; }
+
+.sec-label {
+  font-size: 10.5px; font-weight: 700; color: var(--mid);
+  text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 7px;
+}
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700; color: var(--navy);
+  margin-bottom: 5px; line-height: 1.25;
+}
+.sec-sub { color: var(--tsec); font-size: 14px; margin-bottom: 36px; max-width: 620px; font-weight: 300; }
+
+/* ─── CARDS ─────────────────────────────────────────────────── */
+.grid { display: grid; gap: 18px; }
+.g2 { grid-template-columns: repeat(2, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+
+.card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 26px;
+  box-shadow: var(--shadow-sm); transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+.card-top {
+  height: 5px; margin: -26px -26px 20px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.card h3 { font-size: 14.5px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+.card p { font-size: 13.5px; color: var(--tsec); line-height: 1.55; }
+
+/* ─── LEVEL BLOCKS ───────────────────────────────────────────── */
+.level-block {
+  display: flex; align-items: stretch;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-sm); margin-bottom: 14px;
+  margin-left: 0; transition: box-shadow 0.2s;
+}
+.level-block:hover { box-shadow: var(--shadow-md); }
+.level-block.l2 { margin-left: 32px; }
+.level-block.l3 { margin-left: 64px; }
+.level-block.l4 { margin-left: 96px; }
+
+.level-badge {
+  flex-shrink: 0; width: 70px; display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700;
+  color: #fff; letter-spacing: 0.02em;
+}
+.level-content { padding: 18px 22px; flex: 1; }
+.level-name { font-size: 14.5px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
+.level-desc { font-size: 13px; color: var(--tsec); line-height: 1.5; }
+.level-eg {
+  display: inline-flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+}
+.level-eg-pill {
+  font-size: 11.5px; font-weight: 500; padding: 3px 10px;
+  border-radius: 20px; border: 1.5px solid;
+}
+
+/* ─── L1 DOMAIN CARDS ────────────────────────────────────────── */
+.domain-card {
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-sm); transition: box-shadow 0.2s, transform 0.2s;
+  border: 1px solid var(--border);
+}
+.domain-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.domain-hdr { padding: 16px 20px; color: #fff; }
+.domain-id { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8; margin-bottom: 4px; }
+.domain-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; line-height: 1.2; }
+.domain-body { padding: 16px 20px; background: var(--white); }
+.domain-desc { font-size: 13px; color: var(--tsec); line-height: 1.5; margin-bottom: 12px; }
+.domain-sub { font-size: 11.5px; color: var(--tmut); font-style: italic; }
+
+/* ─── TABLE ──────────────────────────────────────────────────── */
+.tbl-wrap {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-sm); overflow-x: auto;
+}
+.tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tbl th {
+  background: var(--navy); color: #fff;
+  font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.07em; padding: 12px 16px; text-align: left;
+}
+.tbl td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--tsec); vertical-align: top; }
+.tbl tr:nth-child(even) td { background: var(--off); }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl td:first-child { font-weight: 600; color: var(--navy); }
+
+/* ─── PROCESS ROW (L3/L4) ────────────────────────────────────── */
+.proc-group { margin-bottom: 32px; }
+.proc-group-hdr {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-radius: var(--radius) var(--radius) 0 0;
+  margin-bottom: 2px;
+}
+.proc-group-hdr span { font-size: 11px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.1em; }
+
+.proc-row {
+  display: grid; grid-template-columns: 110px 1fr 1fr;
+  gap: 0; border: 1px solid var(--border); border-top: none;
+  background: var(--white); transition: background 0.15s;
+}
+.proc-row:first-of-type { border-top: 1px solid var(--border); }
+.proc-row:hover { background: var(--off); }
+.proc-row.alt { background: var(--off); }
+.proc-row.alt:hover { background: #e8edf5; }
+
+.proc-id {
+  padding: 12px 14px; font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500; border-right: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+.proc-name { padding: 12px 16px; font-weight: 600; font-size: 13.5px; color: var(--navy); border-right: 1px solid var(--border); display: flex; align-items: center; }
+.proc-desc { padding: 12px 16px; font-size: 13px; color: var(--tsec); line-height: 1.5; }
+
+/* ─── L4 ACTIVITY STEPS ──────────────────────────────────────── */
+.activity-list { display: grid; gap: 10px; }
+.activity-item {
+  display: grid; grid-template-columns: 36px 1fr 1fr auto;
+  gap: 0; background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow-sm); align-items: stretch;
+}
+.act-num {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600;
+  color: #fff; flex-shrink: 0;
+}
+.act-name { padding: 12px 14px; font-weight: 600; font-size: 13px; color: var(--navy); border-right: 1px solid var(--border); display: flex; align-items: center; }
+.act-desc { padding: 12px 14px; font-size: 12.5px; color: var(--tsec); line-height: 1.5; border-right: 1px solid var(--border); }
+.act-who { padding: 8px 14px; font-size: 11.5px; color: var(--tmut); display: flex; align-items: center; justify-content: center; min-width: 130px; text-align: center; border-right: 1px solid var(--border); }
+.act-auto {
+  padding: 8px 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; min-width: 90px;
+  flex-shrink: 0;
+}
+.auto-full { background: #d1fae5; color: var(--success); }
+.auto-ai { background: #ede9fe; color: var(--purple); }
+.auto-manual { background: #fee2e2; color: var(--danger); }
+
+/* ─── MATURITY BAR ───────────────────────────────────────────── */
+.maturity-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 20px; background: var(--white);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 10px; box-shadow: var(--shadow-sm);
+}
+.mat-label { flex: 0 0 240px; font-size: 13px; font-weight: 500; color: var(--navy); }
+.mat-bars { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.mat-bar-row { display: flex; align-items: center; gap: 8px; }
+.mat-bar-track { flex: 1; height: 7px; background: var(--lgray); border-radius: 4px; overflow: hidden; }
+.mat-bar-fill { height: 100%; border-radius: 4px; transition: width 1.2s ease; }
+.mat-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; width: 30px; text-align: right; }
+.mat-tag { font-size: 10.5px; font-weight: 700; width: 52px; text-align: right; }
+
+/* ─── FLOW ───────────────────────────────────────────────────── */
+.etom-flow {
+  display: flex; align-items: flex-start;
+  gap: 0; overflow-x: auto; padding: 16px 0 8px;
+}
+.flow-col {
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 120px; flex-shrink: 0;
+}
+.flow-node {
+  background: var(--white); border: 1.5px solid var(--mid);
+  border-radius: var(--radius); padding: 12px 14px;
+  text-align: center; width: 110px;
+  box-shadow: var(--shadow-sm);
+}
+.flow-node .fn-label { font-size: 11px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+.flow-node .fn-id { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--tmut); }
+.flow-arrow { font-size: 18px; color: var(--mid); padding: 0 2px; display: flex; align-items: center; margin-top: 28px; }
+
+/* ─── MAPPING TABLE ──────────────────────────────────────────── */
+.map-row {
+  display: grid; grid-template-columns: 1.8fr 1.5fr 1.5fr 1fr;
+  gap: 0; border: 1px solid var(--border); border-top: none;
+  background: var(--white);
+}
+.map-row:first-child { border-top: 1px solid var(--border); }
+.map-row.alt { background: var(--off); }
+.map-row:hover { background: #e8edf5; }
+.map-cell { padding: 11px 14px; font-size: 13px; border-right: 1px solid var(--border); line-height: 1.4; }
+.map-cell:last-child { border-right: none; }
+.map-hdr { font-size: 10.5px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* ─── ACCORDION ──────────────────────────────────────────────── */
+.accordion { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 12px; }
+.acc-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 22px; cursor: pointer; transition: background 0.15s;
+}
+.acc-head:hover { background: var(--off); }
+.acc-badge { flex-shrink: 0; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; }
+.acc-title { flex: 1; font-size: 14px; font-weight: 600; color: var(--navy); }
+.acc-sub { font-size: 12px; color: var(--tmut); }
+.acc-chevron { width: 22px; height: 22px; background: var(--lgray); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.25s; font-size: 11px; color: var(--tsec); }
+.accordion.open .acc-chevron { transform: rotate(180deg); }
+.acc-body { display: none; padding: 0 22px 18px; border-top: 1px solid var(--border); }
+.accordion.open .acc-body { display: block; }
+.acc-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.acc-tag { background: var(--off); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; font-size: 12.5px; font-weight: 500; color: var(--navy); }
+.acc-body p { font-size: 13.5px; color: var(--tsec); margin-top: 12px; line-height: 1.55; }
+
+/* ─── ROADMAP ────────────────────────────────────────────────── */
+.roadmap-phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.phase-card { border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+.phase-hdr { padding: 18px 18px 14px; }
+.phase-hdr .ph-num { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.85; margin-bottom: 4px; }
+.phase-hdr .ph-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; }
+.phase-hdr .ph-mos { font-size: 11px; color: rgba(255,255,255,0.75); margin-top: 5px; }
+.phase-body { padding: 16px 18px; background: var(--white); }
+.phase-item { display: flex; gap: 8px; margin-bottom: 9px; font-size: 12.5px; color: var(--tsec); line-height: 1.4; }
+.phase-dot { flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; }
+
+/* ─── RECOMMENDATION ─────────────────────────────────────────── */
+.rec-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.rec-card { display: flex; gap: 0; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+.rec-num { flex-shrink: 0; width: 44px; background: var(--navy); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #fff; }
+.rec-content { padding: 16px 18px; }
+.rec-content h4 { font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.rec-content p { font-size: 12.5px; color: var(--tsec); line-height: 1.5; }
+
+/* ─── GLOSSARY ───────────────────────────────────────────────── */
+.gloss-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.gloss-item { display: flex; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.gloss-term { flex-shrink: 0; width: 110px; background: var(--off); padding: 12px 14px; display: flex; align-items: center; font-size: 13px; font-weight: 700; color: var(--navy); border-right: 1px solid var(--border); }
+.gloss-def { padding: 12px 14px; font-size: 12.5px; color: var(--tsec); line-height: 1.5; }
+
+/* ─── TAGS / PILLS ───────────────────────────────────────────── */
+.tag { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1.5px solid; }
+.tag-blue { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+.tag-teal { background: #ccfbf1; color: var(--teal); border-color: #5eead4; }
+.tag-amber { background: #fef3c7; color: var(--warn); border-color: #fcd34d; }
+.tag-purple { background: #ede9fe; color: var(--purple); border-color: #c4b5fd; }
+.tag-green { background: #d1fae5; color: var(--success); border-color: #6ee7b7; }
+.tag-red { background: #fee2e2; color: var(--danger); border-color: #fca5a5; }
+
+/* ─── INFO BOX ───────────────────────────────────────────────── */
+.info-box {
+  background: var(--accentLt); border: 1px solid #bae6fd;
+  border-radius: var(--radius); padding: 14px 18px;
+  font-size: 13.5px; color: #075985; margin-bottom: 24px;
+  display: flex; gap: 10px;
+}
+
+/* ─── DIVIDER ────────────────────────────────────────────────── */
+hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+
+/* ─── AUTOMATION LEGEND ──────────────────────────────────────── */
+.auto-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.auto-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; }
+.auto-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .section { padding: 36px 24px; }
+  .hero { padding: 40px 24px 32px; }
+  .hero h1 { font-size: 26px; }
+  .g3, .g4 { grid-template-columns: 1fr 1fr; }
+  .roadmap-phases { grid-template-columns: 1fr 1fr; }
+  .proc-row { grid-template-columns: 90px 1fr; }
+  .proc-desc { display: none; }
+}
+@media (max-width: 640px) {
+  .g2, .g3, .g4 { grid-template-columns: 1fr; }
+  .roadmap-phases { grid-template-columns: 1fr; }
+  .rec-grid, .gloss-grid { grid-template-columns: 1fr; }
+  .activity-item { grid-template-columns: 30px 1fr; }
+  .act-desc, .act-who, .act-auto { display: none; }
+}
+
+/* ─── ANIMATIONS ─────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tab-panel.active > * { animation: fadeUp 0.4s ease both; }
+.tab-panel.active > *:nth-child(2) { animation-delay: 0.06s; }
+.tab-panel.active > *:nth-child(3) { animation-delay: 0.12s; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon">⬡</div>
+      <div>
+        <div class="brand-name">eTOM Process Standards</div>
+        <div class="brand-sub">TM Forum GB921 · Telecom Operating Model</div>
+      </div>
+    </div>
+    <span class="header-pill">eTOM Release 21</span>
+  </div>
+  <nav class="nav-tabs" id="mainNav">
+    <button class="nav-tab active" data-tab="what">What is eTOM?</button>
+    <button class="nav-tab" data-tab="hierarchy">L1–L4 Hierarchy</button>
+    <button class="nav-tab" data-tab="l1">L1 Process Areas</button>
+    <button class="nav-tab" data-tab="l2">L2 Groupings</button>
+    <button class="nav-tab" data-tab="l3">L3 Processes</button>
+    <button class="nav-tab" data-tab="l4">L4 Activities</button>
+    <button class="nav-tab" data-tab="mapping">eTOM ↔ ITSM</button>
+    <button class="nav-tab" data-tab="opmodel">eTOM ↔ Op Model</button>
+    <button class="nav-tab" data-tab="automation">Automation</button>
+    <button class="nav-tab" data-tab="maturity">Maturity</button>
+    <button class="nav-tab" data-tab="roadmap">Roadmap</button>
+    <button class="nav-tab" data-tab="recs">Recommendations</button>
+    <button class="nav-tab" data-tab="glossary">Glossary</button>
+  </nav>
+</header>
+
+<main class="main">
+
+<!-- ══════════════════════════════════════
+  TAB 1: WHAT IS eTOM
+══════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-what">
+  <div class="hero">
+    <div class="hero-tag">TM Forum Frameworx</div>
+    <h1>What is eTOM?</h1>
+    <p>The Enhanced Telecom Operations Map — the global business process framework for telecommunications service providers, published as TM Forum standard GB921.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="info-box">📘 <span>eTOM is the telecom industry's equivalent of ITIL for enterprise IT. It defines <strong>what</strong> processes a telco needs — not how to implement them.</span></div>
+
+    <div class="sec-label">Definition</div>
+    <div class="sec-title">The Enhanced Telecom Operations Map</div>
+    <div class="sec-sub">A comprehensive, hierarchical map of all business processes a telecommunications service provider must manage — from customer-facing service delivery to back-office network and supplier operations.</div>
+
+    <div class="grid g3">
+      <div class="card">
+        <div class="card-top" style="background:var(--mid)"></div>
+        <h3>📋 Published By</h3>
+        <p>TM Forum (tmforum.org) as standard <strong>GB921</strong>. Current version is eTOM Release 21, aligned with Frameworx 21.5.</p>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background:var(--success)"></div>
+        <h3>🌍 Industry Adoption</h3>
+        <p>Used by <strong>850+ telecom operators</strong> across <strong>180+ countries</strong>. The de facto process standard for global telcos.</p>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background:var(--teal)"></div>
+        <h3>🎯 Purpose</h3>
+        <p>Defines <strong>what</strong> business processes a telco needs — not how to implement them. Provides a common language for process design and improvement.</p>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background:var(--purple)"></div>
+        <h3>🔗 Relation to ITIL</h3>
+        <p>eTOM covers <strong>telecom-specific operations</strong> — network, service, billing, and customer. ITIL covers IT service management. They are complementary, not competing.</p>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background:var(--warn)"></div>
+        <h3>📦 Frameworx Suite</h3>
+        <p>eTOM is part of TM Forum Frameworx — alongside <strong>SID</strong> (data model), <strong>TAM</strong> (application map), and <strong>MPLS</strong> (integration maturity).</p>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background:var(--danger)"></div>
+        <h3>🏗️ This Assessment</h3>
+        <p>Every operating model layer, automation runbook, and ITSM workflow in this transformation <strong>maps to an eTOM process ID</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Three Top-Level Areas</div>
+    <div class="sec-title">eTOM Level 0 — Process Zones</div>
+    <div class="sec-sub">eTOM organises all telecom business processes into three top-level areas at Level 0.</div>
+
+    <div class="grid g3">
+      <div class="card" style="border-top: 4px solid var(--ops);">
+        <h3 style="color:var(--ops);">🔵 Operations</h3>
+        <p>Processes that directly support customers and run day-to-day network and service operations. The <strong>largest area</strong> and primary focus for a broadband and wireless operator.</p>
+        <div style="margin-top:12px;" class="acc-tags">
+          <span class="acc-tag">Fulfillment</span>
+          <span class="acc-tag">Assurance</span>
+          <span class="acc-tag">Billing</span>
+          <span class="acc-tag">Ops Support</span>
+        </div>
+      </div>
+      <div class="card" style="border-top: 4px solid var(--success);">
+        <h3 style="color:var(--success);">🟢 Strategy, Infrastructure & Product</h3>
+        <p>Defines strategy, builds infrastructure, and manages the product portfolio. Sets the direction that Operations executes.</p>
+        <div style="margin-top:12px;" class="acc-tags">
+          <span class="acc-tag">Strategy & Commit</span>
+          <span class="acc-tag">Infrastructure Lifecycle</span>
+          <span class="acc-tag">Product Lifecycle</span>
+        </div>
+      </div>
+      <div class="card" style="border-top: 4px solid var(--purple);">
+        <h3 style="color:var(--purple);">🟣 Enterprise Management</h3>
+        <p>Cross-enterprise support processes including financial management, HR, legal, regulatory compliance, and risk management.</p>
+        <div style="margin-top:12px;" class="acc-tags">
+          <span class="acc-tag">Financial Mgmt</span>
+          <span class="acc-tag">HR</span>
+          <span class="acc-tag">Legal & Regulatory</span>
+          <span class="acc-tag">Risk Mgmt</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 2: L1–L4 HIERARCHY
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-hierarchy">
+  <div class="hero">
+    <div class="hero-tag">eTOM Hierarchy</div>
+    <h1>L1 to L4 — The Process Decomposition Model</h1>
+    <p>How eTOM breaks down from strategic process areas to executable operational tasks, with increasing specificity at each level.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="sec-label">Four Levels of Decomposition</div>
+    <div class="sec-title">From Strategy to Activity</div>
+    <div class="sec-sub">Each level decomposes into the next, creating a complete and traceable process hierarchy from business intent to individual operational steps.</div>
+
+    <div class="level-block l1">
+      <div class="level-badge" style="background:var(--navy);">L1</div>
+      <div class="level-content">
+        <div class="level-name">Process Area</div>
+        <div class="level-desc">The highest-level grouping. Defines major operational domains such as Fulfillment, Assurance, and Billing. Sets the strategic scope of operations. Approximately 6–8 areas within the Operations zone.</div>
+        <div class="level-eg">
+          <span class="level-eg-pill tag-blue">Fulfillment</span>
+          <span class="level-eg-pill tag-blue">Assurance</span>
+          <span class="level-eg-pill tag-blue">Billing</span>
+          <span class="level-eg-pill tag-blue">Ops Support & Readiness</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="level-block l2">
+      <div class="level-badge" style="background:var(--blue);">L2</div>
+      <div class="level-content">
+        <div class="level-name">Process Grouping</div>
+        <div class="level-desc">Breaks L1 areas into functional clusters. Each L2 defines a coherent set of activities that belong together. Approximately 20–30 groupings across all Operations L1 areas. This is where most organisations define team or department boundaries.</div>
+        <div class="level-eg">
+          <span class="level-eg-pill tag-teal">Order Handling</span>
+          <span class="level-eg-pill tag-teal">Problem Handling</span>
+          <span class="level-eg-pill tag-teal">Customer Interface Mgmt</span>
+          <span class="level-eg-pill tag-teal">Billing & Revenue Mgmt</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="level-block l3">
+      <div class="level-badge" style="background:var(--mid);">L3</div>
+      <div class="level-content">
+        <div class="level-name">Process</div>
+        <div class="level-desc">The primary unit of process definition in eTOM. Each L3 process has a clear objective, inputs, outputs, and inter-process dependencies. There are <strong>180+ L3 processes</strong> in the full eTOM framework. This is where ITSM tool workflows are typically mapped.</div>
+        <div class="level-eg">
+          <span class="level-eg-pill tag-amber">Manage Service Problem</span>
+          <span class="level-eg-pill tag-amber">Track & Manage Customer Problem</span>
+          <span class="level-eg-pill tag-amber">Isolate Customer Problem</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="level-block l4">
+      <div class="level-badge" style="background:var(--accent); color: var(--navy);">L4</div>
+      <div class="level-content">
+        <div class="level-name">Process Activity</div>
+        <div class="level-desc">The most granular level — individual activities or tasks within a process. L4 defines the specific steps, decision points, and handoffs. This is where <strong>automation runbooks</strong>, SOPs, and ITSM workflows are written.</div>
+        <div class="level-eg">
+          <span class="level-eg-pill tag-green">Capture problem symptom</span>
+          <span class="level-eg-pill tag-green">Correlate to known defects</span>
+          <span class="level-eg-pill tag-green">Assign to resolver group</span>
+          <span class="level-eg-pill tag-green">Update ticket status</span>
+          <span class="level-eg-pill tag-green">Notify customer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Why This Matters</div>
+    <div class="sec-title">The Power of Process Hierarchy</div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="card-top" style="background:var(--mid)"></div>
+        <h3>🗺️ Common Language</h3>
+        <p>eTOM gives every team — NOC, engineering, IT, management — a shared vocabulary for processes. No more ambiguity about what "Incident Management" includes.</p>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background:var(--success)"></div>
+        <h3>🎯 Automation Targeting</h3>
+        <p>L4 activities are the exact granularity needed to write automation runbooks. Each L4 step maps to a specific automated or manual action in the ITSM or automation platform.</p>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background:var(--warn)"></div>
+        <h3>📊 Maturity Measurement</h3>
+        <p>Scoring process maturity at L2 and L3 level gives leadership a precise picture of where the operational gaps are — far more useful than generic department-level assessments.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 3: L1 PROCESS AREAS
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-l1">
+  <div class="hero">
+    <div class="hero-tag">eTOM L1</div>
+    <h1>Level 1 — Operations Process Areas</h1>
+    <p>The six L1 process areas that govern all telecom operations activities within the Operations zone of eTOM.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="sec-label">Six Domains</div>
+    <div class="sec-title">Operations Zone L1 Areas</div>
+    <div class="sec-sub">This assessment focuses on the Operations zone — the core of day-to-day network and service delivery for a broadband and wireless operator.</div>
+
+    <div class="grid g3">
+      <div class="domain-card">
+        <div class="domain-hdr" style="background:var(--fulfilment);">
+          <div class="domain-id">1.1 · Fulfillment</div>
+          <div class="domain-name">Fulfillment</div>
+        </div>
+        <div class="domain-body">
+          <div class="domain-desc">End-to-end processes for delivering services to customers — from order capture through service activation and customer handoff.</div>
+          <div class="domain-sub">Order Handling · Service Config & Activation · Customer Interface Mgmt · Selling</div>
+        </div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-hdr" style="background:var(--assurance);">
+          <div class="domain-id">1.2 · Assurance</div>
+          <div class="domain-name">Assurance</div>
+        </div>
+        <div class="domain-body">
+          <div class="domain-desc">Monitoring network and service quality, detecting faults, managing problems, and restoring service. The NOC's primary domain.</div>
+          <div class="domain-sub">Service Problem Mgmt · Service Quality Mgmt · Resource Trouble Mgmt · Customer Problem Mgmt</div>
+        </div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-hdr" style="background:var(--billing);">
+          <div class="domain-id">1.3 · Billing</div>
+          <div class="domain-name">Billing</div>
+        </div>
+        <div class="domain-body">
+          <div class="domain-desc">Rating, billing, invoice management, payment collection, and revenue assurance processes supporting revenue realisation.</div>
+          <div class="domain-sub">Customer Billing Mgmt · Billing Events · Collection Mgmt · Revenue Assurance</div>
+        </div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-hdr" style="background:var(--ops);">
+          <div class="domain-id">1.4 · Ops Support & Readiness</div>
+          <div class="domain-name">Ops Support &amp; Readiness</div>
+        </div>
+        <div class="domain-body">
+          <div class="domain-desc">Ensures operational capabilities are ready — workforce management, tools, inventory, and operational planning to support delivery.</div>
+          <div class="domain-sub">Workforce Mgmt · Capacity Mgmt · Logistics Mgmt · Readiness Assessment</div>
+        </div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-hdr" style="background:var(--resource);">
+          <div class="domain-id">1.5 · Resource Mgmt & Ops</div>
+          <div class="domain-name">Resource Mgmt &amp; Operations</div>
+        </div>
+        <div class="domain-body">
+          <div class="domain-desc">Management of the physical and logical network resources — provisioning, activation, performance monitoring, and maintenance.</div>
+          <div class="domain-sub">Resource Provisioning · Trouble Mgmt · Performance Mgmt · Data Mgmt & Reporting</div>
+        </div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-hdr" style="background:var(--supplier);">
+          <div class="domain-id">1.6 · Supplier/Partner</div>
+          <div class="domain-name">Supplier/Partner Relationship Mgmt</div>
+        </div>
+        <div class="domain-body">
+          <div class="domain-desc">Managing the performance, SLAs, and operational integration of suppliers and partners supporting service delivery.</div>
+          <div class="domain-sub">Interface Mgmt · Purchasing Mgmt · Problem Reporting · Performance Mgmt</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 4: L2 GROUPINGS
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-l2">
+  <div class="hero">
+    <div class="hero-tag">eTOM L2</div>
+    <h1>Level 2 — Process Groupings</h1>
+    <p>L2 breaks each L1 area into functional clusters — the level where team boundaries and process ownership are typically defined.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="info-box">💡 <span>Click any L1 area to expand its L2 process groupings. L2 is where most organisations define team boundaries and ownership.</span></div>
+
+    <!-- Fulfillment -->
+    <div class="accordion open" onclick="toggleAcc(this)">
+      <div class="acc-head">
+        <div class="acc-badge" style="background:#ccfbf1;color:var(--fulfilment);">1.1</div>
+        <div style="flex:1">
+          <div class="acc-title">Fulfillment</div>
+          <div class="acc-sub">Order capture through service activation and customer handoff</div>
+        </div>
+        <div class="acc-chevron">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="tbl-wrap" style="margin-top:14px;">
+          <table class="tbl">
+            <thead><tr><th>ID</th><th>L2 Process Grouping</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>1.1.1</td><td>Order Handling</td><td>Captures, validates, tracks, and completes customer and wholesale orders. Orchestrates downstream provisioning activities.</td></tr>
+              <tr><td>1.1.2</td><td>Customer Interface Management</td><td>Manages all customer-facing interactions across channels throughout the fulfillment journey.</td></tr>
+              <tr><td>1.1.3</td><td>Selling</td><td>Manages the sales process from lead generation through opportunity management, quotation, and contract closure.</td></tr>
+              <tr><td>1.1.4</td><td>Service Configuration &amp; Activation</td><td>Configures network and IT systems to deliver the ordered service, then activates and hands off to the customer.</td></tr>
+              <tr><td>1.1.5</td><td>Service Problem Management (Fulfillment)</td><td>Identifies and resolves problems encountered during fulfillment before service acceptance by the customer.</td></tr>
+              <tr><td>1.1.6</td><td>Service Quality Management (Fulfillment)</td><td>Ensures the service being fulfilled meets contracted quality levels prior to customer acceptance.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assurance -->
+    <div class="accordion" onclick="toggleAcc(this)">
+      <div class="acc-head">
+        <div class="acc-badge" style="background:#fef3c7;color:var(--assurance);">1.2</div>
+        <div style="flex:1">
+          <div class="acc-title">Assurance</div>
+          <div class="acc-sub">Fault detection, problem management, and service quality monitoring</div>
+        </div>
+        <div class="acc-chevron">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="tbl-wrap" style="margin-top:14px;">
+          <table class="tbl">
+            <thead><tr><th>ID</th><th>L2 Process Grouping</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>1.2.1</td><td>Customer Problem Management</td><td>End-to-end management of problems reported by customers — logging, tracking, diagnosis, resolution, and communication.</td></tr>
+              <tr><td>1.2.2</td><td>Service Problem Management</td><td>Identifies, tracks, and resolves problems affecting services, including proactive detection from network alarms and telemetry events.</td></tr>
+              <tr><td>1.2.3</td><td>Service Quality Management</td><td>Monitors service performance against SLAs, detects degradation, and initiates corrective actions before customer impact.</td></tr>
+              <tr><td>1.2.4</td><td>Resource Trouble Management</td><td>Manages faults in network infrastructure — physical and logical — including alarm correlation and fault isolation.</td></tr>
+              <tr><td>1.2.5</td><td>Resource Performance Management</td><td>Monitors and optimises network resource utilisation, capacity thresholds, and performance KPIs in real time.</td></tr>
+              <tr><td>1.2.6</td><td>Supplier/Partner Problem Management</td><td>Manages problems that involve third-party suppliers or partners — escalation, tracking, and SLA enforcement.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing -->
+    <div class="accordion" onclick="toggleAcc(this)">
+      <div class="acc-head">
+        <div class="acc-badge" style="background:#fee2e2;color:var(--billing);">1.3</div>
+        <div style="flex:1">
+          <div class="acc-title">Billing</div>
+          <div class="acc-sub">Rating, invoicing, payment collection, and revenue assurance</div>
+        </div>
+        <div class="acc-chevron">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="tbl-wrap" style="margin-top:14px;">
+          <table class="tbl">
+            <thead><tr><th>ID</th><th>L2 Process Grouping</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>1.3.1</td><td>Customer Billing Management</td><td>Produces and delivers accurate invoices based on usage, contracted rates, and charges.</td></tr>
+              <tr><td>1.3.2</td><td>Billing Events Business Interaction</td><td>Captures billable events from network and OSS systems and transforms them into chargeable records.</td></tr>
+              <tr><td>1.3.3</td><td>Collection Management</td><td>Manages payment collection, dunning processes, and debt management across customer accounts.</td></tr>
+              <tr><td>1.3.4</td><td>Revenue Assurance</td><td>Ensures all billable events are captured, rated accurately, and that revenue leakage is minimised.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource -->
+    <div class="accordion" onclick="toggleAcc(this)">
+      <div class="acc-head">
+        <div class="acc-badge" style="background:#e0e7ff;color:var(--resource);">1.5</div>
+        <div style="flex:1">
+          <div class="acc-title">Resource Management &amp; Operations</div>
+          <div class="acc-sub">Network infrastructure provisioning, performance, and inventory management</div>
+        </div>
+        <div class="acc-chevron">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="tbl-wrap" style="margin-top:14px;">
+          <table class="tbl">
+            <thead><tr><th>ID</th><th>L2 Process Grouping</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>1.5.1</td><td>Resource Provisioning</td><td>Configures and activates network resources to support service delivery and changes.</td></tr>
+              <tr><td>1.5.2</td><td>Resource Trouble Management</td><td>Manages faults in network infrastructure including alarm handling, fault isolation, and restoration.</td></tr>
+              <tr><td>1.5.3</td><td>Resource Performance Management</td><td>Monitors resource KPIs, detects degradation, and drives optimisation actions.</td></tr>
+              <tr><td>1.5.4</td><td>Resource Data Management &amp; Reporting</td><td>Maintains accurate resource inventory (CMDB) and produces operational performance reports.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supplier -->
+    <div class="accordion" onclick="toggleAcc(this)">
+      <div class="acc-head">
+        <div class="acc-badge" style="background:#ecfccb;color:var(--supplier);">1.6</div>
+        <div style="flex:1">
+          <div class="acc-title">Supplier/Partner Relationship Management</div>
+          <div class="acc-sub">Vendor SLA governance, procurement, and performance management</div>
+        </div>
+        <div class="acc-chevron">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="tbl-wrap" style="margin-top:14px;">
+          <table class="tbl">
+            <thead><tr><th>ID</th><th>L2 Process Grouping</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>1.6.1</td><td>Supplier/Partner Interface Management</td><td>Manages operational interfaces, escalations, and communications with vendors and partners.</td></tr>
+              <tr><td>1.6.2</td><td>Purchasing Management</td><td>Handles procurement of network equipment, software, and services from the supplier ecosystem.</td></tr>
+              <tr><td>1.6.3</td><td>Supplier/Partner Problem Reporting</td><td>Manages problems raised to or by suppliers, including SLA breach tracking and resolution.</td></tr>
+              <tr><td>1.6.4</td><td>Supplier/Partner Performance Management</td><td>Tracks, measures, and reports on vendor performance against contracted SLAs and obligations.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 5: L3 PROCESSES
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-l3">
+  <div class="hero">
+    <div class="hero-tag">eTOM L3</div>
+    <h1>Level 3 — Process Definitions</h1>
+    <p>The primary unit of process definition in eTOM — 180+ processes with clear objectives, inputs, outputs, and inter-process dependencies.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="sec-label">Key L3 Processes for Telecom Operations</div>
+    <div class="sec-title">Service Problem Management (1.2.2)</div>
+    <div class="sec-sub">The highest-priority L3 process cluster for NOC operations — governs how service faults are detected, managed, and resolved.</div>
+
+    <div class="proc-group">
+      <div class="proc-group-hdr" style="background:var(--assurance);">
+        <span>Assurance · Service Problem Management · 1.2.2</span>
+      </div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--assurance);">1.2.2.1</div><div class="proc-name">Create Service Problem Report</div><div class="proc-desc">Creates a structured problem record when a service fault is detected — from network alarm, customer report, or proactive monitoring event.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--assurance);">1.2.2.2</div><div class="proc-name">Diagnose Service Problem</div><div class="proc-desc">Analyses the problem record to identify root cause — correlating alarms, telemetry, and CMDB data to isolate the fault domain.</div></div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--assurance);">1.2.2.3</div><div class="proc-name">Correct &amp; Resolve Service Problem</div><div class="proc-desc">Executes remediation — configuration changes, traffic rerouting, or field dispatch — to restore the affected service.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--assurance);">1.2.2.4</div><div class="proc-name">Track &amp; Manage Service Problem</div><div class="proc-desc">Maintains the lifecycle of the problem record through all stages, ensuring SLA timers are tracked and escalations triggered when required.</div></div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--assurance);">1.2.2.5</div><div class="proc-name">Report Service Problem</div><div class="proc-desc">Provides structured reporting on service problems — volumes, trends, root cause categories, repeat incidents, and SLA performance.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--assurance);">1.2.2.6</div><div class="proc-name">Close Service Problem Report</div><div class="proc-desc">Confirms restoration, validates with monitoring system, and closes the record with resolution details and knowledge base update.</div></div>
+    </div>
+
+    <hr>
+
+    <div class="sec-title">Order Handling &amp; Service Activation (1.1.1 / 1.1.4)</div>
+    <div class="sec-sub">L3 processes governing the order-to-activate pipeline for broadband and wireless services.</div>
+
+    <div class="proc-group">
+      <div class="proc-group-hdr" style="background:var(--fulfilment);">
+        <span>Fulfillment · Order Handling (1.1.1) + Service Config & Activation (1.1.4)</span>
+      </div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--fulfilment);">1.1.1.1</div><div class="proc-name">Determine Customer Order Feasibility</div><div class="proc-desc">Validates whether the requested service can be delivered at the customer location given available infrastructure and capacity.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--fulfilment);">1.1.1.2</div><div class="proc-name">Track &amp; Manage Customer Order</div><div class="proc-desc">Tracks the order through all fulfillment stages, managing handoffs between OSS, provisioning, and field systems.</div></div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--fulfilment);">1.1.1.3</div><div class="proc-name">Complete Customer Order</div><div class="proc-desc">Confirms all order milestones are met, triggers service acceptance, and closes the order record.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--teal);">1.1.4.1</div><div class="proc-name">Design Service</div><div class="proc-desc">Translates the ordered service into a specific network configuration — IP addressing, VLAN, PON port assignment, etc.</div></div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--teal);">1.1.4.2</div><div class="proc-name">Implement Service</div><div class="proc-desc">Pushes configuration to OSS/BSS and downstream network elements — OLT, CMTS, RAN controller, or router.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--teal);">1.1.4.3</div><div class="proc-name">Test Service End-to-End</div><div class="proc-desc">Executes automated and manual tests to confirm service meets contracted performance levels before customer notification.</div></div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--teal);">1.1.4.4</div><div class="proc-name">Activate Service</div><div class="proc-desc">Marks the service as live in inventory and BSS systems, triggers customer notification, and starts SLA and billing clocks.</div></div>
+    </div>
+
+    <hr>
+
+    <div class="sec-title">Resource Trouble &amp; Performance (1.5.2 / 1.5.3)</div>
+    <div class="proc-group">
+      <div class="proc-group-hdr" style="background:var(--resource);">
+        <span>Resource Management · Resource Trouble (1.5.2) + Resource Performance (1.5.3)</span>
+      </div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--resource);">1.5.2.1</div><div class="proc-name">Survey &amp; Analyse Resource Trouble</div><div class="proc-desc">Detects alarms from network elements, correlates events, and identifies the affected resource scope.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--resource);">1.5.2.2</div><div class="proc-name">Localise Resource Trouble</div><div class="proc-desc">Pinpoints the specific network element, port, or circuit that is the source of the fault — fault isolation.</div></div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--resource);">1.5.2.3</div><div class="proc-name">Correct &amp; Resolve Resource Trouble</div><div class="proc-desc">Applies fix — configuration, reroute, or physical intervention — to restore the affected resource.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--resource);">1.5.2.4</div><div class="proc-name">Track &amp; Manage Resource Trouble</div><div class="proc-desc">Manages the fault record lifecycle, tracks MTTR timer, and coordinates resolver assignment and escalation.</div></div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--teal);">1.5.3.1</div><div class="proc-name">Monitor Resource Performance</div><div class="proc-desc">Continuously collects telemetry — CPU, bandwidth, error rates, latency — from all network elements.</div></div>
+      <div class="proc-row alt"><div class="proc-id" style="color:var(--teal);">1.5.3.2</div><div class="proc-name">Analyse Resource Performance</div><div class="proc-desc">Compares collected data against thresholds, identifies degradation trends, and triggers alerts.</div></div>
+      <div class="proc-row"><div class="proc-id" style="color:var(--teal);">1.5.3.3</div><div class="proc-name">Control Resource Performance</div><div class="proc-desc">Initiates corrective actions such as traffic steering, capacity reallocation, or maintenance flagging.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 6: L4 ACTIVITIES
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-l4">
+  <div class="hero">
+    <div class="hero-tag">eTOM L4</div>
+    <h1>Level 4 — Process Activity Breakdown</h1>
+    <p>The most granular level — individual activities, decision points, and handoffs where automation runbooks and SOPs are written.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="auto-legend">
+      <div class="auto-legend-item"><div class="auto-dot" style="background:#d1fae5;border:1px solid var(--success);"></div><span style="color:var(--success);">Full Automation</span></div>
+      <div class="auto-legend-item"><div class="auto-dot" style="background:#ede9fe;border:1px solid var(--purple);"></div><span style="color:var(--purple);">AI-Assisted</span></div>
+      <div class="auto-legend-item"><div class="auto-dot" style="background:#fee2e2;border:1px solid var(--danger);"></div><span style="color:var(--danger);">Manual</span></div>
+    </div>
+
+    <div class="sec-label">Assurance · 1.2.2.2</div>
+    <div class="sec-title">Diagnose Service Problem — 8 L4 Activities</div>
+    <div class="sec-sub">The activity sequence that replaces manual NOC diagnosis with AI-assisted, automated investigation.</div>
+
+    <div class="activity-list" style="margin-bottom:40px;">
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--assurance);">01</div>
+        <div class="act-name">Receive Problem Record</div>
+        <div class="act-desc">L4 activity begins when a problem record is assigned to the diagnostics workflow — auto-created from alarm or manually raised.</div>
+        <div class="act-who">Automation Engine / NOC L1</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--assurance);">02</div>
+        <div class="act-name">Correlate Alarms to Services</div>
+        <div class="act-desc">Cross-references active alarms against service inventory to identify which services are impacted by the fault.</div>
+        <div class="act-who">Observability Platform</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--assurance);">03</div>
+        <div class="act-name">Retrieve CMDB Configuration Data</div>
+        <div class="act-desc">Fetches current configuration state of affected CIs — topology, upstream dependencies, last change record.</div>
+        <div class="act-who">CMDB / Inventory System</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--assurance);">04</div>
+        <div class="act-name">Run Automated Diagnostic Tests</div>
+        <div class="act-desc">Executes pre-defined diagnostic runbooks — ping, traceroute, OLT ONT diagnostics, spectrum analysis — against affected elements.</div>
+        <div class="act-who">Automation Engine</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--assurance);">05</div>
+        <div class="act-name">Correlate to Known Issues</div>
+        <div class="act-desc">Checks the problem knowledge base and open problem records for known defects matching the current symptom profile.</div>
+        <div class="act-who">ITSM Knowledge Base</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--purple);">06</div>
+        <div class="act-name">Generate Root Cause Recommendation</div>
+        <div class="act-desc">AI/ML model produces a ranked list of probable root causes with confidence scores, presented to the resolver for review.</div>
+        <div class="act-who">AI/ML Engine</div>
+        <div class="act-auto auto-ai">AI-Assisted</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--danger);">07</div>
+        <div class="act-name">Confirm Root Cause (Human Validation)</div>
+        <div class="act-desc">Resolver validates or overrides the AI recommendation. If confirmed, the diagnosis is locked and remediation is initiated.</div>
+        <div class="act-who">NOC L2 Engineer</div>
+        <div class="act-auto auto-manual">Manual</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--assurance);">08</div>
+        <div class="act-name">Update Problem Record with Diagnosis</div>
+        <div class="act-desc">Updates the ITSM ticket with confirmed root cause, affected CIs, diagnostic data, and escalation path if required.</div>
+        <div class="act-who">ITSM Platform</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+    </div>
+
+    <div class="sec-label">Fulfillment · 1.1.4.2 / 1.1.4.4</div>
+    <div class="sec-title">Implement &amp; Activate Service — 8 L4 Activities</div>
+    <div class="sec-sub">The fully automated provisioning pipeline targeting 1-day service activation for broadband and wireless.</div>
+
+    <div class="activity-list">
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--fulfilment);">01</div>
+        <div class="act-name">Retrieve Order Parameters</div>
+        <div class="act-desc">Extracts service parameters from the validated order — type, bandwidth tier, SLA class, customer ID, location.</div>
+        <div class="act-who">BSS / Order Management</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--fulfilment);">02</div>
+        <div class="act-name">Reserve Network Resources</div>
+        <div class="act-desc">Locks required network resources in inventory — PON port, IP block, VLAN, frequency band — to prevent conflicting allocation.</div>
+        <div class="act-who">Network Inventory / CMDB</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--fulfilment);">03</div>
+        <div class="act-name">Generate Device Configuration</div>
+        <div class="act-desc">Renders the device configuration from templates — OLT, ONU, router, RAN controller — using IaC tooling (Jinja2/Ansible).</div>
+        <div class="act-who">Automation Engine (IaC)</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--fulfilment);">04</div>
+        <div class="act-name">Push Configuration to Network</div>
+        <div class="act-desc">Deploys generated configuration to target network elements via NETCONF, RESTCONF, CLI, or vendor API.</div>
+        <div class="act-who">Automation Engine</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--fulfilment);">05</div>
+        <div class="act-name">Verify Configuration Applied</div>
+        <div class="act-desc">Reads back the running configuration from the device to confirm the pushed config matches the intended state.</div>
+        <div class="act-who">Automation Engine</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--fulfilment);">06</div>
+        <div class="act-name">Run End-to-End Service Test</div>
+        <div class="act-desc">Executes automated service tests — throughput, latency, loss, customer ping — confirming service meets contracted SLA parameters.</div>
+        <div class="act-who">Test Automation Platform</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--fulfilment);">07</div>
+        <div class="act-name">Update Inventory &amp; CMDB</div>
+        <div class="act-desc">Records the new service and its CI relationships in the live inventory and CMDB — links customer, service, device, and port.</div>
+        <div class="act-who">CMDB / Inventory System</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+      <div class="activity-item">
+        <div class="act-num" style="background:var(--fulfilment);">08</div>
+        <div class="act-name">Trigger Customer Notification &amp; Billing</div>
+        <div class="act-desc">Sends activation confirmation to customer, starts billing clock in BSS, and creates the SLA monitoring subscription.</div>
+        <div class="act-who">BSS / CRM / ITSM</div>
+        <div class="act-auto auto-full">Full</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 7: eTOM ↔ ITSM MAPPING
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-mapping">
+  <div class="hero">
+    <div class="hero-tag">eTOM ↔ ITSM</div>
+    <h1>eTOM Process to ITSM Practice Alignment</h1>
+    <p>How eTOM L2/L3 processes map to ITIL v4 practices, operational tooling, and shared KPIs across the transformation program.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="sec-label">Cross-Reference</div>
+    <div class="sec-title">Process Mapping Table</div>
+    <div class="sec-sub">Every eTOM process used in this transformation is mapped to its corresponding ITIL v4 practice, tooling platform, and shared KPI.</div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>eTOM Process (L2/L3)</th>
+            <th>ITIL v4 Practice</th>
+            <th>Tooling</th>
+            <th>Shared KPI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Service Problem Mgmt (1.2.2)</td><td>Incident Management</td><td>ITSM + Observability</td><td>MTTR · SLA Breach %</td></tr>
+          <tr><td>Resource Trouble Mgmt (1.5.2)</td><td>Incident Management</td><td>Observability + CMDB</td><td>MTTD · Fault Rate</td></tr>
+          <tr><td>Customer Problem Mgmt (1.2.1)</td><td>Incident + Service Request</td><td>ITSM + CRM</td><td>CSAT · Repeat Incidents</td></tr>
+          <tr><td>Service Quality Mgmt (1.2.3)</td><td>Availability Management</td><td>Observability + SLA Engine</td><td>SLA Compliance %</td></tr>
+          <tr><td>Resource Performance Mgmt (1.5.3)</td><td>Capacity Management</td><td>Observability + AI/ML</td><td>Utilisation · Forecast Accuracy</td></tr>
+          <tr><td>Order Handling (1.1.1)</td><td>Service Request Management</td><td>BSS + ITSM + Automation</td><td>Provisioning Lead Time</td></tr>
+          <tr><td>Service Config &amp; Activation (1.1.4)</td><td>Change Enablement</td><td>ITSM + Automation Engine</td><td>Change Success Rate</td></tr>
+          <tr><td>Resource Data Mgmt / CMDB (1.5.4)</td><td>Configuration Management</td><td>CMDB + Discovery Tool</td><td>CMDB Accuracy %</td></tr>
+          <tr><td>Supplier Problem Mgmt (1.6.3)</td><td>Problem Management</td><td>ITSM + Vendor Portal</td><td>Vendor SLA Breach %</td></tr>
+          <tr><td>Supplier Performance Mgmt (1.6.4)</td><td>Supplier Management</td><td>Governance Platform</td><td>Vendor Performance Score</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 8: eTOM ↔ OPERATING MODEL
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-opmodel">
+  <div class="hero">
+    <div class="hero-tag">eTOM ↔ Operating Model</div>
+    <h1>eTOM Mapped to the 7-Layer Operating Model</h1>
+    <p>How eTOM L1 and L2 process areas align to each layer of the future telecom operating model framework.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="sec-label">Cross-Layer Alignment</div>
+    <div class="sec-title">Layer-by-Layer Process Mapping</div>
+    <div class="sec-sub">Every layer of the operating model has corresponding eTOM process areas that govern its activities.</div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:grid;grid-template-columns:70px 200px 1fr;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);">
+        <div style="background:#95959a;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;">L7</div>
+        <div style="padding:14px 16px;border-right:1px solid var(--border);font-weight:600;font-size:13.5px;color:var(--navy);display:flex;align-items:center;">Continuous Improvement</div>
+        <div style="padding:14px 16px;font-size:13px;color:var(--tsec);display:flex;align-items:center;">Assurance SQM (1.2.3) · Resource Performance Mgmt (1.5.3) · Supplier Performance Mgmt (1.6.4)</div>
+      </div>
+      <div style="display:grid;grid-template-columns:70px 200px 1fr;background:#d1fae5;border:1px solid #6ee7b7;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);">
+        <div style="background:var(--success);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;">L6</div>
+        <div style="padding:14px 16px;border-right:1px solid #6ee7b7;font-weight:600;font-size:13.5px;color:var(--navy);display:flex;align-items:center;">Governance Layer</div>
+        <div style="padding:14px 16px;font-size:13px;color:var(--tsec);display:flex;align-items:center;">Change Enablement across all L1 areas · CAB within Service Config (1.1.4) · Risk governance (Enterprise Mgmt)</div>
+      </div>
+      <div style="display:grid;grid-template-columns:70px 200px 1fr;background:#ede9fe;border:1px solid #c4b5fd;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);">
+        <div style="background:var(--purple);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;">L5</div>
+        <div style="padding:14px 16px;border-right:1px solid #c4b5fd;font-weight:600;font-size:13.5px;color:var(--navy);display:flex;align-items:center;">Automation Layer</div>
+        <div style="padding:14px 16px;font-size:13px;color:var(--tsec);display:flex;align-items:center;">L4 automated activities across Service Problem (1.2.2), Service Activation (1.1.4), Resource Trouble (1.5.2)</div>
+      </div>
+      <div style="display:grid;grid-template-columns:70px 200px 1fr;background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);">
+        <div style="background:var(--warn);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;">L4</div>
+        <div style="padding:14px 16px;border-right:1px solid #fcd34d;font-weight:600;font-size:13.5px;color:var(--navy);display:flex;align-items:center;">Platform &amp; Tooling</div>
+        <div style="padding:14px 16px;font-size:13px;color:var(--tsec);display:flex;align-items:center;">Resource Data Mgmt (1.5.4) · CMDB · Ops Support &amp; Readiness (1.4) · All L3 system-to-system interfaces</div>
+      </div>
+      <div style="display:grid;grid-template-columns:70px 200px 1fr;background:#fee2e2;border:1px solid #fca5a5;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);">
+        <div style="background:var(--danger);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;">L3</div>
+        <div style="padding:14px 16px;border-right:1px solid #fca5a5;font-weight:600;font-size:13.5px;color:var(--navy);display:flex;align-items:center;">Operations Layer</div>
+        <div style="padding:14px 16px;font-size:13px;color:var(--tsec);display:flex;align-items:center;">Fulfillment (1.1) · Assurance (1.2) · Billing (1.3) · Resource Mgmt &amp; Ops (1.5) — ALL L2 and L3 processes</div>
+      </div>
+      <div style="display:grid;grid-template-columns:70px 200px 1fr;background:var(--accentLt);border:1px solid #93c5fd;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);">
+        <div style="background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;">L2</div>
+        <div style="padding:14px 16px;border-right:1px solid #93c5fd;font-weight:600;font-size:13.5px;color:var(--navy);display:flex;align-items:center;">Service Model Layer</div>
+        <div style="padding:14px 16px;font-size:13px;color:var(--tsec);display:flex;align-items:center;">Customer Interface Mgmt (1.1.2) · Service Quality Mgmt (1.2.3) · Billing Mgmt (1.3.1) · SLA definitions across all L1s</div>
+      </div>
+      <div style="display:grid;grid-template-columns:70px 200px 1fr;background:#dbeafe;border:1px solid #93c5fd;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);">
+        <div style="background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;">L1</div>
+        <div style="padding:14px 16px;border-right:1px solid #93c5fd;font-weight:600;font-size:13.5px;color:var(--navy);display:flex;align-items:center;">Business Intent Layer</div>
+        <div style="padding:14px 16px;font-size:13px;color:var(--tsec);display:flex;align-items:center;">Strategy, Infrastructure &amp; Product (SIP) area — Strategy &amp; Commit, Product Lifecycle, Market Strategy</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 9: AUTOMATION OPPORTUNITIES
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-automation">
+  <div class="hero">
+    <div class="hero-tag">eTOM L4 Automation</div>
+    <h1>Automation Opportunities at L4</h1>
+    <p>The highest-value L4 automation targets across Fulfillment and Assurance — from manual effort today to automated future state.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="auto-legend" style="margin-bottom:24px;">
+      <div class="auto-legend-item"><div class="auto-dot" style="background:#fee2e2;border:1px solid var(--danger);"></div><span style="color:var(--danger);font-size:12.5px;">High Effort</span></div>
+      <div class="auto-legend-item"><div class="auto-dot" style="background:#fef3c7;border:1px solid var(--warn);"></div><span style="color:var(--warn);font-size:12.5px;">Medium Effort</span></div>
+      <div class="auto-legend-item"><div class="auto-dot" style="background:#d1fae5;border:1px solid var(--success);"></div><span style="color:var(--success);font-size:12.5px;">Low Effort</span></div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Domain</th>
+            <th>L4 Activity</th>
+            <th>Current State</th>
+            <th>Future State</th>
+            <th>Effort</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tag tag-amber" style="font-size:11px;">Assurance</span></td><td>Correlate Alarms to Services</td><td style="color:var(--danger);">Manual in NMS dashboards</td><td style="color:var(--success);">Auto-correlation in observability platform</td><td><span class="tag tag-green" style="font-size:11px;">Low</span></td><td><span class="tag tag-blue" style="font-size:11px;">High</span></td></tr>
+          <tr><td><span class="tag tag-amber" style="font-size:11px;">Assurance</span></td><td>Generate Root Cause Recommendation</td><td style="color:var(--danger);">Engineer analysis (30–60 min)</td><td style="color:var(--success);">AI/ML model — top-3 RCA in &lt;2 min</td><td><span class="tag tag-red" style="font-size:11px;">High</span></td><td><span class="tag tag-blue" style="font-size:11px;">High</span></td></tr>
+          <tr><td><span class="tag tag-amber" style="font-size:11px;">Assurance</span></td><td>Run Automated Diagnostic Tests</td><td style="color:var(--danger);">Manual CLI checks by NOC L2</td><td style="color:var(--success);">Pre-defined runbook — auto-triggered</td><td><span class="tag tag-amber" style="font-size:11px;">Med</span></td><td><span class="tag tag-blue" style="font-size:11px;">High</span></td></tr>
+          <tr><td><span class="tag tag-amber" style="font-size:11px;">Assurance</span></td><td>Update Problem Record</td><td style="color:var(--danger);">Manual ticket updates by engineer</td><td style="color:var(--success);">Auto-enrichment from observability events</td><td><span class="tag tag-green" style="font-size:11px;">Low</span></td><td><span class="tag tag-amber" style="font-size:11px;">Med</span></td></tr>
+          <tr><td><span class="tag tag-amber" style="font-size:11px;">Assurance</span></td><td>Close Service Problem Report</td><td style="color:var(--danger);">Manual closure by resolver</td><td style="color:var(--success);">Auto-closure after restoration confirmed</td><td><span class="tag tag-green" style="font-size:11px;">Low</span></td><td><span class="tag tag-amber" style="font-size:11px;">Med</span></td></tr>
+          <tr><td><span class="tag tag-teal" style="font-size:11px;">Fulfillment</span></td><td>Generate Device Configuration</td><td style="color:var(--danger);">Manual template-fill (2–4 hrs)</td><td style="color:var(--success);">IaC/Jinja2 auto-render in seconds</td><td><span class="tag tag-amber" style="font-size:11px;">Med</span></td><td><span class="tag tag-blue" style="font-size:11px;">High</span></td></tr>
+          <tr><td><span class="tag tag-teal" style="font-size:11px;">Fulfillment</span></td><td>Push Configuration to Network</td><td style="color:var(--danger);">Manual CLI push by engineer</td><td style="color:var(--success);">Ansible auto-push via NETCONF/API</td><td><span class="tag tag-amber" style="font-size:11px;">Med</span></td><td><span class="tag tag-blue" style="font-size:11px;">High</span></td></tr>
+          <tr><td><span class="tag tag-teal" style="font-size:11px;">Fulfillment</span></td><td>Run End-to-End Service Test</td><td style="color:var(--danger);">Manual test sheet (1–2 hrs)</td><td style="color:var(--success);">Automated test suite post-activation</td><td><span class="tag tag-amber" style="font-size:11px;">Med</span></td><td><span class="tag tag-blue" style="font-size:11px;">High</span></td></tr>
+          <tr><td><span class="tag tag-teal" style="font-size:11px;">Fulfillment</span></td><td>Update Inventory &amp; CMDB</td><td style="color:var(--danger);">Manual CMDB ticket after activation</td><td style="color:var(--success);">Auto-CMDB update on provisioning complete</td><td><span class="tag tag-green" style="font-size:11px;">Low</span></td><td><span class="tag tag-blue" style="font-size:11px;">High</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 10: MATURITY
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-maturity">
+  <div class="hero">
+    <div class="hero-tag">eTOM Maturity</div>
+    <h1>eTOM Process Maturity Assessment</h1>
+    <p>Current versus target maturity scores for key L3 processes — the gap that the transformation program is designed to close.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="sec-label">Maturity Scale: 1 = Ad Hoc · 2 = Developing · 3 = Defined · 4 = Managed · 5 = Optimised</div>
+    <div class="sec-title">Current vs Target State by L3 Process</div>
+    <div class="sec-sub">Scored against a 5-point maturity framework. Red bars = current. Green bars = target.</div>
+
+    <div id="maturityRows"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 11: ROADMAP
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-roadmap">
+  <div class="hero">
+    <div class="hero-tag">eTOM Implementation Roadmap</div>
+    <h1>eTOM Process Implementation Roadmap</h1>
+    <p>Phased approach to implementing eTOM L1–L4 processes aligned to the 18-month transformation program.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="sec-label">Four Phases · 18 Months</div>
+    <div class="sec-title">Phased eTOM Implementation Plan</div>
+    <div class="sec-sub">Each phase builds on the previous, moving from process discovery through full L4 automation and continuous improvement.</div>
+
+    <div class="roadmap-phases">
+      <div class="phase-card">
+        <div class="phase-hdr" style="background:var(--danger);">
+          <div class="ph-num">Phase 1</div>
+          <div class="ph-name">Baseline &amp; Process Inventory</div>
+          <div class="ph-mos">Months 1–3</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-item"><div class="phase-dot" style="background:var(--danger);"></div>Map current operations to eTOM L1 and L2 process areas</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--danger);"></div>Identify which L3 processes exist and which are missing</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--danger);"></div>Score each L2/L3 process on current maturity (1–5)</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--danger);"></div>Identify L4 automation candidates in Assurance and Fulfillment</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--danger);"></div>Define process ownership RACI across all L1 areas</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--danger);"></div>Establish eTOM-aligned documentation standards</div>
+        </div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-hdr" style="background:var(--warn);">
+          <div class="ph-num">Phase 2</div>
+          <div class="ph-name">Process Design &amp; ITSM Alignment</div>
+          <div class="ph-mos">Months 4–8</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-item"><div class="phase-dot" style="background:var(--warn);"></div>Design future-state L3 processes for Service Problem Mgmt (1.2.2)</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--warn);"></div>Redesign Order Handling (1.1.1) for automated provisioning</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--warn);"></div>Align ITSM tool workflows to mapped L3 processes</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--warn);"></div>Define L4 activity SOPs and runbook specifications</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--warn);"></div>Integrate eTOM process IDs into ITSM ticket classification</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--warn);"></div>Train NOC and operations teams on eTOM-aligned processes</div>
+        </div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-hdr" style="background:var(--mid);">
+          <div class="ph-num">Phase 3</div>
+          <div class="ph-name">L4 Automation &amp; Integration</div>
+          <div class="ph-mos">Months 9–14</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-item"><div class="phase-dot" style="background:var(--mid);"></div>Automate high-value L4 activities in Service Problem Mgmt</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--mid);"></div>Deploy automated Service Configuration &amp; Activation (1.1.4)</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--mid);"></div>Implement closed-loop Resource Trouble Management (1.5.2)</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--mid);"></div>Integrate observability events to eTOM L3 process triggers</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--mid);"></div>Automate CMDB updates (Resource Data Mgmt 1.5.4)</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--mid);"></div>Launch supplier SLA monitoring (Supplier Performance 1.6.4)</div>
+        </div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-hdr" style="background:var(--success);">
+          <div class="ph-num">Phase 4</div>
+          <div class="ph-name">Optimise &amp; Continuously Improve</div>
+          <div class="ph-mos">Months 15–18</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-item"><div class="phase-dot" style="background:var(--success);"></div>AI-assisted L4 diagnosis across all Assurance L3 processes</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--success);"></div>Predictive Resource Performance Management (1.5.3)</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--success);"></div>Dynamic SLA management across Service Quality Mgmt (1.2.3)</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--success);"></div>Measure eTOM process maturity at each L3 level quarterly</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--success);"></div>Implement eTOM-aligned KPI reporting to Steering Committee</div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--success);"></div>Achieve target maturity scores across all mapped processes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 12: RECOMMENDATIONS
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-recs">
+  <div class="hero">
+    <div class="hero-tag">Recommendations</div>
+    <h1>Key Recommendations for eTOM Adoption</h1>
+    <p>Eight priority actions to embed eTOM into the future operating model and maximise the value of the transformation program.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="rec-grid">
+      <div class="rec-card"><div class="rec-num">1</div><div class="rec-content"><h4>Adopt eTOM as the Process Standard</h4><p>Define eTOM L1–L4 as the mandatory process taxonomy for all telecom operations. All ITSM workflows, SOPs, and runbooks must reference eTOM process IDs.</p></div></div>
+      <div class="rec-card"><div class="rec-num">2</div><div class="rec-content"><h4>Map Current Processes to eTOM First</h4><p>Before redesigning any process, map what exists today to the eTOM hierarchy. This reveals gaps and prevents reinventing processes that eTOM already defines.</p></div></div>
+      <div class="rec-card"><div class="rec-num">3</div><div class="rec-content"><h4>Prioritise Assurance L3 Processes</h4><p>Service Problem Management (1.2.2) and Resource Trouble Management (1.5.2) deliver the highest MTTR and MTTD improvements. Design these first.</p></div></div>
+      <div class="rec-card"><div class="rec-num">4</div><div class="rec-content"><h4>Target L4 Automation in Fulfillment</h4><p>The highest ROI L4 automation is in Service Configuration and Activation (1.1.4) — auto-config generation and auto-CMDB update can reduce provisioning time by 80%.</p></div></div>
+      <div class="rec-card"><div class="rec-num">5</div><div class="rec-content"><h4>Integrate eTOM IDs into ITSM</h4><p>Tag every ITSM ticket, workflow, and SLA with its corresponding eTOM L3 process ID. This enables process-level performance reporting and benchmarking.</p></div></div>
+      <div class="rec-card"><div class="rec-num">6</div><div class="rec-content"><h4>Use eTOM for CMDB Relationship Design</h4><p>The Resource Data Management process (1.5.4) defines what data the CMDB must hold. Use it as the specification for the CMDB remediation sprint in Phase 2.</p></div></div>
+      <div class="rec-card"><div class="rec-num">7</div><div class="rec-content"><h4>Align Vendor Contracts to eTOM SLAs</h4><p>Reference eTOM process areas in vendor SLA contracts — particularly Supplier Problem Reporting (1.6.3) — to create standardised accountability and measurement.</p></div></div>
+      <div class="rec-card"><div class="rec-num">8</div><div class="rec-content"><h4>Score and Report eTOM Maturity Quarterly</h4><p>Establish a quarterly eTOM maturity review at L2 and L3 level, reported to the Service Operations Board and Steering Committee as part of the KPI dashboard.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  TAB 13: GLOSSARY
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-glossary">
+  <div class="hero">
+    <div class="hero-tag">Reference</div>
+    <h1>eTOM Quick Reference Glossary</h1>
+    <p>Key terms and concepts for working with the eTOM framework and TM Forum Frameworx standards.</p>
+  </div>
+
+  <div class="section section-alt">
+    <div class="gloss-grid">
+      <div class="gloss-item"><div class="gloss-term">eTOM</div><div class="gloss-def">Enhanced Telecom Operations Map. TM Forum's business process framework (GB921) defining all telecom business processes in a hierarchical structure.</div></div>
+      <div class="gloss-item"><div class="gloss-term">TM Forum</div><div class="gloss-def">The global industry association for digital transformation in communications and media. Publisher of eTOM, SID, and TAM standards.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Frameworx</div><div class="gloss-def">TM Forum's integrated suite of standards — eTOM (processes), SID (data model), TAM (application architecture), and MPLS (integration maturity).</div></div>
+      <div class="gloss-item"><div class="gloss-term">GB921</div><div class="gloss-def">The TM Forum document reference number for the eTOM specification. "GB" stands for Guideline Book, the TM Forum's published standard series.</div></div>
+      <div class="gloss-item"><div class="gloss-term">L1 Area</div><div class="gloss-def">The highest-level grouping in eTOM. Examples: Fulfillment, Assurance, Billing. Defines strategic operational domains within the Operations zone.</div></div>
+      <div class="gloss-item"><div class="gloss-term">L2 Grouping</div><div class="gloss-def">Functional cluster within an L1 area. Examples: Order Handling, Service Problem Management. Typically aligns with team or department boundaries.</div></div>
+      <div class="gloss-item"><div class="gloss-term">L3 Process</div><div class="gloss-def">The primary unit of process definition. Has a specific objective, inputs, outputs, and inter-process dependencies. 180+ processes in the full eTOM.</div></div>
+      <div class="gloss-item"><div class="gloss-term">L4 Activity</div><div class="gloss-def">The most granular level — individual steps, decision points, and handoffs within an L3 process. Where automation runbooks and SOPs are defined.</div></div>
+      <div class="gloss-item"><div class="gloss-term">OSS</div><div class="gloss-def">Operations Support System. IT systems supporting network management, provisioning, and assurance. Maps to eTOM Resource Management processes.</div></div>
+      <div class="gloss-item"><div class="gloss-term">BSS</div><div class="gloss-def">Business Support System. IT systems supporting billing, ordering, and customer management. Maps to eTOM Fulfillment and Billing processes.</div></div>
+      <div class="gloss-item"><div class="gloss-term">SID</div><div class="gloss-def">Shared Information and Data Model. TM Forum's companion standard to eTOM defining the data model for all telecom business entities and relationships.</div></div>
+      <div class="gloss-item"><div class="gloss-term">TAM</div><div class="gloss-def">Telecom Application Map. TM Forum standard mapping applications to eTOM process areas — equivalent to the tool mapping in this assessment.</div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ─── TAB SWITCHING ─────────────────────────────────────────────
+const tabs = document.querySelectorAll('.nav-tab');
+const panels = document.querySelectorAll('.tab-panel');
+const tabIds = ['what','hierarchy','l1','l2','l3','l4','mapping','opmodel','automation','maturity','roadmap','recs','glossary'];
+
+tabs.forEach((tab, i) => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tabIds[i]).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (tabIds[i] === 'maturity') buildMaturity();
+  });
+});
+
+// ─── ACCORDION ─────────────────────────────────────────────────
+function toggleAcc(el) {
+  el.classList.toggle('open');
+}
+
+// ─── MATURITY BARS ─────────────────────────────────────────────
+const matData = [
+  ["Service Problem Mgmt (1.2.2)",       1.5, 4.5, "var(--assurance)"],
+  ["Customer Problem Mgmt (1.2.1)",       2.0, 4.0, "var(--assurance)"],
+  ["Service Quality Mgmt (1.2.3)",        1.8, 4.5, "var(--assurance)"],
+  ["Resource Trouble Mgmt (1.5.2)",       2.0, 4.5, "var(--resource)"],
+  ["Resource Performance Mgmt (1.5.3)",   1.5, 4.5, "var(--resource)"],
+  ["Order Handling (1.1.1)",              2.5, 4.5, "var(--fulfilment)"],
+  ["Service Config & Activation (1.1.4)", 2.0, 5.0, "var(--fulfilment)"],
+  ["Resource Data Mgmt / CMDB (1.5.4)",   1.5, 4.5, "var(--resource)"],
+  ["Ops Support & Readiness (1.4)",       2.2, 4.0, "var(--ops)"],
+  ["Supplier Performance Mgmt (1.6.4)",   1.8, 4.0, "var(--supplier)"],
+];
+
+let matBuilt = false;
+function buildMaturity() {
+  if (matBuilt) return;
+  matBuilt = true;
+  const container = document.getElementById('maturityRows');
+  matData.forEach(([name, curr, tgt, color]) => {
+    const div = document.createElement('div');
+    div.className = 'maturity-row';
+    div.innerHTML = `
+      <div class="mat-label">${name}</div>
+      <div class="mat-bars">
+        <div class="mat-bar-row">
+          <span style="font-size:10.5px;font-weight:600;color:var(--danger);width:54px;">Current</span>
+          <div class="mat-bar-track"><div class="mat-bar-fill" style="width:0%;background:var(--danger);" data-w="${(curr/5)*100}"></div></div>
+          <span class="mat-val" style="color:var(--danger);">${curr.toFixed(1)}</span>
+        </div>
+        <div class="mat-bar-row">
+          <span style="font-size:10.5px;font-weight:600;color:var(--success);width:54px;">Target</span>
+          <div class="mat-bar-track"><div class="mat-bar-fill" style="width:0%;background:var(--success);" data-w="${(tgt/5)*100}"></div></div>
+          <span class="mat-val" style="color:var(--success);">${tgt.toFixed(1)}</span>
+        </div>
+      </div>
+      <div style="flex:0 0 36px;width:36px;height:36px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff;">
+        +${(tgt-curr).toFixed(1)}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  setTimeout(() => {
+    document.querySelectorAll('.mat-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.w + '%';
+    });
+  }, 100);
+}
+</script>
+</body>
+</html>
