@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARRISE Studio IT Leadership Plan | Day 1 to 30 Days</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --card2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent2: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #334155;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #020617 0%, #0f172a 45%, #111827 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 48px 24px 32px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.22), transparent 45%);
+    }
+
+    header h1 {
+      font-size: 42px;
+      margin: 0 0 12px;
+      letter-spacing: -1px;
+    }
+
+    header p {
+      max-width: 920px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .badge-row {
+      margin-top: 22px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.75);
+      padding: 8px 13px;
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 14px 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+    }
+
+    .tab-button {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 11px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-button:hover,
+    .tab-button.active {
+      background: var(--accent);
+      color: #06121f;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.86);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .span-12 { grid-column: span 12; }
+    .span-8 { grid-column: span 8; }
+    .span-6 { grid-column: span 6; }
+    .span-4 { grid-column: span 4; }
+
+    h2 {
+      margin-top: 0;
+      color: var(--white);
+      font-size: 28px;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      color: var(--white);
+      font-size: 20px;
+    }
+
+    h4 {
+      margin: 16px 0 6px;
+      color: var(--accent);
+      font-size: 16px;
+    }
+
+    p {
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    ul, ol {
+      padding-left: 22px;
+      color: var(--text);
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .highlight {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .green {
+      color: var(--accent2);
+      font-weight: bold;
+    }
+
+    .orange {
+      color: var(--warning);
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background: #1e293b;
+      color: var(--white);
+    }
+
+    td {
+      color: var(--text);
+      background: rgba(15, 23, 42, 0.55);
+    }
+
+    .note-box {
+      background: rgba(56, 189, 248, 0.1);
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+      color: var(--text);
+    }
+
+    .success-box {
+      background: rgba(34, 197, 94, 0.1);
+      border-left: 4px solid var(--accent2);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+      color: var(--text);
+    }
+
+    .warning-box {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 4px solid var(--warning);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+      color: var(--text);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      resize: vertical;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #020617;
+      color: var(--text);
+      padding: 14px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
+      margin-top: 36px;
+    }
+
+    .print-button {
+      margin-top: 18px;
+      border: none;
+      background: var(--accent2);
+      color: #04120a;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    @media (max-width: 900px) {
+      header h1 { font-size: 30px; }
+      .span-8, .span-6, .span-4 { grid-column: span 12; }
+      .tabs { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ARRISE Studio IT Leadership Plan</h1>
+    <p>Day 1, First 2 Weeks, and First 30 Days plan for establishing trust, understanding the business, stabilizing operations, and building a clear execution roadmap with CTO Ankit.</p>
+    <div class="badge-row">
+      <span class="badge">Role: Head of Studio IT</span>
+      <span class="badge">Focus: Stability + Scale + Ownership</span>
+      <span class="badge">Audience: CTO / Leadership</span>
+      <span class="badge">Prepared by: Nanda Karri</span>
+    </div>
+    <button class="print-button" onclick="window.print()">Print / Save as PDF</button>
+  </header>
+
+  <main class="container">
+    <nav class="tabs">
+      <button class="tab-button active" onclick="openTab(event, 'overview')">Overview</button>
+      <button class="tab-button" onclick="openTab(event, 'day1')">Day 1</button>
+      <button class="tab-button" onclick="openTab(event, 'twoweeks')">First 2 Weeks</button>
+      <button class="tab-button" onclick="openTab(event, 'thirtydays')">First 30 Days</button>
+      <button class="tab-button" onclick="openTab(event, 'cto')">CTO Discussion</button>
+      <button class="tab-button" onclick="openTab(event, 'risk')">Risks & Controls</button>
+      <button class="tab-button" onclick="openTab(event, 'notes')">My Notes</button>
+    </nav>
+
+    <section id="overview" class="tab-content active">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>Executive Intent</h2>
+          <p>This plan is designed to show that I am entering ARRISE with a clear leadership mindset: listen first, understand the business, stabilize operations, build trusted relationships, and then drive structured improvements.</p>
+          <div class="note-box">
+            <strong>Leadership message:</strong> My first 30 days will be focused on understanding business-critical studio operations, building stakeholder trust, identifying operational risks, and creating a practical roadmap that improves reliability, ownership, and execution maturity.
+          </div>
+        </div>
+
+        <div class="card span-4">
+          <h3>Day 1 Theme</h3>
+          <p class="highlight">Listen, align, and understand expectations.</p>
+          <ul>
+            <li>Meet CTO and immediate stakeholders</li>
+            <li>Understand top priorities</li>
+            <li>Clarify success expectations</li>
+            <li>Set communication rhythm</li>
+          </ul>
+        </div>
+
+        <div class="card span-4">
+          <h3>First 2 Weeks Theme</h3>
+          <p class="highlight">Discover current state and operational reality.</p>
+          <ul>
+            <li>Understand people, process, tools, and vendors</li>
+            <li>Review incidents and recurring problems</li>
+            <li>Map business-critical services</li>
+            <li>Identify quick wins and risk areas</li>
+          </ul>
+        </div>
+
+        <div class="card span-4">
+          <h3>First 30 Days Theme</h3>
+          <p class="highlight">Create operating model and improvement roadmap.</p>
+          <ul>
+            <li>Define priorities</li>
+            <li>Improve visibility and governance</li>
+            <li>Build 30/60/90 day execution view</li>
+            <li>Present findings to CTO</li>
+          </ul>
+        </div>
+
+        <div class="card span-12">
+          <h3>Guiding Principles</h3>
+          <table>
+            <tr>
+              <th>Principle</th>
+              <th>Meaning</th>
+              <th>How I Will Apply It</th>
+            </tr>
+            <tr>
+              <td>Business First</td>
+              <td>Technology should support studio uptime, business continuity, and productivity.</td>
+              <td>Start with business-critical services, not just IT tools.</td>
+            </tr>
+            <tr>
+              <td>Stability Before Change</td>
+              <td>Avoid unnecessary disruption in the first few weeks.</td>
+              <td>Observe, understand, and validate before changing processes.</td>
+            </tr>
+            <tr>
+              <td>Visibility Creates Control</td>
+              <td>Strong dashboards, incident data, asset data, and ownership clarity reduce surprises.</td>
+              <td>Review monitoring, ticketing, escalation, and reporting maturity.</td>
+            </tr>
+            <tr>
+              <td>People + Process + Technology</td>
+              <td>Most operational problems are not only technical; they are also ownership and process issues.</td>
+              <td>Assess team structure, RACI, escalation paths, vendor dependencies, and tooling.</td>
+            </tr>
+            <tr>
+              <td>Earn Trust Early</td>
+              <td>Senior leaders must create confidence with calm execution.</td>
+              <td>Communicate clearly, listen deeply, and deliver small visible wins.</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="day1" class="tab-content">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>Day 1 Plan</h2>
+          <p>The first day should be calm, structured, and relationship-focused. The goal is to understand expectations, show maturity, and create early confidence with CTO Ankit and key stakeholders.</p>
+        </div>
+
+        <div class="card span-6">
+          <h3>1. Opening Positioning</h3>
+          <p>Use this as the tone for the first conversation with CTO Ankit.</p>
+          <div class="note-box">
+            “Ankit, I am excited to be here. My first priority is to understand the business, the studio operating model, the critical technology dependencies, and your expectations from this function. I want to listen first, understand the current state, and then build a practical roadmap that improves stability, visibility, and execution.”
+          </div>
+        </div>
+
+        <div class="card span-6">
+          <h3>2. Day 1 Outcomes</h3>
+          <ul>
+            <li>Understand CTO’s top 3 expectations.</li>
+            <li>Understand immediate business priorities and pressure points.</li>
+            <li>Identify critical stakeholders to meet in the first 2 weeks.</li>
+            <li>Understand studio IT scope, team structure, and current operating rhythm.</li>
+            <li>Agree on communication cadence with CTO.</li>
+          </ul>
+        </div>
+
+        <div class="card span-12">
+          <h3>Day 1 Meeting Checklist</h3>
+          <table>
+            <tr>
+              <th>Meeting / Activity</th>
+              <th>Purpose</th>
+              <th>Questions to Ask</th>
+              <th>Output</th>
+            </tr>
+            <tr>
+              <td>CTO 1:1</td>
+              <td>Understand expectations, priorities, and success definition.</td>
+              <td>What are the top 3 outcomes expected from me in the next 90 days?</td>
+              <td>Leadership expectation notes.</td>
+            </tr>
+            <tr>
+              <td>Manager / Buddy / HR</td>
+              <td>Understand onboarding, policies, systems, and access process.</td>
+              <td>What are the key systems and processes I need access to?</td>
+              <td>Access and onboarding checklist.</td>
+            </tr>
+            <tr>
+              <td>Immediate Team Introduction</td>
+              <td>Build trust and reduce anxiety.</td>
+              <td>What is working well today? What needs leadership attention?</td>
+              <td>Initial team sentiment.</td>
+            </tr>
+            <tr>
+              <td>Operations Overview</td>
+              <td>Understand service coverage and daily operational rhythm.</td>
+              <td>What are the most critical systems, tools, and escalation paths?</td>
+              <td>Initial current-state map.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card span-6">
+          <h3>Day 1 Do's</h3>
+          <ul>
+            <li>Listen more than you speak.</li>
+            <li>Ask business-oriented questions.</li>
+            <li>Take notes seriously.</li>
+            <li>Show calmness and ownership.</li>
+            <li>Respect existing team efforts.</li>
+            <li>Ask where leadership support is required.</li>
+          </ul>
+        </div>
+
+        <div class="card span-6">
+          <h3>Day 1 Avoid</h3>
+          <ul>
+            <li>Do not criticize existing systems immediately.</li>
+            <li>Do not promise transformation without understanding reality.</li>
+            <li>Do not go too deep into technical tools unless asked.</li>
+            <li>Do not sound like only an operations manager or only a network engineer.</li>
+            <li>Do not push AI, automation, or modernization before understanding pain points.</li>
+          </ul>
+        </div>
+
+        <div class="card span-12">
+          <h3>End of Day 1 Message to CTO</h3>
+          <div class="success-box">
+            “Ankit, thank you for the time today. I have captured the key priorities and will spend the next two weeks understanding the current operating model, critical services, team structure, incident patterns, vendor dependencies, and stakeholder expectations. I will then come back with a clear current-state summary, quick wins, risks, and a practical 30/60/90 day roadmap.”
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="twoweeks" class="tab-content">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>First 2 Weeks Plan</h2>
+          <p>The first two weeks should be used for structured discovery. The goal is to understand the business, people, process, technology, risk areas, and operational maturity before making major changes.</p>
+        </div>
+
+        <div class="card span-6">
+          <h3>Week 1: Relationship + Discovery</h3>
+          <ul>
+            <li>Meet direct team members individually.</li>
+            <li>Meet key business stakeholders and studio operations leaders.</li>
+            <li>Understand current studio IT scope and responsibilities.</li>
+            <li>Review org structure, shift coverage, and support model.</li>
+            <li>Review critical services and business-impacting dependencies.</li>
+            <li>Understand current incident management and escalation process.</li>
+            <li>Identify immediate risks or open escalations.</li>
+          </ul>
+        </div>
+
+        <div class="card span-6">
+          <h3>Week 2: Operational Deep Dive</h3>
+          <ul>
+            <li>Review top recurring incidents from the last 3–6 months.</li>
+            <li>Review service desk data, SLA performance, and ticket aging.</li>
+            <li>Review monitoring tools and alerting quality.</li>
+            <li>Understand asset lifecycle, endpoint readiness, and access management.</li>
+            <li>Review network, connectivity, AV, studio floor, and critical infrastructure touchpoints.</li>
+            <li>Map vendor dependencies and contract pain points.</li>
+            <li>Identify quick wins, medium-term improvements, and strategic gaps.</li>
+          </ul>
+        </div>
+
+        <div class="card span-12">
+          <h3>Discovery Framework</h3>
+          <table>
+            <tr>
+              <th>Area</th>
+              <th>What to Understand</th>
+              <th>Evidence to Collect</th>
+              <th>Expected Output</th>
+            </tr>
+            <tr>
+              <td>Business Operations</td>
+              <td>How studio operations depend on IT services.</td>
+              <td>Critical business process list, peak hours, downtime impact.</td>
+              <td>Business dependency map.</td>
+            </tr>
+            <tr>
+              <td>People</td>
+              <td>Team capability, ownership, shifts, morale, skill gaps.</td>
+              <td>Org chart, roles, responsibilities, coverage model.</td>
+              <td>People and capability assessment.</td>
+            </tr>
+            <tr>
+              <td>Process</td>
+              <td>Incident, change, problem, request, and escalation processes.</td>
+              <td>ITSM reports, SLA data, escalation history.</td>
+              <td>Process maturity view.</td>
+            </tr>
+            <tr>
+              <td>Technology</td>
+              <td>Network, endpoints, AV, identity, monitoring, collaboration, studio-specific tools.</td>
+              <td>Architecture diagrams, inventory, monitoring dashboards.</td>
+              <td>Technology current-state map.</td>
+            </tr>
+            <tr>
+              <td>Vendors</td>
+              <td>Third-party support, SLAs, contracts, recurring delays.</td>
+              <td>Vendor list, contract terms, escalation logs.</td>
+              <td>Vendor dependency and risk view.</td>
+            </tr>
+            <tr>
+              <td>Risk</td>
+              <td>Single points of failure, weak controls, unclear ownership, recurring outages.</td>
+              <td>Incident RCA, risk register, audit findings.</td>
+              <td>Initial risk register.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card span-12">
+          <h3>First 2 Weeks Deliverables</h3>
+          <ul>
+            <li><strong>Stakeholder map:</strong> CTO, business leaders, studio operations, HR, finance, procurement, security, vendors, global IT teams.</li>
+            <li><strong>Current-state summary:</strong> People, process, technology, tools, and vendor model.</li>
+            <li><strong>Critical service map:</strong> Services that directly impact studio uptime and business continuity.</li>
+            <li><strong>Incident pattern review:</strong> Top recurring issues and high-severity incidents.</li>
+            <li><strong>Quick wins list:</strong> Low-risk improvements that can be delivered quickly.</li>
+            <li><strong>Initial risk register:</strong> Key operational, technical, and ownership risks.</li>
+            <li><strong>Leadership update:</strong> Short summary to CTO on findings and proposed next steps.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="thirtydays" class="tab-content">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>First 30 Days Plan</h2>
+          <p>By the end of 30 days, the goal is to move from discovery to structured execution. This does not mean changing everything immediately. It means creating clarity, priorities, governance, and a practical roadmap.</p>
+        </div>
+
+        <div class="card span-6">
+          <h3>30-Day Leadership Outcomes</h3>
+          <ul>
+            <li>Clear understanding of studio IT operating model.</li>
+            <li>Documented stakeholder expectations.</li>
+            <li>Initial operating rhythm with team and leadership.</li>
+            <li>Top risks and recurring issues identified.</li>
+            <li>Quick wins executed or in progress.</li>
+            <li>30/60/90 day roadmap prepared.</li>
+            <li>Early trust built with CTO, team, and business stakeholders.</li>
+          </ul>
+        </div>
+
+        <div class="card span-6">
+          <h3>30-Day Focus Areas</h3>
+          <ul>
+            <li><span class="green">Operational Stability:</span> Incident reduction, escalation clarity, monitoring review.</li>
+            <li><span class="green">Service Visibility:</span> Dashboards, SLA reports, business-impact view.</li>
+            <li><span class="green">Ownership Clarity:</span> RACI, team roles, vendor accountability.</li>
+            <li><span class="green">Risk Reduction:</span> Single points of failure, repeat incidents, weak controls.</li>
+            <li><span class="green">Stakeholder Confidence:</span> Clear communication and predictable updates.</li>
+          </ul>
+        </div>
+
+        <div class="card span-12">
+          <h3>30-Day Roadmap Structure</h3>
+          <table>
+            <tr>
+              <th>Phase</th>
+              <th>Timeline</th>
+              <th>Focus</th>
+              <th>Expected Output</th>
+            </tr>
+            <tr>
+              <td>Stabilize</td>
+              <td>Days 1–10</td>
+              <td>Understand critical services, open risks, team structure, and urgent issues.</td>
+              <td>Current-state notes and priority list.</td>
+            </tr>
+            <tr>
+              <td>Diagnose</td>
+              <td>Days 11–20</td>
+              <td>Analyze incidents, tools, escalation, service ownership, and vendor gaps.</td>
+              <td>Operational maturity assessment.</td>
+            </tr>
+            <tr>
+              <td>Structure</td>
+              <td>Days 21–30</td>
+              <td>Create governance rhythm, risk register, quick wins, and execution roadmap.</td>
+              <td>30/60/90 day plan for CTO review.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card span-12">
+          <h3>Proposed 30/60/90 Day View</h3>
+          <table>
+            <tr>
+              <th>Timeline</th>
+              <th>Goal</th>
+              <th>Key Actions</th>
+              <th>Success Indicator</th>
+            </tr>
+            <tr>
+              <td>First 30 Days</td>
+              <td>Understand and stabilize.</td>
+              <td>Discovery, stakeholder mapping, current-state review, incident analysis, risk register, quick wins.</td>
+              <td>CTO has clear visibility of current state and priorities.</td>
+            </tr>
+            <tr>
+              <td>Days 31–60</td>
+              <td>Improve control and predictability.</td>
+              <td>Strengthen governance, dashboards, SLA reviews, RACI, vendor reviews, incident/problem management.</td>
+              <td>Better operational visibility and reduced ambiguity.</td>
+            </tr>
+            <tr>
+              <td>Days 61–90</td>
+              <td>Scale and modernize.</td>
+              <td>Drive automation, monitoring improvements, standardization, service maturity, documentation, and strategic initiatives.</td>
+              <td>Structured transformation roadmap with measurable outcomes.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card span-12">
+          <h3>30-Day CTO Review Format</h3>
+          <ol>
+            <li>What I understood about the business and studio operating model.</li>
+            <li>What is working well today.</li>
+            <li>Top operational risks and recurring pain points.</li>
+            <li>Quick wins completed or initiated.</li>
+            <li>Areas needing leadership attention or investment.</li>
+            <li>Proposed 60-day execution priorities.</li>
+            <li>Support needed from CTO or leadership.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="cto" class="tab-content">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>CTO Discussion Guide</h2>
+          <p>These questions are designed to make the conversation strategic, mature, and business-aligned. The goal is to understand CTO Ankit’s expectations and align your plan to his priorities.</p>
+        </div>
+
+        <div class="card span-6">
+          <h3>Questions to Ask CTO Ankit</h3>
+          <ul>
+            <li>What are the top 3 outcomes you expect from me in the first 90 days?</li>
+            <li>Where do you currently see the biggest operational pain?</li>
+            <li>What does success look like for this role after 6 months?</li>
+            <li>Which business stakeholders should I prioritize meeting first?</li>
+            <li>Are there any ongoing escalations or sensitive areas I should understand immediately?</li>
+            <li>What level of reporting or communication rhythm would you prefer from me?</li>
+            <li>Where do you want me to challenge the current way of working?</li>
+            <li>What should I preserve, and what should I improve?</li>
+          </ul>
+        </div>
+
+        <div class="card span-6">
+          <h3>What You Should Communicate</h3>
+          <ul>
+            <li>I will listen first before changing anything.</li>
+            <li>I will focus on business-critical services and operational stability.</li>
+            <li>I will build visibility around incidents, risks, vendors, and ownership.</li>
+            <li>I will create a practical roadmap, not a theoretical transformation plan.</li>
+            <li>I will keep leadership informed with concise, structured updates.</li>
+            <li>I will work with the existing team respectfully and build confidence.</li>
+          </ul>
+        </div>
+
+        <div class="card span-12">
+          <h3>Suggested CTO Conversation Script</h3>
+          <div class="note-box">
+            “Ankit, my approach for the first 30 days is simple. I want to understand the business context, studio criticality, current operating model, team structure, incident patterns, vendor dependencies, and risk areas. I do not want to make assumptions too early. Once I have enough visibility, I will come back with a current-state view, quick wins, key risks, and a 30/60/90 day execution roadmap.”
+          </div>
+          <div class="success-box">
+            “My goal is to reduce operational surprises, strengthen ownership, improve visibility, and make sure Studio IT becomes a trusted, predictable, and business-aligned function.”
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="risk" class="tab-content">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>Risks, Controls, and Early Focus Areas</h2>
+          <p>This section helps capture potential issues that may exist in any business-critical studio IT environment. These should be validated through discovery, not assumed.</p>
+        </div>
+
+        <div class="card span-12">
+          <h3>Initial Risk Register Template</h3>
+          <table>
+            <tr>
+              <th>Risk Area</th>
+              <th>Possible Risk</th>
+              <th>Impact</th>
+              <th>First 30-Day Action</th>
+            </tr>
+            <tr>
+              <td>Service Availability</td>
+              <td>Critical systems may have weak redundancy or unclear ownership.</td>
+              <td>Studio downtime, business interruption, customer impact.</td>
+              <td>Map critical services, support owners, and escalation paths.</td>
+            </tr>
+            <tr>
+              <td>Incident Management</td>
+              <td>Recurring issues may not have strong RCA or problem management.</td>
+              <td>Repeat incidents and leadership frustration.</td>
+              <td>Review top incidents and create recurring issue tracker.</td>
+            </tr>
+            <tr>
+              <td>Monitoring</td>
+              <td>Alerts may be noisy, missing, or not business-impact aligned.</td>
+              <td>Delayed detection and reactive operations.</td>
+              <td>Review monitoring coverage and alert quality.</td>
+            </tr>
+            <tr>
+              <td>Vendor Dependency</td>
+              <td>External vendors may delay resolution or lack accountability.</td>
+              <td>SLA misses and operational delays.</td>
+              <td>Create vendor dependency matrix and escalation path.</td>
+            </tr>
+            <tr>
+              <td>Access & Identity</td>
+              <td>Access provisioning or privileged access may lack strong governance.</td>
+              <td>Security and compliance exposure.</td>
+              <td>Review access process, approval flow, and audit controls.</td>
+            </tr>
+            <tr>
+              <td>Asset Lifecycle</td>
+              <td>Weak endpoint, peripheral, or studio equipment tracking.</td>
+              <td>Support delays, cost leakage, poor user experience.</td>
+              <td>Review inventory accuracy and lifecycle process.</td>
+            </tr>
+            <tr>
+              <td>Change Management</td>
+              <td>Changes may not be risk-assessed properly for studio operations.</td>
+              <td>Unplanned downtime or business disruption.</td>
+              <td>Review change process and blackout windows.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card span-6">
+          <h3>Potential Quick Wins</h3>
+          <ul>
+            <li>Create daily or weekly operational health dashboard.</li>
+            <li>Define top 10 critical services and owners.</li>
+            <li>Review high-aging tickets and unblock them.</li>
+            <li>Create simple escalation matrix.</li>
+            <li>Document recurring incidents and assign owners.</li>
+            <li>Improve shift handover quality.</li>
+            <li>Introduce weekly vendor review for open critical items.</li>
+            <li>Improve communication templates for outages and incidents.</li>
+          </ul>
+        </div>
+
+        <div class="card span-6">
+          <h3>Early Metrics to Review</h3>
+          <ul>
+            <li>Number of P1/P2 incidents.</li>
+            <li>Mean Time to Detect.</li>
+            <li>Mean Time to Restore.</li>
+            <li>Repeat incident count.</li>
+            <li>SLA breach rate.</li>
+            <li>Ticket backlog and aging.</li>
+            <li>Change success rate.</li>
+            <li>Vendor SLA performance.</li>
+            <li>Endpoint readiness and asset accuracy.</li>
+            <li>User satisfaction or business stakeholder feedback.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="notes" class="tab-content">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>My Notes</h2>
+          <p>Use this section to capture points before or after discussions. These notes are saved in your browser local storage.</p>
+          <div class="warning-box">
+            Note: These notes save only in the same browser/device. If you host this on GitHub Pages, local notes will remain browser-specific.
+          </div>
+        </div>
+
+        <div class="card span-6">
+          <h3>CTO Expectations</h3>
+          <textarea id="note1" placeholder="Capture what Ankit expects from you..."></textarea>
+        </div>
+
+        <div class="card span-6">
+          <h3>Key Stakeholders</h3>
+          <textarea id="note2" placeholder="Capture names, functions, influence, and priorities..."></textarea>
+        </div>
+
+        <div class="card span-6">
+          <h3>Operational Risks</h3>
+          <textarea id="note3" placeholder="Capture risks, recurring incidents, gaps, and dependencies..."></textarea>
+        </div>
+
+        <div class="card span-6">
+          <h3>Quick Wins</h3>
+          <textarea id="note4" placeholder="Capture low-risk improvements you can initiate early..."></textarea>
+        </div>
+
+        <div class="card span-12">
+          <h3>30/60/90 Day Roadmap Notes</h3>
+          <textarea id="note5" placeholder="Capture your draft roadmap here..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>ARRISE Studio IT Leadership Plan | Day 1 to First 30 Days | Prepared for leadership alignment and GitHub hosting</p>
+    </div>
+  </main>
+
+  <script>
+    function openTab(event, tabName) {
+      const contents = document.querySelectorAll('.tab-content');
+      const buttons = document.querySelectorAll('.tab-button');
+      contents.forEach(content => content.classList.remove('active'));
+      buttons.forEach(button => button.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    const noteIds = ['note1', 'note2', 'note3', 'note4', 'note5'];
+
+    noteIds.forEach(id => {
+      const box = document.getElementById(id);
+      const saved = localStorage.getItem(id);
+      if (saved) box.value = saved;
+      box.addEventListener('input', () => {
+        localStorage.setItem(id, box.value);
+      });
+    });
+  </script>
+</body>
+</html>
