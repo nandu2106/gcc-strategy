@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise AI Rationalization & Scale Strategy</title>
+  
+  <!-- Modern clean typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Modern Dark Palette & Global Resets */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #090a0f 0%, #111422 100%);
+      --card-bg: rgba(22, 25, 41, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-tertiary: #6b7280;
+      
+      --accent-indigo: #6366f1;
+      --accent-indigo-glow: rgba(99, 102, 241, 0.15);
+      --accent-violet: #8b5cf6;
+      --accent-fuchsia: #d946ef;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      
+      --transition-speed: 0.4s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-col: column;
+      flex-direction: column;
+    }
+
+    /* Layout Structure */
+    header {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(9, 10, 15, 0.5);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, var(--accent-indigo) 0%, var(--accent-violet) 100%);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 18px;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+      background: linear-gradient(to right, #ffffff, #d1d5db);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .doc-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      border-left: 1px solid var(--card-border);
+      padding-left: 12px;
+      margin-left: 12px;
+    }
+
+    .slide-counter {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+    }
+
+    /* Presentation Area */
+    .deck-container {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 40px;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      max-width: 1200px;
+      height: 100%;
+      max-height: 650px;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.98) translateY(10px);
+      transition: opacity var(--transition-speed) ease, 
+                  transform var(--transition-speed) ease, 
+                  visibility var(--transition-speed);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+      z-index: 2;
+    }
+
+    /* Typography / Visual Blocks */
+    .slide-title {
+      font-size: 38px;
+      font-weight: 800;
+      margin-bottom: 24px;
+      background: linear-gradient(to right, #ffffff, #9ca3af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .slide-title::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 38px;
+      border-radius: 4px;
+      background: linear-gradient(to bottom, var(--accent-indigo), var(--accent-fuchsia));
+    }
+
+    .slide-body {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 35px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    /* Grid layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    /* Reusable Components */
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.05);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+    }
+
+    .card-title svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .accent-text-indigo { color: var(--accent-indigo); }
+    .accent-text-violet { color: var(--accent-violet); }
+    .accent-text-emerald { color: var(--accent-emerald); }
+    .accent-text-rose { color: var(--accent-rose); }
+    .accent-text-amber { color: var(--accent-amber); }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      border-bottom: 2px solid var(--card-border);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Key-Value Summary Blocks */
+    .metric-value {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    /* Bullet List Formatting */
+    ul.bullet-list {
+      list-style-type: none;
+    }
+
+    ul.bullet-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    ul.bullet-list li strong {
+      color: #fff;
+    }
+
+    ul.bullet-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: 2px;
+      color: var(--accent-indigo);
+      font-weight: bold;
+    }
+
+    ul.bullet-list.bullet-rose li::before {
+      content: '⚡';
+      color: var(--accent-rose);
+    }
+
+    ul.bullet-list.bullet-circle li::before {
+      content: '•';
+      font-size: 20px;
+      left: 4px;
+      top: -2px;
+      color: var(--accent-violet);
+    }
+
+    /* Bottom Control Bar */
+    footer {
+      padding: 15px 40px;
+      border-top: 1px solid var(--card-border);
+      background: rgba(9, 10, 15, 0.6);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 10;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, var(--accent-indigo), var(--accent-fuchsia));
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .meta-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    select.slide-select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    select.slide-select option {
+      background: #111422;
+      color: var(--text-primary);
+    }
+
+    .toggle-notes-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-primary);
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-notes-btn.active {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: var(--accent-violet);
+    }
+
+    .keyboard-shortcuts {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* Presenter Notes Section */
+    .presenter-notes-drawer {
+      height: 0;
+      background: #0b0c13;
+      border-top: 0 solid var(--card-border);
+      color: var(--text-secondary);
+      overflow-y: auto;
+      transition: height 0.3s ease, border-width 0.3s ease, padding 0.3s ease;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .presenter-notes-drawer.open {
+      height: 120px;
+      border-width: 1px;
+      padding: 15px 40px;
+    }
+
+    .presenter-notes-title {
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 5px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Interactive Slide specific styling */
+
+    /* Slide 1 - Title slide special styling */
+    .slide-cover {
+      align-items: center;
+      text-align: center;
+    }
+
+    .cover-title {
+      font-size: 48px;
+      font-weight: 900;
+      margin-bottom: 15px;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #d8b4fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover-subtitle {
+      font-size: 20px;
+      color: var(--text-secondary);
+      margin-bottom: 45px;
+      font-weight: 400;
+    }
+
+    .ask-box {
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      background: rgba(139, 92, 246, 0.05);
+      border-radius: 12px;
+      padding: 20px 30px;
+      max-width: 600px;
+      text-align: left;
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
+    }
+
+    .ask-title {
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-violet);
+      margin-bottom: 8px;
+    }
+
+    .ask-text {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #fff;
+    }
+
+    /* Slide 3 - Interactive Funnel / Funnel graph */
+    .funnel-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 15px 0;
+    }
+
+    .funnel-row {
+      display: flex;
+      align-items: center;
+      height: 38px;
+    }
+
+    .funnel-label {
+      width: 180px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .funnel-bar-outer {
+      flex: 1;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      position: relative;
+    }
+
+    .funnel-bar-inner {
+      height: 100%;
+      background: linear-gradient(to right, var(--accent-indigo), var(--accent-violet));
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      padding-left: 15px;
+      font-weight: 600;
+      font-size: 13px;
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .funnel-pct {
+      margin-left: 15px;
+      width: 60px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    /* Slide 5 - Learning Equation representation */
+    .equation-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed var(--card-border);
+      border-radius: 12px;
+      padding: 30px;
+      margin-top: 15px;
+    }
+
+    .eq-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 15px 25px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .eq-op {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-secondary);
+    }
+
+    /* Slide 9 - Cost Calculator specific CSS */
+    .calculator-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 30px;
+    }
+
+    .calc-sliders {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .slider-val {
+      font-weight: 700;
+      color: var(--accent-indigo);
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-indigo);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+      transition: transform 0.1s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .calc-results {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .calc-row:last-child {
+      border-bottom: none;
+    }
+
+    .calc-lbl {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .calc-val {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .calc-val.saving {
+      color: var(--accent-emerald);
+      font-size: 20px;
+    }
+
+    .calc-val.cost {
+      color: var(--accent-rose);
+    }
+
+    .calc-chart-svg {
+      width: 100%;
+      height: 120px;
+      margin-top: 15px;
+    }
+
+    /* Slide 10 - Operating Model CSS */
+    .model-hierarchy {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .node {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 20px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: #fff;
+      min-width: 180px;
+      position: relative;
+    }
+
+    .node::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      width: 1px;
+      height: 15px;
+      background: var(--card-border);
+    }
+
+    .node.leaf::after {
+      display: none;
+    }
+
+    .node-row-parent {
+      display: flex;
+      gap: 20px;
+      position: relative;
+    }
+
+    .node-row-parent::before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: 90px;
+      right: 90px;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    .node.highlight-node {
+      border-color: var(--accent-indigo);
+      background: rgba(99, 102, 241, 0.05);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+    }
+
+    .node.highlight-node::before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      width: 1px;
+      height: 15px;
+      background: var(--accent-indigo);
+    }
+
+    /* Slide transition overlay */
+    .slide-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #090a0f;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .slide-overlay.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Slide Overlay for transitions -->
+  <div class="slide-overlay" id="transitionOverlay"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <div class="logo-badge">CE</div>
+      <div class="logo-text">Enterprise AI</div>
+      <div class="doc-subtitle">Rationalization & Scale Strategy</div>
+    </div>
+    <div class="slide-counter" id="slideCounter">1 / 12</div>
+  </header>
+
+  <!-- Slide Deck Area -->
+  <div class="deck-container">
+
+    <!-- Slide 1: Cover Slide -->
+    <div class="slide active" id="slide-1">
+      <div class="slide-body slide-cover">
+        <h1 class="cover-title">Enterprise AI Rationalization<br>&amp; Scale Strategy</h1>
+        <p class="cover-subtitle">Transitioning from Microsoft Copilot to Claude Enterprise</p>
+        
+        <div class="ask-box">
+          <div class="ask-title">Executive Request</div>
+          <div class="ask-text">
+            Approve **Phase 1 Pilot**: 100 Claude Enterprise licenses for a 90-day governed pilot with a conservative **$50/user monthly consumption cap** to build a consumption-based financial model.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Current State Assessment -->
+    <div class="slide" id="slide-2">
+      <h2 class="slide-title">Current State Assessment</h2>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div>
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">Workforce Stack Footprint</h3>
+            <p style="color:var(--text-secondary); margin-bottom:20px; font-size:15px; line-height:1.6;">
+              We have provisioned multiple disjointed AI tools across our employee base, leading to high license overhead and low overall adoption metrics.
+            </p>
+            <div class="grid-2" style="gap:15px;">
+              <div class="card" style="padding:15px;">
+                <div class="metric-value">875</div>
+                <div class="metric-label">Total Employees</div>
+              </div>
+              <div class="card" style="padding:15px; border-color: rgba(99, 102, 241, 0.2);">
+                <div class="metric-value" style="color: var(--accent-indigo);">46%</div>
+                <div class="metric-label">Active AI Coverage</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">Active License Costs</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Platform Tool</th>
+                  <th>Seat Count</th>
+                  <th>Annual Expenditure</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Microsoft Copilot</td>
+                  <td>400</td>
+                  <td style="font-weight:600; color:#fff;">$117,000</td>
+                </tr>
+                <tr>
+                  <td>Teams Premium</td>
+                  <td>100</td>
+                  <td style="font-weight:600; color:#fff;">$7,200</td>
+                </tr>
+                <tr>
+                  <td>Claude Team</td>
+                  <td>65</td>
+                  <td style="color:var(--text-secondary);">Existing (Dept Funded)</td>
+                </tr>
+                <tr style="border-top: 2px solid var(--card-border);">
+                  <td style="font-weight:700; color:#fff;">Total Direct Cost</td>
+                  <td>565</td>
+                  <td style="font-weight:700; color:var(--accent-indigo);">$124,200/yr</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Copilot Utilization Analysis -->
+    <div class="slide" id="slide-3">
+      <h2 class="slide-title">Copilot Utilization Funnel</h2>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div>
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">Advanced Value Drop-off</h3>
+            <p style="color:var(--text-secondary); margin-bottom:15px; font-size:15px; line-height:1.6;">
+              While 400 seats are purchased, a small fraction uses advanced capabilities (writing code, building workflows, reasoning).
+            </p>
+            <ul class="bullet-list bullet-rose">
+              <li><strong>70%+ Light Users:</strong> Rely only on meeting notes or search.</li>
+              <li><strong>12% Power Users:</strong> Regularly leverage reasoning tools.</li>
+              <li><strong>5% Agent Users:</strong> Build workflow extensions in Copilot Studio.</li>
+            </ul>
+            <div class="card" style="margin-top:20px; background:rgba(244, 63, 94, 0.05); border-color: rgba(244, 63, 94, 0.2);">
+              <div style="font-weight: 700; color: var(--accent-rose); margin-bottom:4px; font-size:14px; text-transform:uppercase;">Core Takeaway</div>
+              <p style="font-size:14px; color:var(--text-primary); line-height:1.4;">We are paying a premium flat rate ($30/mo) for light users who only need transcript summaries.</p>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction:column; justify-content:center;">
+            <div class="funnel-container">
+              <div class="funnel-row">
+                <div class="funnel-label">Licenses Purchased</div>
+                <div class="funnel-bar-outer"><div class="funnel-bar-inner" style="width: 100%;">400 Seats</div></div>
+                <div class="funnel-pct">100%</div>
+              </div>
+              <div class="funnel-row">
+                <div class="funnel-label">Provisioned</div>
+                <div class="funnel-bar-outer"><div class="funnel-bar-inner" style="width: 87.5%;">350 Seats</div></div>
+                <div class="funnel-pct">88%</div>
+              </div>
+              <div class="funnel-row">
+                <div class="funnel-label">Active Users</div>
+                <div class="funnel-bar-outer"><div class="funnel-bar-inner" style="width: 84.7%;">339 Active</div></div>
+                <div class="funnel-pct">85%</div>
+              </div>
+              <div class="funnel-row">
+                <div class="funnel-label">Power Users</div>
+                <div class="funnel-bar-outer"><div class="funnel-bar-inner" style="width: 30%; background: linear-gradient(to right, var(--accent-violet), var(--accent-fuchsia));">120 Users</div></div>
+                <div class="funnel-pct" style="color:var(--accent-fuchsia);">30%</div>
+              </div>
+              <div class="funnel-row">
+                <div class="funnel-label">Agent Users</div>
+                <div class="funnel-bar-outer"><div class="funnel-bar-inner" style="width: 10%; background: linear-gradient(to right, var(--accent-fuchsia), var(--accent-rose));">40 Users</div></div>
+                <div class="funnel-pct" style="color:var(--accent-rose);">10%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: Business Problem -->
+    <div class="slide" id="slide-4">
+      <h2 class="slide-title">Core Business Challenges</h2>
+      <div class="slide-body">
+        <div class="grid-4">
+          <div class="card">
+            <div class="card-title accent-text-rose">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              Waste
+            </div>
+            <p class="card-desc"><strong>Underutilized Capacity</strong>: Paying $30/mo per user for 280+ employees who only consume static content or simple search summaries.</p>
+          </div>
+          <div class="card">
+            <div class="card-title accent-text-amber">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Limited Reach
+            </div>
+            <p class="card-desc"><strong>Silod Stack Coverage</strong>: Less than 50% of the employee base has access to enterprise-sanctioned generative AI tools.</p>
+          </div>
+          <div class="card">
+            <div class="card-title accent-text-indigo">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              Unknown ROI
+            </div>
+            <p class="card-desc"><strong>Return Ambiguity</strong>: No metrics tie license allocation directly to active business outcomes or productivity milestones.</p>
+          </div>
+          <div class="card">
+            <div class="card-title accent-text-fuchsia">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              No Visibility
+            </div>
+            <p class="card-desc"><strong>Zero Consumption Tracking</strong>: Copilot admin portal lacks detailed token metadata, rendering budget forecasting impossible.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: What We Learned -->
+    <div class="slide" id="slide-5">
+      <h2 class="slide-title">Key Discovery</h2>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div>
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">Meeting Summarization is the Key Anchor</h3>
+            <p style="color:var(--text-secondary); margin-bottom:20px; font-size:15px; line-height:1.6;">
+              Data audits indicate that meeting summaries and transcripts constitute the primary value anchor for 80% of Copilot active seats.
+            </p>
+            <p style="color:var(--text-secondary); font-size:15px; line-height:1.6;">
+              By decoupling <strong>meeting transcriptions</strong> from <strong>interactive model reasoning</strong>, we can significantly reduce seat costs.
+            </p>
+          </div>
+          <div>
+            <div class="equation-container">
+              <div class="eq-box" style="border-color: var(--accent-rose); background: rgba(244, 63, 94, 0.03);">Meeting Summarization</div>
+              <div class="eq-op">≠</div>
+              <div class="eq-box" style="border-color: var(--accent-indigo); background: rgba(99, 102, 241, 0.03);">M365 Copilot ($30/mo)</div>
+            </div>
+            <div class="card" style="margin-top:25px; border-color: rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.03);">
+              <div class="card-title accent-text-emerald" style="font-size:15px;">The Solution: Teams Premium ($6/mo)</div>
+              <p style="font-size:14px; color:var(--text-secondary); line-height:1.5;">
+                Providing Teams Premium to light users retains their meeting summaries/notes, allowing us to drop Copilot seats and deploy Claude Enterprise for multi-modal reasoning.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Proposed Future State -->
+    <div class="slide" id="slide-6">
+      <h2 class="slide-title">Proposed Future State</h2>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div>
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">AI Stack Alignment</h3>
+            <p style="color:var(--text-secondary); margin-bottom:20px; font-size:15px; line-height:1.6;">
+              We transition from a fragmented licensing model to a structured tiered strategy, optimizing costs while expanding AI access to all employees.
+            </p>
+            <ul class="bullet-list">
+              <li><strong>Tier 1: Copilot (100 Seats)</strong> - Reserved for executives and dedicated power integration workloads.</li>
+              <li><strong>Tier 2: Teams Premium (500 Seats)</strong> - Broad deployment for meeting notes, transcriptions, and summaries.</li>
+              <li><strong>Tier 3: Claude Enterprise (875 Seats)</strong> - Organization-wide standard for reasoning, coding, and document analysis.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="card" style="background: rgba(99, 102, 241, 0.03); border-color: rgba(99, 102, 241, 0.2); padding: 25px;">
+              <h4 style="color:#fff; margin-bottom:15px; font-size:18px;">Portfolio Shift</h4>
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span style="font-size:14px; color:var(--text-secondary);">Metric</span>
+                <span style="font-weight:700; font-size:14px; color:#fff;">Current vs. Proposed</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; margin-bottom:8px;">
+                <span style="font-size:14px; color:var(--text-secondary);">Copilot Seats</span>
+                <span style="font-weight:600; font-size:14px; color:var(--accent-rose);">400 ➔ 100</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <span style="font-size:14px; color:var(--text-secondary);">Teams Premium Seats</span>
+                <span style="font-weight:600; font-size:14px; color:var(--accent-emerald);">100 ➔ 500</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span style="font-size:14px; color:var(--text-secondary);">Claude Enterprise Seats</span>
+                <span style="font-weight:600; font-size:14px; color:var(--accent-indigo);">65 ➔ 875</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-top: 1px solid var(--card-border); padding-top:12px;">
+                <span style="font-size:14px; font-weight:700; color:#fff;">AI Coverage %</span>
+                <span style="font-weight:700; font-size:15px; color:var(--accent-emerald);">46% ➔ 100%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: Migration Strategy -->
+    <div class="slide" id="slide-7">
+      <h2 class="slide-title">Migration Roadmap</h2>
+      <div class="slide-body">
+        <div class="grid-3" style="margin-bottom: 20px;">
+          <div class="card" style="border-top: 3px solid var(--accent-indigo);">
+            <div style="font-size:12px; color:var(--accent-indigo); font-weight:700; margin-bottom:4px; text-transform:uppercase;">Phase 1</div>
+            <h4 style="color:#fff; margin-bottom:10px; font-size:16px;">Evaluate (90 Days)</h4>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.5; margin-bottom:10px;">
+              Deploy 100 Claude Enterprise licenses to current Claude users + Copilot power users. Disable Claude Code.
+            </p>
+            <div style="font-size:11px; background:rgba(255,255,255,0.05); padding:4px 8px; border-radius:4px; display:inline-block; font-weight:500;">
+              Goal: Establish baseline spend
+            </div>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--accent-violet);">
+            <div style="font-size:12px; color:var(--accent-violet); font-weight:700; margin-bottom:4px; text-transform:uppercase;">Phase 2</div>
+            <h4 style="color:#fff; margin-bottom:10px; font-size:16px;">Expand (180 Days)</h4>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.5; margin-bottom:10px;">
+              Scale to 400 seats based on validated pilot consumption data. Adjust department-specific caps.
+            </p>
+            <div style="font-size:11px; background:rgba(255,255,255,0.05); padding:4px 8px; border-radius:4px; display:inline-block; font-weight:500;">
+              Goal: Transition 300 Copilot seats
+            </div>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--accent-fuchsia);">
+            <div style="font-size:12px; color:var(--accent-fuchsia); font-weight:700; margin-bottom:4px; text-transform:uppercase;">Phase 3</div>
+            <h4 style="color:#fff; margin-bottom:10px; font-size:16px;">Standardize (270 Days)</h4>
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.5; margin-bottom:10px;">
+              Scale to full 875 employees. Establish organizational knowledge hubs and custom enterprise agents.
+            </p>
+            <div style="font-size:11px; background:rgba(255,255,255,0.05); padding:4px 8px; border-radius:4px; display:inline-block; font-weight:500;">
+              Goal: Complete rationalization
+            </div>
+          </div>
+        </div>
+        <p style="font-size:14px; color:var(--text-secondary); text-align:center; font-style:italic;">
+          *Governed by the principle of continuous observation, measurement, learning, and controlled scaling.
+        </p>
+      </div>
+    </div>
+
+    <!-- Slide 8: Governance & Spend Controls -->
+    <div class="slide" id="slide-8">
+      <h2 class="slide-title">Governance &amp; Spend Controls</h2>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div>
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">Claude Enterprise Cost Controls</h3>
+            <p style="color:var(--text-secondary); margin-bottom:20px; font-size:15px; line-height:1.6;">
+              Unlike standard SaaS seat billing, we protect the organization against unmonitored consumption by imposing granular policy boundaries inside the Claude workspace.
+            </p>
+            <ul class="bullet-list bullet-circle">
+              <li><strong>$50/User Cap:</strong> Hard consumption limit per billing period.</li>
+              <li><strong>Scope Limitations:</strong> Access is restricted to Claude Chat and Cowork.</li>
+              <li><strong>Code Safeguards:</strong> Claude Code is disabled for non-engineering teams.</li>
+              <li><strong>Real-time Audit logs:</strong> Weekly exports tracking heavy user spike trends.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="card" style="border-left: 3px solid var(--accent-amber); padding:20px; margin-bottom:15px;">
+              <h4 style="color:#fff; font-size:15px; margin-bottom:6px;">Governance Rationale</h4>
+              <p style="font-size:13px; color:var(--text-secondary); line-height:1.5;">
+                Establishing spend controls on day one ensures we do not experience budget overruns while baseline consumption behavior is measured during Phase 1.
+              </p>
+            </div>
+            <div class="card" style="border-left: 3px solid var(--accent-indigo); padding:20px;">
+              <h4 style="color:#fff; font-size:15px; margin-bottom:6px;">Approval Flows</h4>
+              <p style="font-size:13px; color:var(--text-secondary); line-height:1.5;">
+                Users hitting 80% of their individual limit are prompted to submit an automated request to the AI Center of Excellence for additional tier allocations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9: Interactive Financial Strategy -->
+    <div class="slide" id="slide-9">
+      <h2 class="slide-title">Interactive Cost Model</h2>
+      <div class="slide-body">
+        <div class="calculator-layout">
+          <!-- Sliders -->
+          <div class="calc-sliders">
+            <h3 style="color:#fff; font-size:18px; margin-bottom:5px;">Model Variables</h3>
+            
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span>Claude Enterprise Seats</span>
+                <span class="slider-val" id="valClaudeSeats">100</span>
+              </div>
+              <input type="range" id="inputClaudeSeats" min="50" max="875" step="25" value="100">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span>Claude Avg Monthly Spend/User</span>
+                <span class="slider-val" id="valClaudeSpend">$18</span>
+              </div>
+              <input type="range" id="inputClaudeSpend" min="5" max="50" step="1" value="18">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span>Retained Copilot Seats</span>
+                <span class="slider-val" id="valCopilotSeats">100</span>
+              </div>
+              <input type="range" id="inputCopilotSeats" min="0" max="400" step="10" value="100">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-label-row">
+                <span>Teams Premium Seats</span>
+                <span class="slider-val" id="valTeamsSeats">500</span>
+              </div>
+              <input type="range" id="inputTeamsSeats" min="100" max="875" step="25" value="500">
+            </div>
+          </div>
+
+          <!-- Live Output -->
+          <div class="calc-results">
+            <div>
+              <div class="calc-row">
+                <span class="calc-lbl">Current Stack Cost</span>
+                <span class="calc-val">$124,200/yr</span>
+              </div>
+              <div class="calc-row">
+                <span class="calc-lbl">Future Stack Cost</span>
+                <span class="calc-val cost" id="outputFutureCost">$86,850/yr</span>
+              </div>
+              <div class="calc-row">
+                <span class="calc-lbl">Net Savings</span>
+                <span class="calc-val saving" id="outputSavings">$37,350/yr</span>
+              </div>
+              <div class="calc-row">
+                <span class="calc-lbl">Workforce AI Coverage</span>
+                <span class="calc-val" id="outputCoverage" style="color:var(--accent-emerald);">100%</span>
+              </div>
+            </div>
+
+            <!-- Mini dynamic chart -->
+            <svg class="calc-chart-svg">
+              <rect x="20" y="20" width="80" height="80" fill="rgba(244, 63, 94, 0.2)" stroke="var(--accent-rose)" stroke-width="1" />
+              <text x="60" y="115" fill="var(--text-secondary)" font-size="10" text-anchor="middle">Current</text>
+              
+              <rect id="chartBarFuture" x="140" y="56" width="80" height="44" fill="rgba(16, 185, 129, 0.2)" stroke="var(--accent-emerald)" stroke-width="1" />
+              <text x="180" y="115" fill="var(--text-secondary)" font-size="10" text-anchor="middle">Proposed</text>
+              
+              <!-- Labels inside bars -->
+              <text x="60" y="65" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">$124.2K</text>
+              <text id="chartTextFuture" x="180" y="80" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">$86.8K</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 10: Operating Model -->
+    <div class="slide" id="slide-10">
+      <h2 class="slide-title">AI Governance Operating Model</h2>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div style="display:flex; flex-direction:column; justify-content:center;">
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">AI Center of Excellence (CoE)</h3>
+            <p style="color:var(--text-secondary); margin-bottom:15px; font-size:14px; line-height:1.5;">
+              Rather than ad-hoc rollouts, governance is managed through a single central group with representation across departments.
+            </p>
+            <ul class="bullet-list bullet-circle" style="font-size:13px;">
+              <li><strong>CTO Sponsor:</strong> Secures funding, reviews escalations, and reports to the board.</li>
+              <li><strong>AI Steering Committee:</strong> Establishes usage guidelines, evaluates compliance, and authorizes expansion.</li>
+              <li><strong>AI Center of Excellence:</strong> Manages daily monitoring, allocates budgets, designs prompt templates, and runs user training.</li>
+              <li><strong>Champions network:</strong> Evangelize use cases within business units.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="model-hierarchy">
+              <div class="node">Executive Sponsor (CTO)</div>
+              <div class="node">AI Steering Committee</div>
+              <div class="node highlight-node">AI Center of Excellence (CoE)</div>
+              <div class="node-row-parent">
+                <div class="node leaf" style="min-width:110px;">IT &amp; Sec Ops</div>
+                <div class="node leaf" style="min-width:110px;">BU Champions</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 11: Success Criteria -->
+    <div class="slide" id="slide-11">
+      <h2 class="slide-title">Phase 1 Success Criteria</h2>
+      <div class="slide-body">
+        <div class="grid-3" style="margin-bottom:20px;">
+          <div class="card">
+            <h4 style="color:#fff; margin-bottom:15px; font-size:16px;">Adoption Rate</h4>
+            <div class="metric-value" style="color:var(--accent-indigo);">>75%</div>
+            <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">Active users within the 100-user cohort</p>
+            <div class="metric-value" style="color:var(--accent-violet); margin-top:15px;">>60%</div>
+            <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">Weekly Active Users (WAU) showing recurring integration</p>
+          </div>
+          <div class="card">
+            <h4 style="color:#fff; margin-bottom:15px; font-size:16px;">Financial Control</h4>
+            <div class="metric-value" style="color:var(--accent-rose);">&lt;10%</div>
+            <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">Percentage of users hitting the $50 cap requiring review</p>
+            <div class="metric-value" style="color:var(--accent-amber); margin-top:15px;">&plusmn;15%</div>
+            <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">Accuracy of budget tracking vs. actual consumption invoice</p>
+          </div>
+          <div class="card">
+            <h4 style="color:#fff; margin-bottom:15px; font-size:16px;">Business Outcomes</h4>
+            <div class="metric-value" style="color:var(--accent-emerald);">20+</div>
+            <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">Documented and validated enterprise use cases</p>
+            <div class="metric-value" style="color:var(--accent-fuchsia);">80%+</div>
+            <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">Positive qualitative survey score from pilot group</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 12: Decision Request -->
+    <div class="slide" id="slide-12">
+      <h2 class="slide-title">Decision Request</h2>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div>
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">Review and Approval Ask</h3>
+            <p style="color:var(--text-secondary); margin-bottom:20px; font-size:15px; line-height:1.6;">
+              We request formal approval to proceed with Phase 1 to establish baseline data and validate the migration economics.
+            </p>
+            <div class="card" style="background: rgba(16, 185, 129, 0.03); border-color: rgba(16, 185, 129, 0.2); padding:15px;">
+              <h4 style="color:#fff; font-size:14px; margin-bottom:4px; text-transform:uppercase;">Phase 1 Resource Commitment</h4>
+              <p style="font-size:14px; color:var(--text-primary); font-weight:600;">100 Claude seats, 90 days, $5,000 max monthly spend</p>
+            </div>
+          </div>
+          <div>
+            <h3 style="margin-bottom:15px; color:#fff; font-size:20px;">Target End State Objectives</h3>
+            <ul class="bullet-list">
+              <li><strong>100% AI Workforce Coverage:</strong> Generative AI tooling available to every employee.</li>
+              <li><strong>Predictable Budget Model:</strong> Transitioning from flat seat license waste to metered value.</li>
+              <li><strong>Custom Knowledge Integration:</strong> Connecting Claude with Confluence, Jira, and internal code repositories safely.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Presenter Notes Drawer -->
+  <div class="presenter-notes-drawer" id="presenterNotesDrawer">
+    <div class="presenter-notes-title">Presenter Notes</div>
+    <div id="presenterNotesContent">Notes text...</div>
+  </div>
+
+  <!-- Footer Controls -->
+  <footer>
+    <div class="progress-bar-container" id="progressBarContainer">
+      <div class="progress-bar-fill" id="progressBarFill"></div>
+    </div>
+    
+    <div class="controls-row">
+      <div class="nav-buttons">
+        <button class="nav-btn" id="btnPrev" disabled>
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          Previous
+        </button>
+        <button class="nav-btn" id="btnNext">
+          Next
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="meta-controls">
+        <select class="slide-select" id="slideSelect">
+          <option value="1">Slide 1: Executive Summary</option>
+          <option value="2">Slide 2: Current State Assessment</option>
+          <option value="3">Slide 3: Copilot Utilization Analysis</option>
+          <option value="4">Slide 4: Core Business Challenges</option>
+          <option value="5">Slide 5: Key Learnings</option>
+          <option value="6">Slide 6: Proposed Future State</option>
+          <option value="7">Slide 7: Migration Roadmap</option>
+          <option value="8">Slide 8: Governance &amp; Controls</option>
+          <option value="9">Slide 9: Interactive Cost Model</option>
+          <option value="10">Slide 10: Governance Operating Model</option>
+          <option value="11">Slide 11: Success Criteria</option>
+          <option value="12">Slide 12: Decision Request</option>
+        </select>
+        
+        <button class="toggle-notes-btn" id="btnToggleNotes">Presenter Notes (N)</button>
+        
+        <div class="keyboard-shortcuts">Navigate with Keyboard Arrow Keys (◀ / ▶)</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Slide Navigation & Content Config
+    const totalSlides = 12;
+    let currentSlide = 1;
+    
+    const presenterNotes = {
+      1: "Lead with the bottom-line request. Address CTO Ankit and CFO immediately. Clear focus: we are proposing an optimization play (rationalizing spend) rather than an added cost. Pilot budget exposure is capped at $5K per month.",
+      2: "Emphasize our negotiated Copilot cost ($117k/year vs. $144k list). Highlight that despite this spend, overall AI coverage across our 875 employees remains under 50%. The gap represents a productivity risk.",
+      3: "Highlight that only 30% of users are power users utilizing advanced coding, reasoning or workflow engines. The other 70% represent wasted premium licenses because they only use search or summarization.",
+      4: "This slide sets up the problems to solve. Walk through the four cards. Key focus: we pay for seat capacity, not consumption. It represents an opaque billing model with unknown ROI.",
+      5: "Discuss the key user behavior discovery. Our audit proved meeting summaries/notes are the core value anchor. Meeting summaries don't require a $30/mo Copilot license; Teams Premium at $6/mo covers this need.",
+      6: "Detail the transition strategy. By cutting 300 Copilot seats and adding 500 Teams Premium, we free up significant budget to rolling out Claude Enterprise for 100% of employees, rather than just 46%.",
+      7: "Explain the phased rollout timeline. Stress that Phase 1 (100 users) uses existing active Claude seats plus high-volume Copilot power users. We disable Claude Code to isolate cost parameters.",
+      8: "Focus on risk mitigation. Explain that unlike Microsoft's flat seat cost, Claude Enterprise allows setting hard spending thresholds. Setting a $50 cap per user protects us from runaway billing cycles.",
+      9: "Demonstrate the interactive calculator to the CFO/CTO during the meeting. Drag the sliders to show how changes in Claude seat counts and avg usage rates affect savings and stack coverage in real time.",
+      10: "Explain the operating model. The AI Steering Committee coordinates policy, while the AI CoE handles license allocation, template design, training, and weekly logs review.",
+      11: "Explain how we will measure success during the 90-day pilot. Point to the specific quantitative boundaries (75% WAU, <10% hitting cap, >80% satisfaction score) to prove we are metrics-driven.",
+      12: "Reiterate the request: Approve Phase 1. Remind leadership this is a controlled experiment with max financial exposure of $5K/mo, resulting in verified consumption data before committing to broad scaling."
+    };
+
+    // DOM Elements
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const slideCounter = document.getElementById('slideCounter');
+    const slideSelect = document.getElementById('slideSelect');
+    const btnToggleNotes = document.getElementById('btnToggleNotes');
+    const presenterNotesDrawer = document.getElementById('presenterNotesDrawer');
+    const presenterNotesContent = document.getElementById('presenterNotesContent');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const progressBarContainer = document.getElementById('progressBarContainer');
+    const transitionOverlay = document.getElementById('transitionOverlay');
+
+    // Navigation logic
+    function showSlide(index) {
+      if (index < 1 || index > totalSlides) return;
+      
+      // Trigger transition effect
+      transitionOverlay.classList.add('active');
+      
+      setTimeout(() => {
+        // Hide current slide
+        const currentActive = document.querySelector('.slide.active');
+        if (currentActive) currentActive.classList.remove('active');
+        
+        // Show new slide
+        const targetSlide = document.getElementById(`slide-${index}`);
+        if (targetSlide) targetSlide.classList.add('active');
+        
+        currentSlide = index;
+        
+        // Update controls
+        btnPrev.disabled = (currentSlide === 1);
+        btnNext.disabled = (currentSlide === totalSlides);
+        slideCounter.textContent = `${currentSlide} / ${totalSlides}`;
+        slideSelect.value = currentSlide;
+        
+        // Update notes
+        presenterNotesContent.textContent = presenterNotes[currentSlide] || 'No notes available.';
+        
+        // Update progress bar
+        const pct = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+        progressBarFill.style.width = `${pct}%`;
+        
+        transitionOverlay.classList.remove('active');
+      }, 150);
+    }
+
+    // Event listeners
+    btnPrev.addEventListener('click', () => showSlide(currentSlide - 1));
+    btnNext.addEventListener('click', () => showSlide(currentSlide + 1));
+    
+    slideSelect.addEventListener('change', (e) => {
+      showSlide(parseInt(e.target.value));
+    });
+
+    progressBarContainer.addEventListener('click', (e) => {
+      const rect = progressBarContainer.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const width = rect.width;
+      const pct = clickX / width;
+      const target = Math.round(pct * (totalSlides - 1)) + 1;
+      showSlide(target);
+    });
+
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName.toLowerCase() === 'input' || e.target.tagName.toLowerCase() === 'select') return;
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        showSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft') {
+        showSlide(currentSlide - 1);
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleNotes();
+      }
+    });
+
+    // Notes drawer toggle
+    function toggleNotes() {
+      presenterNotesDrawer.classList.toggle('open');
+      btnToggleNotes.classList.toggle('active');
+    }
+    btnToggleNotes.addEventListener('click', toggleNotes);
+
+    // Initial note population
+    presenterNotesContent.textContent = presenterNotes[1];
+
+    // Interactive Calculator Logic for Slide 9
+    const inputClaudeSeats = document.getElementById('inputClaudeSeats');
+    const inputClaudeSpend = document.getElementById('inputClaudeSpend');
+    const inputCopilotSeats = document.getElementById('inputCopilotSeats');
+    const inputTeamsSeats = document.getElementById('inputTeamsSeats');
+
+    const valClaudeSeats = document.getElementById('valClaudeSeats');
+    const valClaudeSpend = document.getElementById('valClaudeSpend');
+    const valCopilotSeats = document.getElementById('valCopilotSeats');
+    const valTeamsSeats = document.getElementById('valTeamsSeats');
+
+    const outputFutureCost = document.getElementById('outputFutureCost');
+    const outputSavings = document.getElementById('outputSavings');
+    const outputCoverage = document.getElementById('outputCoverage');
+    const chartBarFuture = document.getElementById('chartBarFuture');
+    const chartTextFuture = document.getElementById('chartTextFuture');
+
+    const CURRENT_STACK_COST = 124200; // Fixed current cost
+
+    function updateCalculator() {
+      const claudeSeats = parseInt(inputClaudeSeats.value);
+      const claudeSpend = parseInt(inputClaudeSpend.value);
+      const copilotSeats = parseInt(inputCopilotSeats.value);
+      const teamsSeats = parseInt(inputTeamsSeats.value);
+
+      // Update slider values texts
+      valClaudeSeats.textContent = claudeSeats;
+      valClaudeSpend.textContent = `$${claudeSpend}`;
+      valCopilotSeats.textContent = copilotSeats;
+      valTeamsSeats.textContent = teamsSeats;
+
+      // Calculate future costs:
+      // Copilot: negotiated rate $292.5/seat/year
+      // Teams Premium: $6/mo -> $72/seat/year
+      // Claude: Seats * Spend * 12
+      const copilotAnnual = copilotSeats * 292.5;
+      const teamsAnnual = teamsSeats * 72;
+      const claudeAnnual = claudeSeats * claudeSpend * 12;
+      const futureTotal = Math.round(copilotAnnual + teamsAnnual + claudeAnnual);
+      const savings = CURRENT_STACK_COST - futureTotal;
+
+      // Update texts
+      outputFutureCost.textContent = `$${futureTotal.toLocaleString()}/yr`;
+      
+      if (savings >= 0) {
+        outputSavings.textContent = `$${savings.toLocaleString()}/yr`;
+        outputSavings.className = "calc-val saving";
+      } else {
+        outputSavings.textContent = `-$${Math.abs(savings).toLocaleString()}/yr`;
+        outputSavings.className = "calc-val cost";
+      }
+
+      // Coverage: Employees who have access to EITHER Claude OR Copilot (capped at total workforce 875)
+      // Claude is general standard, Copilot is power standard.
+      // Sum of seats or Max of them depending on overlap, but let's assume they are distributed to ensure maximum coverage
+      const coverageUsers = Math.min(875, claudeSeats + copilotSeats);
+      const coveragePct = Math.round((coverageUsers / 875) * 100);
+      outputCoverage.textContent = `${coveragePct}%`;
+      if (coveragePct >= 75) {
+        outputCoverage.style.color = "var(--accent-emerald)";
+      } else if (coveragePct >= 50) {
+        outputCoverage.style.color = "var(--accent-amber)";
+      } else {
+        outputCoverage.style.color = "var(--accent-rose)";
+      }
+
+      // Dynamic SVG chart update: height of future bar represents future cost relative to current
+      // Current cost $124,200 is represented by height 80 (y=20 to y=100)
+      // Height scale = 80 / 124200 = 0.000644
+      const futureHeight = Math.max(10, Math.min(100, Math.round(futureTotal * (80 / CURRENT_STACK_COST))));
+      const futureY = 100 - futureHeight;
+      chartBarFuture.setAttribute('height', futureHeight);
+      chartBarFuture.setAttribute('y', futureY);
+      
+      if (savings >= 0) {
+        chartBarFuture.setAttribute('fill', 'rgba(16, 185, 129, 0.2)');
+        chartBarFuture.setAttribute('stroke', 'var(--accent-emerald)');
+      } else {
+        chartBarFuture.setAttribute('fill', 'rgba(244, 63, 94, 0.2)');
+        chartBarFuture.setAttribute('stroke', 'var(--accent-rose)');
+      }
+
+      chartTextFuture.setAttribute('y', futureY + (futureHeight > 20 ? 15 : -5));
+      chartTextFuture.textContent = `$${(futureTotal / 1000).toFixed(1)}K`;
+    }
+
+    // Calculator event listeners
+    inputClaudeSeats.addEventListener('input', updateCalculator);
+    inputClaudeSpend.addEventListener('input', updateCalculator);
+    inputCopilotSeats.addEventListener('input', updateCalculator);
+    inputTeamsSeats.addEventListener('input', updateCalculator);
+
+    // Run initial calculator update
+    updateCalculator();
+  </script>
+</body>
+</html>
